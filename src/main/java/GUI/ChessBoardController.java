@@ -1,6 +1,8 @@
 package GUI;
 
 import javafx.fxml.FXML;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 
 
@@ -135,6 +137,8 @@ public class ChessBoardController {
   @FXML
   private Rectangle rect77;
   private Rectangle[][] boardSquares;
+  @FXML
+  private ImageView image00;
 
 
   @FXML
@@ -166,5 +170,7 @@ public class ChessBoardController {
         }
       }
     }
+    // Image image = new Image(GUIConfig.KING_WHITE); // Replace with your image URL
+    image00.setImage(GUIConfig.KING_WHITE);
   }
 }
