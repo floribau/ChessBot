@@ -1,3 +1,7 @@
+import GUI.ChessBoardController;
+import Game.GameEngine;
+import Game.Piece;
+import Game.PieceType;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -7,10 +11,13 @@ import javafx.stage.Stage;
 public class Main extends Application {
   @Override
   public void start(Stage primaryStage) throws Exception {
-    Parent root = FXMLLoader.load(getClass().getResource("/ChessBoard.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/ChessBoard.fxml"));
+    Parent root = loader.load();
+    ChessBoardController controller = loader.getController();
     primaryStage.setTitle("Chess");
     primaryStage.setScene(new Scene(root, 480, 480));
     primaryStage.show();
+    GameEngine.startGame(controller);
   }
 
   public static void main(String[] args) {

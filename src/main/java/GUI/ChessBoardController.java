@@ -1,5 +1,8 @@
 package GUI;
 
+import Game.GameEngine;
+import Game.Piece;
+import Game.PlayerColor;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -9,136 +12,41 @@ import javafx.scene.shape.Rectangle;
 public class ChessBoardController {
 
   @FXML
-  private Rectangle rect00;
+  private Rectangle rect00, rect01, rect02, rect03, rect04, rect05, rect06, rect07;
   @FXML
-  private Rectangle rect01;
+  private Rectangle rect10, rect11, rect12, rect13, rect14, rect15, rect16, rect17;
   @FXML
-  private Rectangle rect02;
+  private Rectangle rect20, rect21, rect22, rect23, rect24, rect25, rect26, rect27;
   @FXML
-  private Rectangle rect03;
+  private Rectangle rect30, rect31, rect32, rect33, rect34, rect35, rect36, rect37;
   @FXML
-  private Rectangle rect04;
+  private Rectangle rect40, rect41, rect42, rect43, rect44, rect45, rect46, rect47;
   @FXML
-  private Rectangle rect05;
+  private Rectangle rect50, rect51, rect52, rect53, rect54, rect55, rect56, rect57;
   @FXML
-  private Rectangle rect06;
+  private Rectangle rect60, rect61, rect62, rect63, rect64, rect65, rect66, rect67;
   @FXML
-  private Rectangle rect07;
+  private Rectangle rect70, rect71, rect72, rect73, rect74, rect75, rect76, rect77;
   @FXML
-  private Rectangle rect10;
+  private ImageView image00, image01, image02, image03, image04, image05, image06, image07;
   @FXML
-  private Rectangle rect11;
+  private ImageView image10, image11, image12, image13, image14, image15, image16, image17;
   @FXML
-  private Rectangle rect12;
+  private ImageView image20, image21, image22, image23, image24, image25, image26, image27;
   @FXML
-  private Rectangle rect13;
+  private ImageView image30, image31, image32, image33, image34, image35, image36, image37;
   @FXML
-  private Rectangle rect14;
+  private ImageView image40, image41, image42, image43, image44, image45, image46, image47;
   @FXML
-  private Rectangle rect15;
+  private ImageView image50, image51, image52, image53, image54, image55, image56, image57;
   @FXML
-  private Rectangle rect16;
+  private ImageView image60, image61, image62, image63, image64, image65, image66, image67;
   @FXML
-  private Rectangle rect17;
-  @FXML
-  private Rectangle rect20;
-  @FXML
-  private Rectangle rect21;
-  @FXML
-  private Rectangle rect22;
-  @FXML
-  private Rectangle rect23;
-  @FXML
-  private Rectangle rect24;
-  @FXML
-  private Rectangle rect25;
-  @FXML
-  private Rectangle rect26;
-  @FXML
-  private Rectangle rect27;
-  @FXML
-  private Rectangle rect30;
-  @FXML
-  private Rectangle rect31;
-  @FXML
-  private Rectangle rect32;
-  @FXML
-  private Rectangle rect33;
-  @FXML
-  private Rectangle rect34;
-  @FXML
-  private Rectangle rect35;
-  @FXML
-  private Rectangle rect36;
-  @FXML
-  private Rectangle rect37;
-  @FXML
-  private Rectangle rect40;
-  @FXML
-  private Rectangle rect41;
-  @FXML
-  private Rectangle rect42;
-  @FXML
-  private Rectangle rect43;
-  @FXML
-  private Rectangle rect44;
-  @FXML
-  private Rectangle rect45;
-  @FXML
-  private Rectangle rect46;
-  @FXML
-  private Rectangle rect47;
-  @FXML
-  private Rectangle rect50;
-  @FXML
-  private Rectangle rect51;
-  @FXML
-  private Rectangle rect52;
-  @FXML
-  private Rectangle rect53;
-  @FXML
-  private Rectangle rect54;
-  @FXML
-  private Rectangle rect55;
-  @FXML
-  private Rectangle rect56;
-  @FXML
-  private Rectangle rect57;
-  @FXML
-  private Rectangle rect60;
-  @FXML
-  private Rectangle rect61;
-  @FXML
-  private Rectangle rect62;
-  @FXML
-  private Rectangle rect63;
-  @FXML
-  private Rectangle rect64;
-  @FXML
-  private Rectangle rect65;
-  @FXML
-  private Rectangle rect66;
-  @FXML
-  private Rectangle rect67;
-  @FXML
-  private Rectangle rect70;
-  @FXML
-  private Rectangle rect71;
-  @FXML
-  private Rectangle rect72;
-  @FXML
-  private Rectangle rect73;
-  @FXML
-  private Rectangle rect74;
-  @FXML
-  private Rectangle rect75;
-  @FXML
-  private Rectangle rect76;
-  @FXML
-  private Rectangle rect77;
+  private ImageView image70, image71, image72, image73, image74, image75, image76, image77;
+
   private Rectangle[][] boardSquares;
-  @FXML
-  private ImageView image00;
+  private ImageView[][] imageViews;
+
 
 
   @FXML
@@ -153,16 +61,47 @@ public class ChessBoardController {
         {rect60, rect61, rect62, rect63, rect64, rect65, rect66, rect67},
         {rect70, rect71, rect72, rect73, rect74, rect75, rect76, rect77},
     };
-    repaint();
+    imageViews = new ImageView[][]{
+        {image00, image01, image02, image03, image04, image05, image06, image07},
+        {image10, image11, image12, image13, image14, image15, image16, image17},
+        {image20, image21, image22, image23, image24, image25, image26, image27},
+        {image30, image31, image32, image33, image34, image35, image36, image37},
+        {image40, image41, image42, image43, image44, image45, image46, image47},
+        {image50, image51, image52, image53, image54, image55, image56, image57},
+        {image60, image61, image62, image63, image64, image65, image66, image67},
+        {image70, image71, image72, image73, image74, image75, image76, image77},
+    };
+
+    changeGUISettings();
   }
 
 
   @FXML
-  public void repaint() {
+  public void repaint(String[][] board){
+    for (int i=0; i<=7; i++){
+      for (int j=0; j<=7; j++){
+        if(board[i][j] != "" && board[i][j] != null){
+          System.out.println("Piece ID:" + board[i][j]);
+          Piece piece = GameEngine.getPieceById(board[i][j]);
+          Image image = piece.getType().getImage();
+          imageViews[i][j].setImage(image);
+        }
+      }
+    }
+  }
+
+  public void repaintFlipped(String[][] board){
+    for (int i=0; i<=7; i++){
+      for (int j=0; j<=7; j++){
+        // TODO repaint for black
+      }
+    }
+  }
+
+  public void changeGUISettings() {
     for (int i=0; i<=7; i++){
       for (int j=0; j<=7; j++){
         Rectangle rect = boardSquares[i][j];
-        System.out.println(rect);
         if ((i+j)%2 == 0) {
           rect.setFill(GUIConfig.WHITE_SQUARE_COLOR);
         } else {
@@ -170,7 +109,10 @@ public class ChessBoardController {
         }
       }
     }
-    // Image image = new Image(GUIConfig.KING_WHITE); // Replace with your image URL
-    image00.setImage(GUIConfig.KING_WHITE);
+    if(GameEngine.getPlayerColor() == PlayerColor.BLACK){
+      //repaintFlipped(GameEngine.getBoard());
+    } else {
+      //repaint(GameEngine.getBoard());
+    }
   }
 }
