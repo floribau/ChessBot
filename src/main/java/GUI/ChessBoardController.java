@@ -6,27 +6,27 @@ import Game.PlayerColor;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.control.Button;
 
 
 public class ChessBoardController {
 
   @FXML
-  private Rectangle rect00, rect01, rect02, rect03, rect04, rect05, rect06, rect07;
+  private Button rect00, rect01, rect02, rect03, rect04, rect05, rect06, rect07;
   @FXML
-  private Rectangle rect10, rect11, rect12, rect13, rect14, rect15, rect16, rect17;
+  private Button rect10, rect11, rect12, rect13, rect14, rect15, rect16, rect17;
   @FXML
-  private Rectangle rect20, rect21, rect22, rect23, rect24, rect25, rect26, rect27;
+  private Button rect20, rect21, rect22, rect23, rect24, rect25, rect26, rect27;
   @FXML
-  private Rectangle rect30, rect31, rect32, rect33, rect34, rect35, rect36, rect37;
+  private Button rect30, rect31, rect32, rect33, rect34, rect35, rect36, rect37;
   @FXML
-  private Rectangle rect40, rect41, rect42, rect43, rect44, rect45, rect46, rect47;
+  private Button rect40, rect41, rect42, rect43, rect44, rect45, rect46, rect47;
   @FXML
-  private Rectangle rect50, rect51, rect52, rect53, rect54, rect55, rect56, rect57;
+  private Button rect50, rect51, rect52, rect53, rect54, rect55, rect56, rect57;
   @FXML
-  private Rectangle rect60, rect61, rect62, rect63, rect64, rect65, rect66, rect67;
+  private Button rect60, rect61, rect62, rect63, rect64, rect65, rect66, rect67;
   @FXML
-  private Rectangle rect70, rect71, rect72, rect73, rect74, rect75, rect76, rect77;
+  private Button rect70, rect71, rect72, rect73, rect74, rect75, rect76, rect77;
   @FXML
   private ImageView image00, image01, image02, image03, image04, image05, image06, image07;
   @FXML
@@ -44,14 +44,14 @@ public class ChessBoardController {
   @FXML
   private ImageView image70, image71, image72, image73, image74, image75, image76, image77;
 
-  private Rectangle[][] boardSquares;
+  private Button[][] boardSquares;
   private ImageView[][] imageViews;
 
 
 
   @FXML
   public void initialize() {
-    boardSquares = new Rectangle[][]{
+    boardSquares = new Button[][]{
         {rect00, rect01, rect02, rect03, rect04, rect05, rect06, rect07},
         {rect10, rect11, rect12, rect13, rect14, rect15, rect16, rect17},
         {rect20, rect21, rect22, rect23, rect24, rect25, rect26, rect27},
@@ -101,18 +101,13 @@ public class ChessBoardController {
   public void changeGUISettings() {
     for (int i=0; i<=7; i++){
       for (int j=0; j<=7; j++){
-        Rectangle rect = boardSquares[i][j];
+        Button rect = boardSquares[i][j];
         if ((i+j)%2 == 0) {
-          rect.setFill(GUIConfig.WHITE_SQUARE_COLOR);
+          rect.setStyle("-fx-background-color: " + GUIConfig.colorToHexString(GUIConfig.WHITE_SQUARE_COLOR));
         } else {
-          rect.setFill(GUIConfig.BLACK_SQUARE_COLOR);
+          rect.setStyle("-fx-background-color: " + GUIConfig.colorToHexString(GUIConfig.BLACK_SQUARE_COLOR));
         }
       }
-    }
-    if(GameEngine.getPlayerColor() == PlayerColor.BLACK){
-      //repaintFlipped(GameEngine.getBoard());
-    } else {
-      //repaint(GameEngine.getBoard());
     }
   }
 }
