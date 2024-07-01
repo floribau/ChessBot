@@ -1,5 +1,7 @@
 package Game;
 
+import Util.Position;
+
 public class Board {
   String[][] board;
 
@@ -17,22 +19,44 @@ public class Board {
     }
   }
 
-  public void move(int xOld, int xNew, int yOld, int yNew){
-    String pieceId = this.getPieceAt(xOld, yOld);
-    this.setPieceAt(xOld, yOld, "");
-    this.setPieceAt(xNew, yNew, pieceId);
+  public void move(Position oldPos, Position newPos){
+    String pieceId = this.getPieceAt(oldPos);
+    this.setPieceAt(oldPos, "");
+    this.setPieceAt(newPos, pieceId);
   }
 
   public String[][] getBoard(){
     return this.board;
   }
 
-  public String getPieceAt(int xPos, int yPos) {
-    return board[xPos][yPos];
+  public String getPieceAt(Position pos) {
+    return board[pos.x][pos.y];
   }
 
-  public void setPieceAt(int xPos, int yPos, String pieceId) {
-    board[xPos][yPos] = pieceId;
+  public void setPieceAt(Position pos, String pieceId) {
+    board[pos.x][pos.y] = pieceId;
+  }
+
+  public Position getPositionOfPiece(String pieceId) {
+    for(int i=0; i<=7; i++) {
+      for(int j=0; j<=7; j++) {
+        if(board[i][j] == pieceId) {
+          return new Position(i, j);
+        }
+      }
+    }
+    return null;
+  }
+
+  public String toString(){
+    String res = "";
+    for(int i=0; i<=7; i++) {
+      for(int j=0; j<=7; j++) {
+        res += "[" + board[i][j] + "]";
+      }
+      res += "\n";
+    }
+    return res;
   }
 
 }

@@ -2,6 +2,7 @@ import GUI.ChessBoardController;
 import Game.GameEngine;
 import Game.Piece;
 import Game.PieceType;
+import Game.PlayerColor;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,7 +18,7 @@ public class Main extends Application {
     primaryStage.setTitle("Chess");
     primaryStage.setScene(new Scene(root, 480, 480));
     primaryStage.show();
-    GameEngine.startGame(controller);
+    GameEngine.startGame(PlayerColor.WHITE, controller);
   }
 
   public static void main(String[] args) {
