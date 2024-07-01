@@ -7,7 +7,8 @@ import java.util.ArrayList;
 public class GameEngine {
   private static Board board;
   private static List<Piece> pieces;
-  private static PlayerColor playerColor;
+  private static PlayerColor humanPlayerColor;
+  private static PlayerColor currentPlayerColor;
   private static ChessBoardController controller;
 
   public synchronized static void initBoard(){
@@ -123,21 +124,14 @@ public class GameEngine {
   }
 
   public static void startGame(ChessBoardController controller){
-   playerColor = Math.random() >= 0.5 ? PlayerColor.WHITE : PlayerColor.BLACK;
-   startGame(playerColor, controller);
+   humanPlayerColor = Math.random() >= 0.5 ? PlayerColor.WHITE : PlayerColor.BLACK;
+   startGame(humanPlayerColor, controller);
   }
 
   public synchronized static void startGame(PlayerColor playerColor, ChessBoardController controller){
-    GameEngine.playerColor = playerColor;
+    GameEngine.humanPlayerColor = playerColor;
+    GameEngine.currentPlayerColor = PlayerColor.WHITE;
     GameEngine.controller = controller;
-/*    while(true){
-      try {
-        Thread.sleep(10);
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      }
-      if(controller != null) break;
-    }*/
     System.out.println("Controller at line 108: " + controller);
     initBoard();
   }
@@ -151,8 +145,8 @@ public class GameEngine {
     return null;
   }
 
-  public static PlayerColor getPlayerColor(){
-    return playerColor;
+  public static PlayerColor getHumanPlayerColor(){
+    return humanPlayerColor;
   }
 
   public static Board getBoard(){
@@ -162,13 +156,24 @@ public class GameEngine {
   public static List<Board> calcPossibleMoves(PlayerColor player){
     // TODO add check if king is checked
     List<Board> moves = new ArrayList<>();
-    for(Piece piece : pieces){
+    for(Piece piece : calcMovablePieces(player)){
       if (piece.getColor() == player){
         // TODO do something to calculate possible moves
         // use isMovePossible()
       }
     }
     return moves;
+  }
+
+  public static List<Piece> calcMovablePieces(PlayerColor player) {
+    List<Piece> movablePieces = new ArrayList<>();
+    for(Piece piece : pieces){
+      if(piece.getColor() == player) {
+        // TODO check if piece is movable
+        movablePieces.add(piece);
+      }
+    }
+    return movablePieces;
   }
 
   public static boolean isMovePossible(){
