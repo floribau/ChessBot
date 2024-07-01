@@ -1,0 +1,22 @@
+/* Define styles for rectangles */
+.rectangle-white {
+  -fx-fill: white;
+  -fx-stroke: black;
+  -fx-stroke-type: inside;
+  -fx-arc-width: 5;
+  -fx-arc-height: 5;
+}
+
+.rectangle-black {
+  -fx-fill: black;
+  -fx-stroke: black;
+  -fx-stroke-type: inside;
+  -fx-arc-width: 5;
+  -fx-arc-height: 5;
+}
+
+/* Define styles for images */
+.image-view {
+  -fx-fit-width: 60;
+  -fx-fit-height: 60;
+}
