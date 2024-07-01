@@ -29,77 +29,77 @@
   </rowConstraints>
   
    <children>
-     <Button fx:id="rect00" styleClass="button square-white" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-     <Button fx:id="rect01" styleClass="button square-black" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-     <Button fx:id="rect02" styleClass="button square-white" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-     <Button fx:id="rect03" styleClass="button square-black" GridPane.columnIndex="3" GridPane.rowIndex="0" />
-     <Button fx:id="rect04" styleClass="button square-white" GridPane.columnIndex="4" GridPane.rowIndex="0" />
-     <Button fx:id="rect05" styleClass="button square-black" GridPane.columnIndex="5" GridPane.rowIndex="0" />
-     <Button fx:id="rect06" styleClass="button square-white" GridPane.columnIndex="6" GridPane.rowIndex="0" />
-     <Button fx:id="rect07" styleClass="button square-black" GridPane.columnIndex="7" GridPane.rowIndex="0" />
+     <Button fx:id="rect00" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+     <Button fx:id="rect01" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+     <Button fx:id="rect02" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+     <Button fx:id="rect03" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+     <Button fx:id="rect04" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+     <Button fx:id="rect05" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+     <Button fx:id="rect06" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="6" GridPane.rowIndex="0" />
+     <Button fx:id="rect07" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="7" GridPane.rowIndex="0" />
 
-     <Button fx:id="rect10" styleClass="button square-black" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-     <Button fx:id="rect11" styleClass="button square-white" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-     <Button fx:id="rect12" styleClass="button square-black" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-     <Button fx:id="rect13" styleClass="button square-white" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-     <Button fx:id="rect14" styleClass="button square-black" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-     <Button fx:id="rect15" styleClass="button square-white" GridPane.columnIndex="5" GridPane.rowIndex="1" />
-     <Button fx:id="rect16" styleClass="button square-black" GridPane.columnIndex="6" GridPane.rowIndex="1" />
-     <Button fx:id="rect17" styleClass="button square-white" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+     <Button fx:id="rect10" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+     <Button fx:id="rect11" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+     <Button fx:id="rect12" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+     <Button fx:id="rect13" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+     <Button fx:id="rect14" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+     <Button fx:id="rect15" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+     <Button fx:id="rect16" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+     <Button fx:id="rect17" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="7" GridPane.rowIndex="1" />
 
-     <Button fx:id="rect20" styleClass="button square-white" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-     <Button fx:id="rect21" styleClass="button square-black" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-     <Button fx:id="rect22" styleClass="button square-white" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-     <Button fx:id="rect23" styleClass="button square-black" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-     <Button fx:id="rect24" styleClass="button square-white" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-     <Button fx:id="rect25" styleClass="button square-black" GridPane.columnIndex="5" GridPane.rowIndex="2" />
-     <Button fx:id="rect26" styleClass="button square-white" GridPane.columnIndex="6" GridPane.rowIndex="2" />
-     <Button fx:id="rect27" styleClass="button square-black" GridPane.columnIndex="7" GridPane.rowIndex="2" />
+     <Button fx:id="rect20" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+     <Button fx:id="rect21" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+     <Button fx:id="rect22" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+     <Button fx:id="rect23" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+     <Button fx:id="rect24" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+     <Button fx:id="rect25" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+     <Button fx:id="rect26" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="6" GridPane.rowIndex="2" />
+     <Button fx:id="rect27" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="7" GridPane.rowIndex="2" />
 
-     <Button fx:id="rect30" styleClass="button square-black" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-     <Button fx:id="rect31" styleClass="button square-white" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-     <Button fx:id="rect32" styleClass="button square-black" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-     <Button fx:id="rect33" styleClass="button square-white" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-     <Button fx:id="rect34" styleClass="button square-black" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-     <Button fx:id="rect35" styleClass="button square-white" GridPane.columnIndex="5" GridPane.rowIndex="3" />
-     <Button fx:id="rect36" styleClass="button square-black" GridPane.columnIndex="6" GridPane.rowIndex="3" />
-     <Button fx:id="rect37" styleClass="button square-white" GridPane.columnIndex="7" GridPane.rowIndex="3" />
+     <Button fx:id="rect30" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+     <Button fx:id="rect31" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+     <Button fx:id="rect32" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+     <Button fx:id="rect33" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+     <Button fx:id="rect34" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+     <Button fx:id="rect35" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+     <Button fx:id="rect36" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="6" GridPane.rowIndex="3" />
+     <Button fx:id="rect37" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="7" GridPane.rowIndex="3" />
 
-     <Button fx:id="rect40" styleClass="button square-white" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-     <Button fx:id="rect41" styleClass="button square-black" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-     <Button fx:id="rect42" styleClass="button square-white" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-     <Button fx:id="rect43" styleClass="button square-black" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-     <Button fx:id="rect44" styleClass="button square-white" GridPane.columnIndex="4" GridPane.rowIndex="4" />
-     <Button fx:id="rect45" styleClass="button square-black" GridPane.columnIndex="5" GridPane.rowIndex="4" />
-     <Button fx:id="rect46" styleClass="button square-white" GridPane.columnIndex="6" GridPane.rowIndex="4" />
-     <Button fx:id="rect47" styleClass="button square-black" GridPane.columnIndex="7" GridPane.rowIndex="4" />
+     <Button fx:id="rect40" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+     <Button fx:id="rect41" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+     <Button fx:id="rect42" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+     <Button fx:id="rect43" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+     <Button fx:id="rect44" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+     <Button fx:id="rect45" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+     <Button fx:id="rect46" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="6" GridPane.rowIndex="4" />
+     <Button fx:id="rect47" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="7" GridPane.rowIndex="4" />
 
-     <Button fx:id="rect50" styleClass="button square-black" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-     <Button fx:id="rect51" styleClass="button square-white" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-     <Button fx:id="rect52" styleClass="button square-black" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-     <Button fx:id="rect53" styleClass="button square-white" GridPane.columnIndex="3" GridPane.rowIndex="5" />
-     <Button fx:id="rect54" styleClass="button square-black" GridPane.columnIndex="4" GridPane.rowIndex="5" />
-     <Button fx:id="rect55" styleClass="button square-white" GridPane.columnIndex="5" GridPane.rowIndex="5" />
-     <Button fx:id="rect56" styleClass="button square-black" GridPane.columnIndex="6" GridPane.rowIndex="5" />
-     <Button fx:id="rect57" styleClass="button square-white" GridPane.columnIndex="7" GridPane.rowIndex="5" />
+     <Button fx:id="rect50" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+     <Button fx:id="rect51" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+     <Button fx:id="rect52" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+     <Button fx:id="rect53" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+     <Button fx:id="rect54" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="4" GridPane.rowIndex="5" />
+     <Button fx:id="rect55" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="5" GridPane.rowIndex="5" />
+     <Button fx:id="rect56" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="6" GridPane.rowIndex="5" />
+     <Button fx:id="rect57" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="7" GridPane.rowIndex="5" />
 
-     <Button fx:id="rect60" styleClass="button square-white" GridPane.columnIndex="0" GridPane.rowIndex="6" />
-     <Button fx:id="rect61" styleClass="button square-black" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-     <Button fx:id="rect62" styleClass="button square-white" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-     <Button fx:id="rect63" styleClass="button square-black" GridPane.columnIndex="3" GridPane.rowIndex="6" />
-     <Button fx:id="rect64" styleClass="button square-white" GridPane.columnIndex="4" GridPane.rowIndex="6" />
-     <Button fx:id="rect65" styleClass="button square-black" GridPane.columnIndex="5" GridPane.rowIndex="6" />
-     <Button fx:id="rect66" styleClass="button square-white" GridPane.columnIndex="6" GridPane.rowIndex="6" />
-     <Button fx:id="rect67" styleClass="button square-black" GridPane.columnIndex="7" GridPane.rowIndex="6" />
+     <Button fx:id="rect60" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+     <Button fx:id="rect61" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+     <Button fx:id="rect62" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+     <Button fx:id="rect63" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="3" GridPane.rowIndex="6" />
+     <Button fx:id="rect64" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="4" GridPane.rowIndex="6" />
+     <Button fx:id="rect65" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="5" GridPane.rowIndex="6" />
+     <Button fx:id="rect66" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="6" GridPane.rowIndex="6" />
+     <Button fx:id="rect67" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="7" GridPane.rowIndex="6" />
 
-     <Button fx:id="rect70" styleClass="button square-black" GridPane.columnIndex="0" GridPane.rowIndex="7" />
-     <Button fx:id="rect71" styleClass="button square-white" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-     <Button fx:id="rect72" styleClass="button square-black" GridPane.columnIndex="2" GridPane.rowIndex="7" />
-     <Button fx:id="rect73" styleClass="button square-white" GridPane.columnIndex="3" GridPane.rowIndex="7" />
-     <Button fx:id="rect74" styleClass="button square-black" GridPane.columnIndex="4" GridPane.rowIndex="7" />
-     <Button fx:id="rect75" styleClass="button square-white" GridPane.columnIndex="5" GridPane.rowIndex="7" />
-     <Button fx:id="rect76" styleClass="button square-black" GridPane.columnIndex="6" GridPane.rowIndex="7" />
-     <Button fx:id="rect77" styleClass="button square-white" GridPane.columnIndex="7" GridPane.rowIndex="7" />
+     <Button fx:id="rect70" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+     <Button fx:id="rect71" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+     <Button fx:id="rect72" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+     <Button fx:id="rect73" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="3" GridPane.rowIndex="7" />
+     <Button fx:id="rect74" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="4" GridPane.rowIndex="7" />
+     <Button fx:id="rect75" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="5" GridPane.rowIndex="7" />
+     <Button fx:id="rect76" styleClass="button square-black" onAction="#handleButtonPress" GridPane.columnIndex="6" GridPane.rowIndex="7" />
+     <Button fx:id="rect77" styleClass="button square-white" onAction="#handleButtonPress" GridPane.columnIndex="7" GridPane.rowIndex="7" />
 
      <ImageView fx:id="image00" styleClass="image-view" fitWidth="60" fitHeight="60" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
      <ImageView fx:id="image01" styleClass="image-view" fitWidth="60" fitHeight="60" GridPane.columnIndex="1" GridPane.rowIndex="0"/>

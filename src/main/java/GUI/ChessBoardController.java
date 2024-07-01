@@ -1,8 +1,10 @@
 package GUI;
 
+import Game.Board;
 import Game.GameEngine;
 import Game.Piece;
 import Game.PlayerColor;
+import Util.Position;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -84,6 +86,8 @@ public class ChessBoardController {
           Piece piece = GameEngine.getPieceById(board[i][j]);
           Image image = piece.getType().getImage();
           imageViews[i][j].setImage(image);
+        } else {
+          imageViews[i][j].setImage(null);
         }
       }
     }
@@ -108,5 +112,25 @@ public class ChessBoardController {
         }
       }
     }
+  }
+
+  public void activateButton(Position pos){
+    boardSquares[pos.x][pos.y].setDisable(false);
+  }
+
+  public void disableAllButtons(){
+    for (int i=0; i<=7; i++){
+      for (int j=0; j<=7; j++){
+        boardSquares[i][j].setDisable(true);
+      }
+    }
+  }
+
+  public void handleButtonPress(){
+    Board board = GameEngine.getCurrentBoard();
+    // TODO fix logic
+    board.move(new Position(0,0), new Position(3,3));
+    repaint(board.getBoard());
+    System.out.println(board.toString());
   }
 }
