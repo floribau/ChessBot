@@ -81,7 +81,6 @@ public class ChessBoardController {
     for (int i=0; i<=7; i++){
       for (int j=0; j<=7; j++){
         if(board[i][j] != "" && board[i][j] != null){
-          System.out.println("Piece ID:" + board[i][j]);
           Piece piece = GameEngine.getPieceById(board[i][j]);
           Image image = piece.getType().getImage();
           imageViews[i][j].setImage(image);
