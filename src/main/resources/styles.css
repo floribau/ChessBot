@@ -2,8 +2,8 @@
 .button {
   -fx-stroke: black;
   -fx-stroke-type: inside;
-  -fx-arc-width: 5;
-  -fx-arc-height: 5;
+  -fx-arc-width: 60;
+  -fx-arc-height: 60;
   -fx-pref-width: 60;
   -fx-pref-height: 60;
 }
