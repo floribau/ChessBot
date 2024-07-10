@@ -27,27 +27,27 @@ public class Player {
   public synchronized Move makeMove(){
     controller.resetSelectedButtons();
     while(controller.getSelectedFrom() == null || controller.getSelectedTo() == null) {
-      System.out.println(controller.getSelectedFrom() + " " + controller.getSelectedTo());
       if(controller.getSelectedFrom() == null) {
-        System.out.println("Landed in selectedFrom is null");
+        controller.disableAllButtons();
         GameEngine.activateColorButtons(this.color);
       }
       else {
-        System.out.println("Landed in selectedTo is null");
         controller.disableAllButtons();
-        controller.activateButton(controller.getSelectedTo());
+        controller.activateButton(controller.getSelectedFrom());
         String selectedPieceId = GameEngine.getCurrentBoard().getPieceAt(controller.getSelectedFrom());
         for(Move move : GameEngine.calcMovesForPiece(selectedPieceId, GameEngine.getCurrentBoard())){
           controller.activateButton(move.getNewPosition());
         }
       }
       try {
-        Thread.sleep(1000);
+        Thread.sleep(50);
       } catch (InterruptedException e){
         // ignore
       }
     }
+    Move m = new Move(controller.getSelectedFrom(), controller.getSelectedTo(), GameEngine.getCurrentBoard()
+        .getPieceById(GameEngine.getCurrentBoard().getPieceAt(controller.getSelectedFrom())));
     controller.resetSelectedButtons();
-    return new Move(controller.getSelectedFrom(), controller.getSelectedTo());
+    return m;
   }
 }

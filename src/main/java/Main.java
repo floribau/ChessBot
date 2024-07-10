@@ -1,9 +1,5 @@
 import GUI.ChessBoardController;
 import Game.GameEngine;
-import Game.Piece;
-import Game.PieceType;
-import Game.PlayerColor;
-import Util.Position;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

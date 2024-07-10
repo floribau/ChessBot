@@ -3,37 +3,37 @@ package Game;
 import Util.Position;
 
 public class Move {
-  private String move = null;
+  private String moveString = null;
   private final Position oldPos;
   private final Position newPos;
+  private final Piece movedPiece;
 
-
-  public Move(Position oldPos, Position newPos) {
+  public Move(Position oldPos, Position newPos, Piece movedPiece) {
     this.oldPos = oldPos;
     this.newPos = newPos;
+    this.movedPiece = movedPiece;
 
-    Piece piece = GameEngine.getCurrentBoard().getPieceById(GameEngine.getCurrentBoard().getPieceAt(oldPos));
-    PlayerColor color = piece.getColor();
+    PlayerColor color = movedPiece.getColor();
     String pieceIdAtDestination = GameEngine.getCurrentBoard().getPieceAt(newPos);
 
     // Castle notation
-    if(piece.getType() == PieceType.KING_WHITE || piece.getType() == PieceType.KING_BLACK){
+    if(movedPiece.getType() == PieceType.KING_WHITE || movedPiece.getType() == PieceType.KING_BLACK){
       if(newPos.row == oldPos.row){
         if(newPos.col == oldPos.col + 2) {
-          this.move = "O-O";
+          this.moveString = "O-O";
         }
         else if(newPos.col == oldPos.col -2) {
-          this.move = "O-O-O";
+          this.moveString = "O-O-O";
         }
       }
     }
 
     // normal move notation
-    if (this.move == null) {
-      String moveStr = piece.getType().getShortName() + "";
+    if (this.moveString == null) {
+      String moveStr = movedPiece.getType().getShortName() + "";
       moveStr += oldPos.getChessCoordinate();
       moveStr += newPos.getChessCoordinate();
-      this.move = moveStr;
+      this.moveString = moveStr;
     }
   }
 
@@ -46,11 +46,19 @@ public class Move {
   }
 
   public String getMoveString(){
-    return this.move;
+    return this.moveString;
+  }
+
+  public Piece getMovedPiece(){
+    return this.movedPiece;
   }
 
   public boolean equals(Move m) {
-    return move.equals(m.move);
+    return moveString.equals(m.moveString);
+  }
+
+  public String toString(){
+    return this.moveString;
   }
 
 }

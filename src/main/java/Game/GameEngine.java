@@ -2,6 +2,7 @@ package Game;
 
 import AI.AIPlayer;
 import GUI.ChessBoardController;
+import Util.Exception.IllegalMoveException;
 import Util.Position;
 import java.util.List;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class GameEngine {
     // TODO implement logic to select game mode
     GameEngine.player1 = new Player(PlayerColor.WHITE, true);
     GameEngine.currentPlayer = player1;
-    GameEngine.player2 = new AIPlayer(PlayerColor.BLACK);
+    GameEngine.player2 = new Player(PlayerColor.BLACK, true);
 
     currentBoard = new Board();
     currentBoard.initBoard();
@@ -41,7 +42,7 @@ public class GameEngine {
         Platform.runLater(() -> controller.repaint(currentBoard.getBoard()));
         switchCurrentPlayer();
         try {
-          Thread.sleep(100); // Adjust the sleep time as needed
+          Thread.sleep(50);
         } catch (InterruptedException e) {
           throw new RuntimeException(e);
         }
@@ -119,59 +120,62 @@ public class GameEngine {
       int newRow = fromPos.row+1;
       int newCol = fromPos.col;
       if(Position.isOnBoard(newRow, newCol)){
-        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
       newRow = fromPos.row-1;
       newCol = fromPos.col;
       if(Position.isOnBoard(newRow, newCol)){
-        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
       newRow = fromPos.row;
       newCol = fromPos.col+1;
       if(Position.isOnBoard(newRow, newCol)){
-        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
       newRow = fromPos.row;
       newCol = fromPos.col-1;
       if(Position.isOnBoard(newRow, newCol)){
-        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
       newRow = fromPos.row+1;
       newCol = fromPos.col+1;
       if(Position.isOnBoard(newRow, newCol)){
-        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
       newRow = fromPos.row+1;
       newCol = fromPos.col-1;
       if(Position.isOnBoard(newRow, newCol)){
-        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
       newRow = fromPos.row-1;
       newCol = fromPos.col+1;
       if(Position.isOnBoard(newRow, newCol)){
-        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
       newRow = fromPos.row-1;
       newCol = fromPos.col-1;
       if(Position.isOnBoard(newRow, newCol)){
-        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
+      }
+      for(Move m : currentBoard.getCastleMoves(piece.getColor())){
+        moves.add(m);
       }
 
     } else if (piece.getType() == PieceType.QUEEN_WHITE || piece.getType() == PieceType.QUEEN_BLACK) {
-      for(Move m : calcParallelMoves(fromPos)){
+      for(Move m : calcParallelMoves(fromPos, board)){
         moves.add(m);
       }
-      for(Move m : calcDiagonalMoves(fromPos)) {
+      for(Move m : calcDiagonalMoves(fromPos, board)) {
         moves.add(m);
       }
 
     } else if(piece.getType() == PieceType.ROOK_WHITE || piece.getType() == PieceType.ROOK_BLACK) {
-      for(Move m : calcParallelMoves(fromPos)){
+      for(Move m : calcParallelMoves(fromPos, board)){
          moves.add(m);
       }
 
     } else if(piece.getType() == PieceType.BISHOP_WHITE || piece.getType() == PieceType.BISHOP_BLACK) {
-      for(Move m : calcDiagonalMoves(fromPos)) {
+      for(Move m : calcDiagonalMoves(fromPos, board)) {
         moves.add(m);
       }
 
@@ -179,73 +183,73 @@ public class GameEngine {
       int newRow = fromPos.row+2;
       int newCol = fromPos.col+1;
       if(Position.isOnBoard(newRow, newCol)){
-        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
       newRow = fromPos.row+2;
       newCol = fromPos.col-1;
       if(Position.isOnBoard(newRow, newCol)){
-        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
       newRow = fromPos.row-2;
       newCol = fromPos.col+1;
       if(Position.isOnBoard(newRow, newCol)){
-        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
       newRow = fromPos.row-2;
       newCol = fromPos.col-1;
       if(Position.isOnBoard(newRow, newCol)){
-        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
       newRow = fromPos.row+1;
       newCol = fromPos.col+2;
       if(Position.isOnBoard(newRow, newCol)){
-        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
       newRow = fromPos.row-1;
       newCol = fromPos.col+2;
       if(Position.isOnBoard(newRow, newCol)){
-        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
       newRow = fromPos.row+1;
       newCol = fromPos.col-2;
       if(Position.isOnBoard(newRow, newCol)){
-        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
       newRow = fromPos.row-1;
       newCol = fromPos.col-2;
       if(Position.isOnBoard(newRow, newCol)){
-        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
 
     } else if(piece.getType() == PieceType.PAWN_WHITE) {
-      moves.add(new Move(fromPos, new Position(fromPos.row-1, fromPos.col)));
+      moves.add(new Move(fromPos, new Position(fromPos.row-1, fromPos.col), piece));
       if(!piece.hasMoved()) {
-        moves.add(new Move(fromPos, new Position(fromPos.row-2, fromPos.col)));
+        moves.add(new Move(fromPos, new Position(fromPos.row-2, fromPos.col), piece));
       }
       //captures
       Position leftCapture = new Position(fromPos.row-1, fromPos.col-1);
       Position rightCapture = new Position(fromPos.row-1, fromPos.col+1);
-      if (Position.isOnBoard(leftCapture.row, leftCapture.col) && board.getPieceAt(leftCapture) != null){
-        moves.add(new Move(fromPos, leftCapture));
+      if (Position.isOnBoard(leftCapture.row, leftCapture.col) && board.getPieceAt(leftCapture) != ""){
+        moves.add(new Move(fromPos, leftCapture, piece));
       }
-      if (Position.isOnBoard(rightCapture.row, rightCapture.col) && board.getPieceAt(rightCapture) != null){
-        moves.add(new Move(fromPos, rightCapture));
+      if (Position.isOnBoard(rightCapture.row, rightCapture.col) && board.getPieceAt(rightCapture) != ""){
+        moves.add(new Move(fromPos, rightCapture, piece));
       }
       // TODO implement en passant
 
     } else if(piece.getType() == PieceType.PAWN_BLACK) {
-      moves.add(new Move(fromPos, new Position(fromPos.row+1, fromPos.col)));
+      moves.add(new Move(fromPos, new Position(fromPos.row+1, fromPos.col), piece));
       if(!piece.hasMoved()) {
-        moves.add(new Move(fromPos, new Position(fromPos.row+2, fromPos.col)));
+        moves.add(new Move(fromPos, new Position(fromPos.row+2, fromPos.col), piece));
       }
       //captures
       Position leftCapture = new Position(fromPos.row+1, fromPos.col-1);
       Position rightCapture = new Position(fromPos.row+1, fromPos.col+1);
       if (Position.isOnBoard(leftCapture.row, leftCapture.col) && board.getPieceAt(leftCapture) != null){
-        moves.add(new Move(fromPos, leftCapture));
+        moves.add(new Move(fromPos, leftCapture, piece));
       }
       if (Position.isOnBoard(rightCapture.row, rightCapture.col) && board.getPieceAt(rightCapture) != null){
-        moves.add(new Move(fromPos, rightCapture));
+        moves.add(new Move(fromPos, rightCapture, piece));
       }
       // TODO implement en passant
 
@@ -261,26 +265,27 @@ public class GameEngine {
    * @param pos the starting position
    * @return the list of all parallel moves that are still on the board
    */
-  private synchronized static List<Move> calcParallelMoves(Position pos) {
+  private synchronized static List<Move> calcParallelMoves(Position pos, Board board) {
     int col = pos.col;
     int row = pos.row;
+    Piece piece = board.getPieceById(board.getPieceAt(pos));
     List<Move> moves = new ArrayList<>();
     for(int i=1; i<8; i++) {
       int newCol = col+i;
       if(Position.isOnBoard(row, newCol)){
-        moves.add(new Move(pos, new Position(row, newCol)));
+        moves.add(new Move(pos, new Position(row, newCol), piece));
       }
       newCol = col-i;
       if(Position.isOnBoard(row, newCol)){
-        moves.add(new Move(pos, new Position(row, newCol)));
+        moves.add(new Move(pos, new Position(row, newCol), piece));
       }
       int newRow = row+i;
       if(Position.isOnBoard(newRow, col)){
-        moves.add(new Move(pos, new Position(newRow, col)));
+        moves.add(new Move(pos, new Position(newRow, col), piece));
       }
       newRow = row-i;
       if(Position.isOnBoard(newRow, col)){
-        moves.add(new Move(pos, new Position(newRow, col)));
+        moves.add(new Move(pos, new Position(newRow, col), piece));
       }
     }
     return moves;
@@ -292,37 +297,48 @@ public class GameEngine {
    * @param pos the starting position
    * @return the list of all diagonal moves that are still on the board
    */
-  private synchronized static List<Move> calcDiagonalMoves(Position pos) {
-    int row = pos.col;
-    int col = pos.row;
+  private synchronized static List<Move> calcDiagonalMoves(Position pos, Board board) {
+    int col = pos.col;
+    int row = pos.row;
+    Piece piece = board.getPieceById(board.getPieceAt(pos));
     List<Move> moves = new ArrayList<>();
     for(int i=1; i<=7; i++) {
       int newCol = col+i;
       int newRow = row+i;
       if(Position.isOnBoard(newRow, newCol)){
-        moves.add(new Move(pos, new Position(newRow, newCol)));
+        moves.add(new Move(pos, new Position(newRow, newCol), piece));
       }
       newCol = col+i;
       newRow = row-i;
       if(Position.isOnBoard(newRow, newCol)){
-        moves.add(new Move(pos, new Position(newRow, newCol)));
+        moves.add(new Move(pos, new Position(newRow, newCol), piece));
       }
       newCol = col-i;
       newRow = row+i;
       if(Position.isOnBoard(newRow, newCol)){
-        moves.add(new Move(pos, new Position(newRow, newCol)));
+        moves.add(new Move(pos, new Position(newRow, newCol), piece));
       }
       newCol = col-i;
       newRow = row-i;
       if(Position.isOnBoard(newRow, newCol)){
-        moves.add(new Move(pos, new Position(newRow, newCol)));
+        moves.add(new Move(pos, new Position(newRow, newCol), piece));
       }
     }
     return moves;
-
   }
 
   private synchronized static boolean isLegalMove(Move move, Board board){
+    Piece movedPiece = move.getMovedPiece();
+    String destinationPieceId = board.getPieceAt(move.getNewPosition());
+    if(destinationPieceId != ""){
+      Piece destinationPiece = board.getPieceById(destinationPieceId);
+      if (destinationPiece.getColor().equals(movedPiece.getColor())){
+        return false;
+      }
+    }
+
+    // TODO implement check for checks, for castling, for en passant, and for pieces blocking the way
+
     return true;
   }
 
@@ -348,8 +364,7 @@ public class GameEngine {
    * @return true if no piece is movable for the current player
    */
   public synchronized static boolean isGameOver(){
-    // return calcMovablePieces(currentPlayer.getColor(), currentBoard).size() == 0;
-    return false;
+    return calcMovablePieces(currentPlayer.getColor(), currentBoard).size() == 0;
   }
 
   public synchronized static ChessBoardController getController(){

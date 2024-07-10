@@ -1,5 +1,6 @@
 package Game;
 
+import Util.Exception.IllegalMoveException;
 import Util.Position;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,6 @@ public class Board {
     this.board = new String[8][8];
     for(int i=0; i<=7; i++) {
       for(int j=0; j<=7; j++) {
-        System.out.println(board[i][j]);
         this.board[i][j] = board[i][j];
       }
     }
@@ -141,20 +141,43 @@ public class Board {
   }
 
 
-  public void move(Move move){
-    /*
-    for(int i=0; i< move.getNumberOfMovedPieces();i++){
-      Position oldPos = move.getOldPositionAt(i);
-      Position newPos = move.getNewPositionAt(i);
-      String pieceId = this.getPieceAt(oldPos);
-
-      this.setPieceAt(oldPos, "");
-      this.setPieceAt(newPos, pieceId);
-
-      this.getPieceById(pieceId).setHasMoved();
-    }
-    */
+  public boolean move(Move move) {
     // TODO implement move action from reading move string
+    String destinationPieceId = getPieceAt(move.getNewPosition());
+    Piece movedPiece = move.getMovedPiece();
+    if(destinationPieceId != ""){
+      Piece destinationPiece = getPieceById(destinationPieceId);
+      if(destinationPiece.getColor().equals(movedPiece.getColor())){
+        new IllegalMoveException(move).printStackTrace();
+        return false;
+      }
+      pieces.remove(getPieceById(destinationPieceId));
+    }
+
+    Position oldPos = move.getOldPosition();
+    Position newPos = move.getNewPosition();
+    this.setPieceAt(oldPos, "");
+    this.setPieceAt(newPos, movedPiece.getId());
+    movedPiece.setHasMoved();
+
+    if(move.getMoveString().equals("O-O")){
+      Position oldPosRook = movedPiece.getColor() == PlayerColor.WHITE ? new Position(7, 7) : new Position(0, 7);
+      Position newPosRook = new Position(oldPosRook.row, newPos.col-1);
+      String rookId = getPieceAt(oldPosRook);
+      Piece rookPiece = getPieceById(rookId);
+      this.setPieceAt(oldPosRook, "");
+      this.setPieceAt(newPosRook, rookId);
+      rookPiece.setHasMoved();
+    } else if (move.getMovedPiece().equals("O-O-O")) {
+      Position oldPosRook = movedPiece.getColor() == PlayerColor.WHITE ? new Position(7, 0) : new Position(0, 0);
+      Position newPosRook = new Position(oldPosRook.row, newPos.col+1);
+      String rookId = getPieceAt(oldPosRook);
+      Piece rookPiece = getPieceById(rookId);
+      this.setPieceAt(oldPosRook, "");
+      this.setPieceAt(newPosRook, rookId);
+      rookPiece.setHasMoved();
+    }
+    return true;
   }
 
   public String[][] getBoard(){
@@ -207,7 +230,6 @@ public class Board {
   public Position getKingPosition(PlayerColor color) {
     switch (color){
       case WHITE -> {
-        System.out.println(getPositionOfPiece(PieceType.KING_WHITE + "0"));
         return getPositionOfPiece(PieceType.KING_WHITE + "0");
       }
       case BLACK -> {
@@ -221,18 +243,21 @@ public class Board {
 
   public List<Move> getCastleMoves(PlayerColor color) {
     List<Move> moves = new ArrayList<>();
-    Piece king_piece = getPieceById("KING_" + color + "0");
-    Piece rook_piece0 = getPieceById("ROOK_" + color + "0");
-    Piece rook_piece1 = getPieceById("ROOK_" + color + "1");
-    System.out.println(king_piece);
-    System.out.println(rook_piece0);
-    System.out.println(rook_piece1);
-    if(!king_piece.hasMoved()){
-      if(!rook_piece0.hasMoved()){
+    Piece kingPiece = getPieceById("KING_" + color + "0");
+    Piece rookPiece0 = getPieceById("ROOK_" + color + "0");
+    Piece rookPiece1 = getPieceById("ROOK_" + color + "1");
 
+    if(!kingPiece.hasMoved()){
+      Position oldKingPosition = getPositionOfPiece(kingPiece.getId());
+      if(!rookPiece0.hasMoved()){
+        Position newKingPosition = new Position(oldKingPosition.row, oldKingPosition.col-2);
+        Move bigCastle = new Move(oldKingPosition, newKingPosition, kingPiece);
+        moves.add(bigCastle);
       }
-      if(!rook_piece1.hasMoved()){
-
+      if(!rookPiece1.hasMoved()){
+        Position newKingPosition = new Position(oldKingPosition.row, oldKingPosition.col+2);
+        Move smallCastle = new Move(oldKingPosition, newKingPosition, kingPiece);
+        moves.add(smallCastle);
       }
     }
 
