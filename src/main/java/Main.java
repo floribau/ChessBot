@@ -18,7 +18,7 @@ public class Main extends Application {
     primaryStage.setTitle("Chess");
     primaryStage.setScene(new Scene(root, 480, 480));
     primaryStage.show();
-    GameEngine.startGame(PlayerColor.WHITE, controller);
+    GameEngine.startGame(controller);
   }
 
   public static void main(String[] args) {
