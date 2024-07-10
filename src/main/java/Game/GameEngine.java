@@ -73,7 +73,7 @@ public class GameEngine {
   public synchronized static List<Board> calcPossibleBoards(PlayerColor playerColor, Board board){
     List<Board> boards = new ArrayList<>();
     for(Move move : calcPossibleMoves(playerColor, board)){
-      boards.add(calcMoveForBoard(board, move));
+      boards.add(calcMoveToBoard(board, move));
     }
     return boards;
   }
@@ -89,7 +89,7 @@ public class GameEngine {
     return moves;
   }
 
-  public synchronized static Board calcMoveForBoard(Board board, Move move) {
+  public synchronized static Board calcMoveToBoard(Board board, Move move) {
     Board newBoard = new Board(board);
     newBoard.move(move);
     return newBoard;
@@ -97,31 +97,18 @@ public class GameEngine {
 
   public synchronized static List<Move> calcMovesForPiece(String pieceId, Board board){
     List<Move> moves = new ArrayList<>();
-    Position fromPos = board.getPositionOfPiece(pieceId);
-    Piece piece = currentBoard.getPieceById(pieceId);
-    switch (piece.getType()) {
-      case KING_WHITE -> {
-        if (isKingChecked(piece.getColor())){
-          System.out.println("King is checked");
-        }
-      }
-      case KING_BLACK -> {
-
-      }
-      case QUEEN_WHITE -> {
-
-      } case QUEEN_BLACK -> {
-
+    for (Move m : calcMovesOnBoardForPiece(pieceId, board)){
+      if(isLegalMove(m, board)){
+        moves.add(m);
       }
     }
-    // TODO calc possible moves -> then moves.add(new Move(fromPos, toPos))
     return moves;
   }
 
   /***
    * Calculates all moves on board obeying the move patterns of the piece. Pieces in the way and checks are disregarded.
-   * @param pieceId
-   * @param board
+   * @param pieceId the piece to be moved
+   * @param board the board instance on which the moves should be performed
    * @return the list of moves on board
    */
   private synchronized static List<Move> calcMovesOnBoardForPiece(String pieceId, Board board){
@@ -129,6 +116,46 @@ public class GameEngine {
     Position fromPos = board.getPositionOfPiece(pieceId);
     Piece piece = currentBoard.getPieceById(pieceId);
     if (piece.getType() == PieceType.KING_WHITE || piece.getType() == PieceType.KING_BLACK){
+      int newRow = fromPos.row+1;
+      int newCol = fromPos.col;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+      }
+      newRow = fromPos.row-1;
+      newCol = fromPos.col;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+      }
+      newRow = fromPos.row;
+      newCol = fromPos.col+1;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+      }
+      newRow = fromPos.row;
+      newCol = fromPos.col-1;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+      }
+      newRow = fromPos.row+1;
+      newCol = fromPos.col+1;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+      }
+      newRow = fromPos.row+1;
+      newCol = fromPos.col-1;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+      }
+      newRow = fromPos.row-1;
+      newCol = fromPos.col+1;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+      }
+      newRow = fromPos.row-1;
+      newCol = fromPos.col-1;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+      }
 
     } else if (piece.getType() == PieceType.QUEEN_WHITE || piece.getType() == PieceType.QUEEN_BLACK) {
       for(Move m : calcParallelMoves(fromPos)){
@@ -137,18 +164,91 @@ public class GameEngine {
       for(Move m : calcDiagonalMoves(fromPos)) {
         moves.add(m);
       }
+
     } else if(piece.getType() == PieceType.ROOK_WHITE || piece.getType() == PieceType.ROOK_BLACK) {
       for(Move m : calcParallelMoves(fromPos)){
          moves.add(m);
       }
+
     } else if(piece.getType() == PieceType.BISHOP_WHITE || piece.getType() == PieceType.BISHOP_BLACK) {
       for(Move m : calcDiagonalMoves(fromPos)) {
         moves.add(m);
       }
-    } else if(piece.getType() == PieceType.KNIGHT_WHITE || piece.getType() == PieceType.KNIGHT_BLACK) {
 
-    } else if(piece.getType() == PieceType.PAWN_WHITE || piece.getType() == PieceType.PAWN_BLACK) {
+    } else if(piece.getType() == PieceType.KNIGHT_WHITE || piece.getType() == PieceType.KNIGHT_BLACK) {
+      int newRow = fromPos.row+2;
+      int newCol = fromPos.col+1;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+      }
+      newRow = fromPos.row+2;
+      newCol = fromPos.col-1;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+      }
+      newRow = fromPos.row-2;
+      newCol = fromPos.col+1;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+      }
+      newRow = fromPos.row-2;
+      newCol = fromPos.col-1;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+      }
+      newRow = fromPos.row+1;
+      newCol = fromPos.col+2;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+      }
+      newRow = fromPos.row-1;
+      newCol = fromPos.col+2;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+      }
+      newRow = fromPos.row+1;
+      newCol = fromPos.col-2;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+      }
+      newRow = fromPos.row-1;
+      newCol = fromPos.col-2;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol)));
+      }
+
+    } else if(piece.getType() == PieceType.PAWN_WHITE) {
+      moves.add(new Move(fromPos, new Position(fromPos.row-1, fromPos.col)));
+      if(!piece.hasMoved()) {
+        moves.add(new Move(fromPos, new Position(fromPos.row-2, fromPos.col)));
+      }
+      //captures
+      Position leftCapture = new Position(fromPos.row-1, fromPos.col-1);
+      Position rightCapture = new Position(fromPos.row-1, fromPos.col+1);
+      if (Position.isOnBoard(leftCapture.row, leftCapture.col) && board.getPieceAt(leftCapture) != null){
+        moves.add(new Move(fromPos, leftCapture));
+      }
+      if (Position.isOnBoard(rightCapture.row, rightCapture.col) && board.getPieceAt(rightCapture) != null){
+        moves.add(new Move(fromPos, rightCapture));
+      }
       // TODO implement en passant
+
+    } else if(piece.getType() == PieceType.PAWN_BLACK) {
+      moves.add(new Move(fromPos, new Position(fromPos.row+1, fromPos.col)));
+      if(!piece.hasMoved()) {
+        moves.add(new Move(fromPos, new Position(fromPos.row+2, fromPos.col)));
+      }
+      //captures
+      Position leftCapture = new Position(fromPos.row+1, fromPos.col-1);
+      Position rightCapture = new Position(fromPos.row+1, fromPos.col+1);
+      if (Position.isOnBoard(leftCapture.row, leftCapture.col) && board.getPieceAt(leftCapture) != null){
+        moves.add(new Move(fromPos, leftCapture));
+      }
+      if (Position.isOnBoard(rightCapture.row, rightCapture.col) && board.getPieceAt(rightCapture) != null){
+        moves.add(new Move(fromPos, rightCapture));
+      }
+      // TODO implement en passant
+
     } else {
       // some error occurred
     }
@@ -200,22 +300,22 @@ public class GameEngine {
       int newCol = col+i;
       int newRow = row+i;
       if(Position.isOnBoard(newRow, newCol)){
-        // moves.add(new Move(pos, new Position(newRow, newCol)));
+        moves.add(new Move(pos, new Position(newRow, newCol)));
       }
       newCol = col+i;
       newRow = row-i;
       if(Position.isOnBoard(newRow, newCol)){
-        // moves.add(new Move(pos, new Position(newRow, newCol)));
+        moves.add(new Move(pos, new Position(newRow, newCol)));
       }
       newCol = col-i;
       newRow = row+i;
       if(Position.isOnBoard(newRow, newCol)){
-        // moves.add(new Move(pos, new Position(newRow, newCol)));
+        moves.add(new Move(pos, new Position(newRow, newCol)));
       }
       newCol = col-i;
       newRow = row-i;
       if(Position.isOnBoard(newRow, newCol)){
-        // moves.add(new Move(pos, new Position(newRow, newCol)));
+        moves.add(new Move(pos, new Position(newRow, newCol)));
       }
     }
     return moves;
@@ -223,7 +323,7 @@ public class GameEngine {
   }
 
   private synchronized static boolean isLegalMove(Move move, Board board){
-    return false;
+    return true;
   }
 
   public synchronized static List<Piece> calcMovablePieces(PlayerColor playerColor, Board board) {

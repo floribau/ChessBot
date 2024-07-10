@@ -32,8 +32,6 @@ public class Move {
     if (this.move == null) {
       String moveStr = piece.getType().getShortName() + "";
       moveStr += oldPos.getChessCoordinate();
-      String capture = (pieceIdAtDestination != null && !GameEngine.getCurrentBoard().getPieceById(pieceIdAtDestination).getColor().equals(color)) ? "x" : "";
-      moveStr += capture;
       moveStr += newPos.getChessCoordinate();
       this.move = moveStr;
     }
