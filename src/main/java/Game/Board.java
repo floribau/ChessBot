@@ -10,6 +10,11 @@ public class Board {
 
   public Board(){
     this.board = new String[8][8];
+    for(int i=0; i<=7; i++) {
+      for(int j=0; j<=7; j++) {
+        this.board[i][j] = "";
+      }
+    }
   }
 
   public Board(String[][] board){
@@ -20,6 +25,11 @@ public class Board {
         this.board[i][j] = board[i][j];
       }
     }
+  }
+
+  public Board(Board board){
+    String[][] boardString = board.getBoard();
+    new Board(boardString);
   }
   
   public void initBoard(){
@@ -130,10 +140,21 @@ public class Board {
     this.setPieceAt(new Position(6, 7), pawn_white_7.getId());
   }
 
-  public void move(Position oldPos, Position newPos){
-    String pieceId = this.getPieceAt(oldPos);
-    this.setPieceAt(oldPos, "");
-    this.setPieceAt(newPos, pieceId);
+
+  public void move(Move move){
+    /*
+    for(int i=0; i< move.getNumberOfMovedPieces();i++){
+      Position oldPos = move.getOldPositionAt(i);
+      Position newPos = move.getNewPositionAt(i);
+      String pieceId = this.getPieceAt(oldPos);
+
+      this.setPieceAt(oldPos, "");
+      this.setPieceAt(newPos, pieceId);
+
+      this.getPieceById(pieceId).setHasMoved();
+    }
+    */
+    // TODO implement move action from reading move string
   }
 
   public String[][] getBoard(){
@@ -141,17 +162,26 @@ public class Board {
   }
 
   public String getPieceAt(Position pos) {
-    return board[pos.x][pos.y];
+    return board[pos.row][pos.col];
+  }
+
+  public Piece getPieceById(String pieceId) {
+    for(Piece piece : pieces){
+      if(piece.getId().equals(pieceId)){
+        return piece;
+      }
+    }
+    return null;
   }
 
   public void setPieceAt(Position pos, String pieceId) {
-    board[pos.x][pos.y] = pieceId;
+    board[pos.row][pos.col] = pieceId;
   }
 
   public Position getPositionOfPiece(String pieceId) {
     for(int i=0; i<=7; i++) {
       for(int j=0; j<=7; j++) {
-        if(board[i][j] == pieceId) {
+        if(board[i][j].equals(pieceId)) {
           return new Position(i, j);
         }
       }
@@ -172,5 +202,40 @@ public class Board {
 
   public List<Piece> getPieces() {
     return pieces;
+  }
+
+  public Position getKingPosition(PlayerColor color) {
+    switch (color){
+      case WHITE -> {
+        System.out.println(getPositionOfPiece(PieceType.KING_WHITE + "0"));
+        return getPositionOfPiece(PieceType.KING_WHITE + "0");
+      }
+      case BLACK -> {
+        return getPositionOfPiece(PieceType.KING_BLACK + "0");
+      }
+      default -> {
+        return null;
+      }
+    }
+  }
+
+  public List<Move> getCastleMoves(PlayerColor color) {
+    List<Move> moves = new ArrayList<>();
+    Piece king_piece = getPieceById("KING_" + color + "0");
+    Piece rook_piece0 = getPieceById("ROOK_" + color + "0");
+    Piece rook_piece1 = getPieceById("ROOK_" + color + "1");
+    System.out.println(king_piece);
+    System.out.println(rook_piece0);
+    System.out.println(rook_piece1);
+    if(!king_piece.hasMoved()){
+      if(!rook_piece0.hasMoved()){
+
+      }
+      if(!rook_piece1.hasMoved()){
+
+      }
+    }
+
+    return moves;
   }
 }

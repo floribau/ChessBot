@@ -1,5 +1,5 @@
 package AI;
-import Game.GameEngine;
+import Game.Move;
 import Game.Player;
 import Game.PlayerColor;
 
@@ -8,7 +8,7 @@ public class AIPlayer extends Player {
     super(color, false);
   }
 
-  public void makeMove(){
-
+  public synchronized Move makeMove(){
+    return null;
   }
 }

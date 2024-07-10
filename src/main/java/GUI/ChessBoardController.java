@@ -1,10 +1,9 @@
 package GUI;
 
-import Game.Board;
 import Game.GameEngine;
 import Game.Piece;
-import Game.PlayerColor;
 import Util.Position;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -48,11 +47,13 @@ public class ChessBoardController {
 
   private Button[][] boardSquares;
   private ImageView[][] imageViews;
+  private Position selectedFrom;
+  private Position selectedTo;
 
 
 
   @FXML
-  public void initialize() {
+  public synchronized void initialize() {
     boardSquares = new Button[][]{
         {rect00, rect01, rect02, rect03, rect04, rect05, rect06, rect07},
         {rect10, rect11, rect12, rect13, rect14, rect15, rect16, rect17},
@@ -77,31 +78,51 @@ public class ChessBoardController {
     changeGUISettings();
   }
 
+  public synchronized boolean isFlipBoard(){
+    return !GameEngine.getPlayer1().isHumanPlayer() && GameEngine.getPlayer2().isHumanPlayer();
+  }
+
 
   @FXML
-  public void repaint(String[][] board){
-    for (int i=0; i<=7; i++){
-      for (int j=0; j<=7; j++){
-        if(board[i][j] != "" && board[i][j] != null){
-          Piece piece = GameEngine.getPieceById(board[i][j]);
-          Image image = piece.getType().getImage();
-          imageViews[i][j].setImage(image);
-        } else {
-          imageViews[i][j].setImage(null);
+  public synchronized void repaint(String[][] board){
+    if(isFlipBoard()) {
+      repaintFlipped(board);
+    } else {
+      for (int i=0; i<=7; i++){
+        for (int j=0; j<=7; j++){
+          if(board[i][j] != "" && board[i][j] != null){
+            Piece piece = GameEngine.getCurrentBoard().getPieceById(board[i][j]);
+            Image image = piece.getType().getImage();
+            imageViews[i][j].setImage(image);
+          } else {
+            imageViews[i][j].setImage(null);
+          }
         }
       }
     }
   }
 
-  public void repaintFlipped(String[][] board){
+  /**
+   * used if human player plays as black against AI player
+   * @param board the board that should be painted
+   */
+  @FXML
+  public synchronized void repaintFlipped(String[][] board){
     for (int i=0; i<=7; i++){
       for (int j=0; j<=7; j++){
-        // TODO repaint for black
+        if(board[i][j] != "" && board[i][j] != null){
+          Piece piece = GameEngine.getCurrentBoard().getPieceById(board[i][j]);
+          Image image = piece.getType().getImage();
+          imageViews[7-i][7-j].setImage(image);
+        } else {
+          imageViews[7-i][7-j].setImage(null);
+        }
       }
     }
   }
 
-  public void changeGUISettings() {
+  @FXML
+  public synchronized void changeGUISettings() {
     for (int i=0; i<=7; i++){
       for (int j=0; j<=7; j++){
         Button rect = boardSquares[i][j];
@@ -114,11 +135,13 @@ public class ChessBoardController {
     }
   }
 
-  public void activateButton(Position pos){
-    boardSquares[pos.x][pos.y].setDisable(false);
+  public synchronized void activateButton(Position pos){
+    int rowPos = isFlipBoard() ? 7 - pos.row : pos.row;
+    int colPos = isFlipBoard() ? 7 - pos.col : pos.col;
+    boardSquares[rowPos][colPos].setDisable(false);
   }
 
-  public void disableAllButtons(){
+  public synchronized void disableAllButtons(){
     for (int i=0; i<=7; i++){
       for (int j=0; j<=7; j++){
         boardSquares[i][j].setDisable(true);
@@ -126,11 +149,45 @@ public class ChessBoardController {
     }
   }
 
-  public void handleButtonPress(){
-    Board board = GameEngine.getCurrentBoard();
-    // TODO fix logic
-    board.move(new Position(0,0), new Position(3,3));
-    repaint(board.getBoard());
-    System.out.println(board.toString());
+  public synchronized  void resetSelectedButtons(){
+    this.selectedFrom = null;
+    this.selectedTo = null;
   }
+
+  public synchronized void handleButtonPress(Event e){
+    Button b = (Button) e.getSource();
+    Position sourcePos = getPositionOfButton(b);
+    if(selectedFrom == null) {
+      selectedFrom = sourcePos;
+    } else if(selectedFrom.equals(sourcePos)) {
+      resetSelectedButtons();
+    } else if(selectedTo == null) {
+      selectedTo = sourcePos;
+    }
+  }
+
+  public synchronized Position getPositionOfButton(Button b) {
+    for (int i=0; i<=7; i++){
+      for (int j=0; j<=7; j++){
+        if (boardSquares[i][j].equals(b)){
+          if (isFlipBoard()) {
+            return new Position(7-i, 7-j);
+          } else {
+            return new Position(i,j);
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  public Position getSelectedFrom(){
+    return this.selectedFrom;
+  }
+
+  public Position getSelectedTo(){
+    return this.selectedTo;
+  }
+
+
 }

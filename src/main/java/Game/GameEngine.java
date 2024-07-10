@@ -5,14 +5,15 @@ import GUI.ChessBoardController;
 import Util.Position;
 import java.util.List;
 import java.util.ArrayList;
+import javafx.application.Platform;
 
 public class GameEngine {
   private static Board currentBoard;
-
   private static Player player1;
   private static Player player2;
   private static Player currentPlayer;
   private static ChessBoardController controller;
+  private static Thread gameThread;
 
   public synchronized static void startGame(ChessBoardController controller){
     // TODO implement logic to select game mode
@@ -27,14 +28,26 @@ public class GameEngine {
     controller.disableAllButtons();
     controller.repaint(currentBoard.getBoard());
 
+    player1.setController();
+    player2.setController();
     playGame();
   }
 
-  public synchronized static void playGame(){
-    while(!isGameOver()) {
-      currentPlayer.makeMove();
-      switchCurrentPlayer();
-    }
+  public synchronized static void playGame() {
+    gameThread = new Thread(() -> {
+      while (!isGameOver()) {
+        Move move = currentPlayer.makeMove();
+        currentBoard.move(move);
+        Platform.runLater(() -> controller.repaint(currentBoard.getBoard()));
+        switchCurrentPlayer();
+        try {
+          Thread.sleep(100); // Adjust the sleep time as needed
+        } catch (InterruptedException e) {
+          throw new RuntimeException(e);
+        }
+      }
+    });
+    gameThread.start();
   }
 
   public synchronized  static void switchCurrentPlayer(){
@@ -43,15 +56,6 @@ public class GameEngine {
     } else {
       currentPlayer = player1;
     }
-  }
-
-  public static Piece getPieceById(String id) {
-    for(Piece piece : currentBoard.getPieces()){
-      if(piece.getId() == id){
-        return piece;
-      }
-    }
-    return null;
   }
 
   public static Player getPlayer1(){
@@ -66,46 +70,201 @@ public class GameEngine {
     return currentBoard;
   }
 
-  public static List<Board> calcPossibleMoves(PlayerColor player){
-    return calcPossibleMoves(player, currentBoard);
+  public synchronized static List<Board> calcPossibleBoards(PlayerColor playerColor, Board board){
+    List<Board> boards = new ArrayList<>();
+    for(Move move : calcPossibleMoves(playerColor, board)){
+      boards.add(calcMoveForBoard(board, move));
+    }
+    return boards;
   }
 
-  public static List<Board> calcPossibleMoves(PlayerColor player, Board board){
-    // TODO add check if king is checked
-    List<Board> moves = new ArrayList<>();
-    for(Piece piece : calcMovablePieces(player, board)){
-      if (piece.getColor() == player){
-        // TODO do something to calculate possible moves
-        // use isMovePossible()
+  public synchronized static List<Move> calcPossibleMoves(PlayerColor playerColor, Board board) {
+    List<Move> moves = new ArrayList<>();
+    for(Piece piece : calcMovablePieces(playerColor, board)){
+      List<Move> pieceMoves = calcMovesForPiece(piece.getId(), board);
+      for (Move move : pieceMoves) {
+        moves.add(move);
       }
     }
     return moves;
   }
 
-  public static List<Piece> calcMovablePieces(PlayerColor player, Board board) {
+  public synchronized static Board calcMoveForBoard(Board board, Move move) {
+    Board newBoard = new Board(board);
+    newBoard.move(move);
+    return newBoard;
+  }
+
+  public synchronized static List<Move> calcMovesForPiece(String pieceId, Board board){
+    List<Move> moves = new ArrayList<>();
+    Position fromPos = board.getPositionOfPiece(pieceId);
+    Piece piece = currentBoard.getPieceById(pieceId);
+    switch (piece.getType()) {
+      case KING_WHITE -> {
+        if (isKingChecked(piece.getColor())){
+          System.out.println("King is checked");
+        }
+      }
+      case KING_BLACK -> {
+
+      }
+      case QUEEN_WHITE -> {
+
+      } case QUEEN_BLACK -> {
+
+      }
+    }
+    // TODO calc possible moves -> then moves.add(new Move(fromPos, toPos))
+    return moves;
+  }
+
+  /***
+   * Calculates all moves on board obeying the move patterns of the piece. Pieces in the way and checks are disregarded.
+   * @param pieceId
+   * @param board
+   * @return the list of moves on board
+   */
+  private synchronized static List<Move> calcMovesOnBoardForPiece(String pieceId, Board board){
+    List<Move> moves = new ArrayList<>();
+    Position fromPos = board.getPositionOfPiece(pieceId);
+    Piece piece = currentBoard.getPieceById(pieceId);
+    if (piece.getType() == PieceType.KING_WHITE || piece.getType() == PieceType.KING_BLACK){
+
+    } else if (piece.getType() == PieceType.QUEEN_WHITE || piece.getType() == PieceType.QUEEN_BLACK) {
+      for(Move m : calcParallelMoves(fromPos)){
+        moves.add(m);
+      }
+      for(Move m : calcDiagonalMoves(fromPos)) {
+        moves.add(m);
+      }
+    } else if(piece.getType() == PieceType.ROOK_WHITE || piece.getType() == PieceType.ROOK_BLACK) {
+      for(Move m : calcParallelMoves(fromPos)){
+         moves.add(m);
+      }
+    } else if(piece.getType() == PieceType.BISHOP_WHITE || piece.getType() == PieceType.BISHOP_BLACK) {
+      for(Move m : calcDiagonalMoves(fromPos)) {
+        moves.add(m);
+      }
+    } else if(piece.getType() == PieceType.KNIGHT_WHITE || piece.getType() == PieceType.KNIGHT_BLACK) {
+
+    } else if(piece.getType() == PieceType.PAWN_WHITE || piece.getType() == PieceType.PAWN_BLACK) {
+      // TODO implement en passant
+    } else {
+      // some error occurred
+    }
+    return moves;
+  }
+
+  /**
+   * Calculates all parallel moves from the starting position that are still on the board
+   *
+   * @param pos the starting position
+   * @return the list of all parallel moves that are still on the board
+   */
+  private synchronized static List<Move> calcParallelMoves(Position pos) {
+    int col = pos.col;
+    int row = pos.row;
+    List<Move> moves = new ArrayList<>();
+    for(int i=1; i<8; i++) {
+      int newCol = col+i;
+      if(Position.isOnBoard(row, newCol)){
+        moves.add(new Move(pos, new Position(row, newCol)));
+      }
+      newCol = col-i;
+      if(Position.isOnBoard(row, newCol)){
+        moves.add(new Move(pos, new Position(row, newCol)));
+      }
+      int newRow = row+i;
+      if(Position.isOnBoard(newRow, col)){
+        moves.add(new Move(pos, new Position(newRow, col)));
+      }
+      newRow = row-i;
+      if(Position.isOnBoard(newRow, col)){
+        moves.add(new Move(pos, new Position(newRow, col)));
+      }
+    }
+    return moves;
+  }
+
+  /**
+   * Calculates all diagonal moves from the starting position that are still on the board
+   *
+   * @param pos the starting position
+   * @return the list of all diagonal moves that are still on the board
+   */
+  private synchronized static List<Move> calcDiagonalMoves(Position pos) {
+    int row = pos.col;
+    int col = pos.row;
+    List<Move> moves = new ArrayList<>();
+    for(int i=1; i<=7; i++) {
+      int newCol = col+i;
+      int newRow = row+i;
+      if(Position.isOnBoard(newRow, newCol)){
+        // moves.add(new Move(pos, new Position(newRow, newCol)));
+      }
+      newCol = col+i;
+      newRow = row-i;
+      if(Position.isOnBoard(newRow, newCol)){
+        // moves.add(new Move(pos, new Position(newRow, newCol)));
+      }
+      newCol = col-i;
+      newRow = row+i;
+      if(Position.isOnBoard(newRow, newCol)){
+        // moves.add(new Move(pos, new Position(newRow, newCol)));
+      }
+      newCol = col-i;
+      newRow = row-i;
+      if(Position.isOnBoard(newRow, newCol)){
+        // moves.add(new Move(pos, new Position(newRow, newCol)));
+      }
+    }
+    return moves;
+
+  }
+
+  private synchronized static boolean isLegalMove(Move move, Board board){
+    return false;
+  }
+
+  public synchronized static List<Piece> calcMovablePieces(PlayerColor playerColor, Board board) {
     List<Piece> movablePieces = new ArrayList<>();
-    for(Piece piece : currentBoard.getPieces()){
-      if(piece.getColor() == player) {
-        // TODO check if piece is movable
+    for(Piece piece : board.getPieces()){
+      if(piece.getColor() == playerColor && calcMovesForPiece(piece.getId(), board).size() > 0) {
         movablePieces.add(piece);
       }
     }
     return movablePieces;
   }
 
-  public static boolean isMovePossible(){
-    return true;
-  }
 
-  public static void activateColorButtons(PlayerColor color){
+  public synchronized static void activateColorButtons(PlayerColor color){
     for(Piece piece : calcMovablePieces(color, currentBoard)){
       controller.activateButton(currentBoard.getPositionOfPiece(piece.getId()));
     }
   }
 
-  //TODO implement
-  public static boolean isGameOver(){
-    return true;
+  /**
+   * Checks if the game is over, i.e., if the current player has no movable pieces left
+   * @return true if no piece is movable for the current player
+   */
+  public synchronized static boolean isGameOver(){
+    // return calcMovablePieces(currentPlayer.getColor(), currentBoard).size() == 0;
+    return false;
+  }
+
+  public synchronized static ChessBoardController getController(){
+    return controller;
+  }
+
+  public synchronized static boolean isKingChecked(PlayerColor color) {
+    PlayerColor opponentColor = color == PlayerColor.WHITE ? PlayerColor.BLACK : PlayerColor.WHITE;
+    Position kingPosition = currentBoard.getKingPosition(color);
+    for (Move m : calcPossibleMoves(opponentColor, currentBoard)){
+      if (m.getNewPosition().equals(kingPosition)) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }

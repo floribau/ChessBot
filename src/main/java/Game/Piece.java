@@ -8,11 +8,13 @@ public class Piece {
   private final String id;
   private final PieceType type;
   private final PlayerColor color;
+  private boolean hasMoved;
 
   public Piece(PieceType type, PlayerColor color){
     this.id = type.getDisplayName() + getNextId(type);
     this.type = type;
     this.color = color;
+    this.hasMoved = false;
   }
 
   private synchronized static int getNextId(PieceType type){
@@ -31,6 +33,14 @@ public class Piece {
 
   public PlayerColor getColor(){
     return this.color;
+  }
+
+  public void setHasMoved(){
+    hasMoved = true;
+  }
+
+  public boolean hasMoved(){
+    return this.hasMoved;
   }
 
 }

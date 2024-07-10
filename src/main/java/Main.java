@@ -3,6 +3,7 @@ import Game.GameEngine;
 import Game.Piece;
 import Game.PieceType;
 import Game.PlayerColor;
+import Util.Position;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,7 +12,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
   @Override
-  public void start(Stage primaryStage) throws Exception {
+  public synchronized void start(Stage primaryStage) throws Exception {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/ChessBoard.fxml"));
     Parent root = loader.load();
     ChessBoardController controller = loader.getController();
