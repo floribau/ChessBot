@@ -203,7 +203,14 @@ public class Board {
       String symbolPattern = "=([^=])";
       Pattern pattern = Pattern.compile(symbolPattern);
       Matcher matcher = pattern.matcher(move.getMoveString());
-      String promotion = matcher.group(1);
+      String promotion;
+      if (matcher.find()) {
+        promotion = matcher.group(1);
+        System.out.println(promotion);
+      } else {
+        new IllegalMoveException(move).printStackTrace();
+        promotion = null;
+      }
       PieceType type = null;
       Piece p;
       if (move.getMovedPiece().getColor().equals(PlayerColor.WHITE)) {
@@ -769,7 +776,7 @@ public class Board {
 
   //TODO check if this works properly
   public synchronized boolean isKingChecked(PlayerColor color) {
-    PlayerColor opponentColor = color == PlayerColor.WHITE ? PlayerColor.BLACK : PlayerColor.WHITE;
+    PlayerColor opponentColor = (color == PlayerColor.WHITE) ? PlayerColor.BLACK : PlayerColor.WHITE;
     Position kingPosition = getKingPosition(color);
     for (Move m : calcPossibleMoves(opponentColor)) {
       if (m.getNewPosition().equals(kingPosition)) {
@@ -778,4 +785,5 @@ public class Board {
     }
     return false;
   }
+
 }
