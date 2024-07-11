@@ -64,6 +64,15 @@ public class Player {
       controller.deactivatePromotionButtons();
       m = new Move(moveString, piece);
     }
+
+    if(m.isPawnMove() && m.isDiagonalMove()) {
+      if(GameEngine.getCurrentBoard().getPieceAt(m.getNewPosition()).equals("")) {
+        String moveString = m.getMoveString();
+        Piece movedPiece = m.getMovedPiece();
+        m = new Move(moveString, movedPiece, true);
+      }
+    }
+
     return m;
   }
 }

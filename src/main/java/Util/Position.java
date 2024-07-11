@@ -1,7 +1,5 @@
 package Util;
 
-import Util.Exception.PositionNotOnBoardException;
-
 public class Position {
   public final int row;
   public final int col;
