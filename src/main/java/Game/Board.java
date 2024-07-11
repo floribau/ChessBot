@@ -268,6 +268,7 @@ public class Board {
     }
 
     // verify if move checks king
+    // TODO fix StackoverflowError
     PlayerColor opponentColor = (movedPiece.getColor().equals(PlayerColor.WHITE)) ? PlayerColor.BLACK : PlayerColor.WHITE;
     switch (opponentColor) {
       case WHITE: isWhiteKingChecked = calcIsKingChecked(PlayerColor.WHITE);
