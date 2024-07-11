@@ -9,17 +9,20 @@ public class Move {
   private final Position oldPos;
   private final Position newPos;
   private final Piece movedPiece;
+  private final boolean enPassant;
 
-  public Move(Position oldPos, Position newPos, Piece movedPiece) {
+  public Move(Position oldPos, Position newPos, Piece movedPiece, boolean enPassant) {
     this.oldPos = oldPos;
     this.newPos = newPos;
     this.movedPiece = movedPiece;
     this.moveString = Move.calcMoveString(oldPos, newPos, movedPiece);
+    this.enPassant = enPassant;
   }
 
-  public Move(String moveString, Piece movedPiece) {
+  public Move(String moveString, Piece movedPiece, boolean enPassant) {
     this.moveString = moveString;
     this.movedPiece = movedPiece;
+    this.enPassant = enPassant;
 
     String coordinatePattern = "([a-h][1-8]).*?([a-h][1-8])";
     Pattern pattern = Pattern.compile(coordinatePattern);
@@ -35,6 +38,14 @@ public class Move {
       this.oldPos = null;
       this.newPos = null;
     }
+  }
+
+  public Move(Position oldPos, Position newPos, Piece movedPiece) {
+    this(oldPos, newPos, movedPiece, false);
+  }
+
+  public Move(String moveString, Piece movedPiece) {
+    this(moveString, movedPiece, false);
   }
 
   public Position getOldPosition(){
@@ -129,6 +140,10 @@ public class Move {
 
   public boolean isCastle(){
     return moveString.equals("O-O") || moveString.equals("O-O-O");
+  }
+
+  public boolean isEnPassant(){
+    return this.enPassant;
   }
 
 }

@@ -156,13 +156,13 @@ public class Board {
 
 
   public boolean move(Move move) {
-    // TODO implement move action from reading move string
     String destinationPieceId = getPieceAt(move.getNewPosition());
     Piece movedPiece = getPieceById(move.getMovedPiece().getId());
+
     //capture piece
     if (destinationPieceId != "") {
-      Piece destinationPiece = getPieceById(destinationPieceId);
-      if (destinationPiece.getColor().equals(movedPiece.getColor())) {
+      Piece capturedPiece = getPieceById(destinationPieceId);
+      if (capturedPiece.getColor().equals(movedPiece.getColor())) {
         new IllegalMoveException(move).printStackTrace();
         return false;
       }
@@ -175,6 +175,38 @@ public class Board {
     this.setPieceAt(oldPos, "");
     this.setPieceAt(newPos, movedPiece.getId());
     movedPiece.setHasMoved();
+
+    // en passant is possible for opponent
+    if (move.isPawnMove() && move.isMultiSquareMove()) {
+      movedPiece.setEnPassantPossible();
+    }
+
+    // en passant
+    if (move.isEnPassant()) {
+      if (movedPiece.getColor().equals(PlayerColor.WHITE)) {
+        Position capturedPos = new Position(newPos.row + 1, newPos.col);
+        String capturedPieceId = getPieceAt(capturedPos);
+        if (capturedPieceId != "") {
+          Piece capturedPiece = getPieceById(capturedPieceId);
+          setPieceAt(capturedPos, "");
+          pieces.remove(capturedPiece);
+          // System.out.println(this);
+        } else {
+          new IllegalMoveException(move).printStackTrace();
+        }
+      } else {
+        // PlayerColor.BLACK
+        Position capturedPos = new Position(newPos.row - 1, newPos.col);
+        String capturedPieceId = getPieceAt(capturedPos);
+        if (capturedPieceId != "") {
+          Piece capturedPiece = getPieceById(capturedPieceId);
+          setPieceAt(capturedPos, "");
+          pieces.remove(capturedPiece);
+        } else {
+          new IllegalMoveException(move).printStackTrace();
+        }
+      }
+    }
 
     //king-side castles
     if (move.getMoveString().equals("O-O")) {
@@ -237,7 +269,6 @@ public class Board {
       this.setPieceAt(newPos, p.getId());
       pieces.remove(movedPiece);
     }
-
     return true;
   }
 
@@ -527,7 +558,25 @@ public class Board {
           moves.add(new Move(moveStr + "=N", piece));
         }
       }
-      // TODO implement en passant
+      // en passant
+      if (Position.isOnBoard(fromPos.row, fromPos.col -1)) {
+        String leftPieceId = getPieceAt(new Position(fromPos.row, fromPos.col - 1));
+        if(leftPieceId != "") {
+          Piece leftPiece = getPieceById(leftPieceId);
+          if (leftPiece.isEnPassantPossible()) {
+            moves.add(new Move(fromPos, leftCapture, piece, true));
+          }
+        }
+      }
+      if (Position.isOnBoard(fromPos.row, fromPos.col + 1)) {
+        String rightPieceId = getPieceAt(new Position(fromPos.row, fromPos.col + 1));
+        if(rightPieceId != "") {
+          Piece rightPiece = getPieceById(rightPieceId);
+          if (rightPiece.isEnPassantPossible()) {
+            moves.add(new Move(fromPos, rightCapture, piece, true));
+          }
+        }
+      }
 
     } else if (piece.getType() == PieceType.PAWN_BLACK) {
       if(fromPos.row - 1 <= 6) {
@@ -569,7 +618,25 @@ public class Board {
           moves.add(new Move(moveStr + "=N", piece));
         }
       }
-      // TODO implement en passant
+      // en passant
+      if (Position.isOnBoard(fromPos.row, fromPos.col -1)) {
+        String leftPieceId = getPieceAt(new Position(fromPos.row, fromPos.col - 1));
+        if(leftPieceId != "") {
+          Piece leftPiece = getPieceById(leftPieceId);
+          if (leftPiece.isEnPassantPossible()) {
+            moves.add(new Move(fromPos, leftCapture, piece, true));
+          }
+        }
+      }
+      if (Position.isOnBoard(fromPos.row, fromPos.col + 1)) {
+        String rightPieceId = getPieceAt(new Position(fromPos.row, fromPos.col + 1));
+        if(rightPieceId != "") {
+          Piece rightPiece = getPieceById(rightPieceId);
+          if (rightPiece.isEnPassantPossible()) {
+            moves.add(new Move(fromPos, rightCapture, piece, true));
+          }
+        }
+      }
 
     } else {
       // some error occurred
@@ -650,7 +717,6 @@ public class Board {
     PlayerColor color = movedPiece.getColor();
 
     // check if move tries to capture own piece
-    // System.out.println(move.getNewPosition());
     String destinationPieceId = getPieceAt(move.getNewPosition());
     if (destinationPieceId != "") {
       Piece destinationPiece = getPieceById(destinationPieceId);
@@ -725,9 +791,8 @@ public class Board {
       }
     }
 
-    // check if move tries to push pawn to a blocked square
     if(move.isPawnMove()) {
-      // TODO implement en passant
+      // check if move tries to push pawn to a blocked square
       if (move.isParallelMove() && getPieceAt(move.getNewPosition()) != "") {
         return false;
       }
@@ -784,6 +849,15 @@ public class Board {
       }
     }
     return false;
+  }
+
+  public synchronized void resetEnPassantPossible(PlayerColor color) {
+    for(Piece piece : pieces) {
+      PieceType type = (color == PlayerColor.WHITE) ? PieceType.PAWN_WHITE : PieceType.PAWN_BLACK;
+      if(piece.getType().equals(type)) {
+        piece.resetEnPassantPossible();
+      }
+    }
   }
 
 }

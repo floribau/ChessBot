@@ -9,12 +9,14 @@ public class Piece {
   private final PieceType type;
   private final PlayerColor color;
   private boolean hasMoved;
+  private boolean enPassantPossible;
 
   public Piece(PieceType type, PlayerColor color){
     this.id = type.getDisplayName() + getNextId(type);
     this.type = type;
     this.color = color;
     this.hasMoved = false;
+    this.enPassantPossible = false;
   }
 
   private Piece(Piece piece){
@@ -22,6 +24,7 @@ public class Piece {
     this.type = piece.type;
     this.color = piece.color;
     this.hasMoved = piece.hasMoved;
+    this.enPassantPossible = piece.enPassantPossible;
   }
 
   /**
@@ -56,5 +59,11 @@ public class Piece {
   public boolean hasMoved(){
     return this.hasMoved;
   }
+
+  public void setEnPassantPossible() {this.enPassantPossible = true;}
+
+  public void resetEnPassantPossible() {this.enPassantPossible = false;}
+
+  public boolean isEnPassantPossible() {return this.enPassantPossible;}
 
 }
