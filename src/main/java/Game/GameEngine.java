@@ -34,7 +34,7 @@ public class GameEngine {
 
   public synchronized static void playGame() {
     gameThread = new Thread(() -> {
-      while (!currentBoard.isCheckmate(currentPlayer.getColor()) && !currentBoard.isStalemate(currentPlayer.getColor())) {
+      while (!isCheckmate() && !isStalemate()) {
         Move move = currentPlayer.makeMove();
         currentBoard.move(move);
         Platform.runLater(() -> controller.repaint(currentBoard.getBoard()));
@@ -70,24 +70,6 @@ public class GameEngine {
     return currentBoard;
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   public synchronized static void activateColorButtons(PlayerColor color){
     for(Piece piece : currentBoard.calcMovablePieces(color)){
       controller.activateButton(currentBoard.getPositionOfPiece(piece.getId()));
@@ -98,7 +80,7 @@ public class GameEngine {
    * Checks if the current player is checkmated on the current board
    * @return true if it is a checkmate
    */
-  public synchronized static boolean isCheckmate(PlayerColor color){
+  public synchronized static boolean isCheckmate(){
     return currentBoard.isKingChecked(currentPlayer.getColor()) && currentBoard.calcPossibleMoves(currentPlayer.getColor()).size() == 0;
   }
 
@@ -106,7 +88,7 @@ public class GameEngine {
    * Checks if it is a stalemate, i.e., if the current player does not have any move left but is not checked.
    * @return true if it is a stalemate
    */
-  public synchronized static boolean isStalemate(PlayerColor color) {
+  public synchronized static boolean isStalemate() {
     return !currentBoard.isKingChecked(currentPlayer.getColor()) && currentBoard.calcPossibleMoves(currentPlayer.getColor()).size() == 0;
   }
 
