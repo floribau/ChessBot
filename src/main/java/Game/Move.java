@@ -99,8 +99,24 @@ public class Move {
     return Math.abs(oldPos.row - newPos.row) == Math.abs(oldPos.col - newPos.col);
   }
 
+  public boolean isKingMove(){
+    return movedPiece.getType().equals(PieceType.KING_WHITE) || movedPiece.getType().equals(PieceType.KING_BLACK);
+  }
+
+  public boolean isQueenMove(){
+    return movedPiece.getType().equals(PieceType.QUEEN_WHITE) || movedPiece.getType().equals(PieceType.QUEEN_BLACK);
+  }
+
+  public boolean isRookMove(){
+    return movedPiece.getType().equals(PieceType.ROOK_WHITE) || movedPiece.getType().equals(PieceType.ROOK_BLACK);
+  }
+
+  public boolean isBishopMove(){
+    return movedPiece.getType().equals(PieceType.BISHOP_WHITE) || movedPiece.getType().equals(PieceType.BISHOP_BLACK);
+  }
+
   public boolean isKnightMove(){
-    return movedPiece.getType().equals(PieceType.KNIGHT_WHITE) || movedPiece.getType().equals(PieceType.KING_BLACK);
+    return movedPiece.getType().equals(PieceType.KNIGHT_WHITE) || movedPiece.getType().equals(PieceType.KNIGHT_BLACK);
   }
 
   public boolean isPawnMove(){
@@ -109,6 +125,10 @@ public class Move {
 
   public boolean isPromotion(){
     return isPawnMove() && moveString.contains("=");
+  }
+
+  public boolean isCastle(){
+    return moveString.equals("O-O") || moveString.equals("O-O-O");
   }
 
 }
