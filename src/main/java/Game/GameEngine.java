@@ -81,7 +81,7 @@ public class GameEngine {
    * @return true if it is a checkmate
    */
   public synchronized static boolean isCheckmate(){
-    return currentBoard.isKingChecked(currentPlayer.getColor()) && currentBoard.calcPossibleMoves(currentPlayer.getColor()).size() == 0;
+    return currentBoard.isCheckmate(currentPlayer.getColor());
   }
 
   /**
@@ -89,7 +89,7 @@ public class GameEngine {
    * @return true if it is a stalemate
    */
   public synchronized static boolean isStalemate() {
-    return !currentBoard.isKingChecked(currentPlayer.getColor()) && currentBoard.calcPossibleMoves(currentPlayer.getColor()).size() == 0;
+    return currentBoard.isStalemate(currentPlayer.getColor());
   }
 
   public synchronized static ChessBoardController getController(){
