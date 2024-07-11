@@ -13,7 +13,7 @@ public class Position {
 
   public Position(String chessCoordinate){
     col = chessCoordinate.charAt(0)-97;
-    row = 8 - chessCoordinate.charAt(1);
+    row = 8 - Character.getNumericValue(chessCoordinate.charAt(1));
   }
 
   public String toString(){
