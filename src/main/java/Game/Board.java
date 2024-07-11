@@ -4,34 +4,37 @@ import Util.Exception.IllegalMoveException;
 import Util.Position;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Board {
+
   String[][] board;
   private List<Piece> pieces;
 
-  public Board(){
+  public Board() {
     this.board = new String[8][8];
-    for(int i=0; i<=7; i++) {
-      for(int j=0; j<=7; j++) {
+    for (int i = 0; i <= 7; i++) {
+      for (int j = 0; j <= 7; j++) {
         this.board[i][j] = "";
       }
     }
   }
 
-  public Board(String[][] board){
+  public Board(String[][] board) {
 
   }
 
-  private Board(Board board){
+  private Board(Board board) {
     String[][] boardString = board.getBoard();
     this.board = new String[8][8];
-    for(int i=0; i<=7; i++) {
-      for(int j=0; j<=7; j++) {
+    for (int i = 0; i <= 7; i++) {
+      for (int j = 0; j <= 7; j++) {
         this.board[i][j] = boardString[i][j];
       }
     }
     this.pieces = new ArrayList<>();
-    for(Piece p : board.pieces) {
+    for (Piece p : board.pieces) {
       this.pieces.add(p.copyPiece());
     }
   }
@@ -42,8 +45,8 @@ public class Board {
   public Board copyBoard() {
     return new Board(this);
   }
-  
-  public void initBoard(){
+
+  public void initBoard() {
     pieces = new ArrayList<>();
 
     Piece king_white = new Piece(PieceType.KING_WHITE, PlayerColor.WHITE);
@@ -114,7 +117,7 @@ public class Board {
     pieces.add(pawn_black_6);
     pieces.add(pawn_black_7);
 
-    this.setPieceAt(new Position(0,0), rook_black_0.getId());
+    this.setPieceAt(new Position(0, 0), rook_black_0.getId());
     this.setPieceAt(new Position(0, 1), knight_black_0.getId());
     this.setPieceAt(new Position(0, 2), bishop_black_0.getId());
     this.setPieceAt(new Position(0, 3), queen_black.getId());
@@ -156,42 +159,82 @@ public class Board {
     // TODO implement move action from reading move string
     String destinationPieceId = getPieceAt(move.getNewPosition());
     Piece movedPiece = getPieceById(move.getMovedPiece().getId());
-    if(destinationPieceId != ""){
+    //capture piece
+    if (destinationPieceId != "") {
       Piece destinationPiece = getPieceById(destinationPieceId);
-      if(destinationPiece.getColor().equals(movedPiece.getColor())){
+      if (destinationPiece.getColor().equals(movedPiece.getColor())) {
         new IllegalMoveException(move).printStackTrace();
         return false;
       }
       pieces.remove(getPieceById(destinationPieceId));
     }
 
+    // move piece
     Position oldPos = move.getOldPosition();
     Position newPos = move.getNewPosition();
     this.setPieceAt(oldPos, "");
     this.setPieceAt(newPos, movedPiece.getId());
     movedPiece.setHasMoved();
 
-    if(move.getMoveString().equals("O-O")){
-      Position oldPosRook = movedPiece.getColor() == PlayerColor.WHITE ? new Position(7, 7) : new Position(0, 7);
-      Position newPosRook = new Position(oldPosRook.row, newPos.col-1);
+    //king-side castles
+    if (move.getMoveString().equals("O-O")) {
+      Position oldPosRook =
+          movedPiece.getColor() == PlayerColor.WHITE ? new Position(7, 7) : new Position(0, 7);
+      Position newPosRook = new Position(oldPosRook.row, newPos.col - 1);
       String rookId = getPieceAt(oldPosRook);
       Piece rookPiece = getPieceById(rookId);
       this.setPieceAt(oldPosRook, "");
       this.setPieceAt(newPosRook, rookId);
       rookPiece.setHasMoved();
+      //queen-side castles
     } else if (move.getMovedPiece().equals("O-O-O")) {
-      Position oldPosRook = movedPiece.getColor() == PlayerColor.WHITE ? new Position(7, 0) : new Position(0, 0);
-      Position newPosRook = new Position(oldPosRook.row, newPos.col+1);
+      Position oldPosRook =
+          movedPiece.getColor() == PlayerColor.WHITE ? new Position(7, 0) : new Position(0, 0);
+      Position newPosRook = new Position(oldPosRook.row, newPos.col + 1);
       String rookId = getPieceAt(oldPosRook);
       Piece rookPiece = getPieceById(rookId);
       this.setPieceAt(oldPosRook, "");
       this.setPieceAt(newPosRook, rookId);
       rookPiece.setHasMoved();
     }
+
+    // pawn promotion
+    if(move.isPromotion()){
+      String symbolPattern = "=([^=])";
+      Pattern pattern = Pattern.compile(symbolPattern);
+      Matcher matcher = pattern.matcher(move.getMoveString());
+      String promotion = matcher.group(1);
+      PieceType type = null;
+      Piece p;
+      if (move.getMovedPiece().getColor().equals(PlayerColor.WHITE)) {
+        switch (promotion) {
+          case "Q" -> type = PieceType.QUEEN_WHITE;
+          case "R" -> type = PieceType.ROOK_WHITE;
+          case "B" -> type = PieceType.BISHOP_WHITE;
+          case "N" -> type = PieceType.KNIGHT_WHITE;
+          default -> new IllegalMoveException(move).printStackTrace();
+        }
+        p = new Piece(type, PlayerColor.WHITE);
+      } else {
+        switch (promotion) {
+          case "Q" -> type = PieceType.QUEEN_BLACK;
+          case "R" -> type = PieceType.ROOK_BLACK;
+          case "B" -> type = PieceType.BISHOP_BLACK;
+          case "N" -> type = PieceType.KNIGHT_BLACK;
+          default -> new IllegalMoveException(move).printStackTrace();
+        }
+        p = new Piece(type, PlayerColor.BLACK);
+      }
+      p.setHasMoved();
+      pieces.add(p);
+      this.setPieceAt(newPos, p.getId());
+      pieces.remove(movedPiece);
+    }
+
     return true;
   }
 
-  public String[][] getBoard(){
+  public String[][] getBoard() {
     return this.board;
   }
 
@@ -200,8 +243,8 @@ public class Board {
   }
 
   public Piece getPieceById(String pieceId) {
-    for(Piece piece : pieces){
-      if(piece.getId().equals(pieceId)){
+    for (Piece piece : pieces) {
+      if (piece.getId().equals(pieceId)) {
         return piece;
       }
     }
@@ -213,9 +256,9 @@ public class Board {
   }
 
   public Position getPositionOfPiece(String pieceId) {
-    for(int i=0; i<=7; i++) {
-      for(int j=0; j<=7; j++) {
-        if(board[i][j].equals(pieceId)) {
+    for (int i = 0; i <= 7; i++) {
+      for (int j = 0; j <= 7; j++) {
+        if (board[i][j].equals(pieceId)) {
           return new Position(i, j);
         }
       }
@@ -223,10 +266,10 @@ public class Board {
     return null;
   }
 
-  public String toString(){
+  public String toString() {
     String res = "";
-    for(int i=0; i<=7; i++) {
-      for(int j=0; j<=7; j++) {
+    for (int i = 0; i <= 7; i++) {
+      for (int j = 0; j <= 7; j++) {
         res += "[" + board[i][j] + "]";
       }
       res += "\n";
@@ -237,10 +280,11 @@ public class Board {
   public List<Piece> getPieces() {
     return pieces;
   }
+
   public List<Piece> getPieces(PlayerColor color) {
     List<Piece> colorPieces = new ArrayList<>();
-    for (Piece p : pieces){
-      if(p.getColor().equals(color)){
+    for (Piece p : pieces) {
+      if (p.getColor().equals(color)) {
         colorPieces.add(p);
       }
     }
@@ -248,7 +292,7 @@ public class Board {
   }
 
   public Position getKingPosition(PlayerColor color) {
-    switch (color){
+    switch (color) {
       case WHITE -> {
         return getPositionOfPiece(PieceType.KING_WHITE + "0");
       }
@@ -267,15 +311,15 @@ public class Board {
     Piece rookPiece0 = getPieceById("ROOK_" + color + "0");
     Piece rookPiece1 = getPieceById("ROOK_" + color + "1");
 
-    if(!kingPiece.hasMoved()){
+    if (!kingPiece.hasMoved()) {
       Position oldKingPosition = getPositionOfPiece(kingPiece.getId());
-      if(!rookPiece0.hasMoved()){
-        Position newKingPosition = new Position(oldKingPosition.row, oldKingPosition.col-2);
+      if (!(rookPiece0 == null) && kingPiece.getColor().equals(rookPiece0.getColor()) && !rookPiece0.hasMoved()) {
+        Position newKingPosition = new Position(oldKingPosition.row, oldKingPosition.col - 2);
         Move bigCastle = new Move(oldKingPosition, newKingPosition, kingPiece);
         moves.add(bigCastle);
       }
-      if(!rookPiece1.hasMoved()){
-        Position newKingPosition = new Position(oldKingPosition.row, oldKingPosition.col+2);
+      if (!(rookPiece1 == null) && kingPiece.getColor().equals(rookPiece1.getColor()) && !rookPiece1.hasMoved()) {
+        Position newKingPosition = new Position(oldKingPosition.row, oldKingPosition.col + 2);
         Move smallCastle = new Move(oldKingPosition, newKingPosition, kingPiece);
         moves.add(smallCastle);
       }
@@ -284,9 +328,9 @@ public class Board {
     return moves;
   }
 
-  public synchronized List<Board> calcPossibleBoards(PlayerColor playerColor){
+  public synchronized List<Board> calcPossibleBoards(PlayerColor playerColor) {
     List<Board> boards = new ArrayList<>();
-    for(Move move : calcPossibleMoves(playerColor)){
+    for (Move move : calcPossibleMoves(playerColor)) {
       boards.add(calcMoveToBoard(move));
     }
     return boards;
@@ -294,7 +338,7 @@ public class Board {
 
   public synchronized List<Move> calcPossibleMoves(PlayerColor playerColor) {
     List<Move> moves = new ArrayList<>();
-    for(Piece piece : getPieces(playerColor)){
+    for (Piece piece : getPieces(playerColor)) {
       for (Move move : calcMovesForPiece(piece.getId())) {
         moves.add(move);
       }
@@ -308,10 +352,10 @@ public class Board {
     return newBoard;
   }
 
-  public synchronized List<Move> calcMovesForPiece(String pieceId){
+  public synchronized List<Move> calcMovesForPiece(String pieceId) {
     List<Move> moves = new ArrayList<>();
-    for (Move m : calcMovesOnBoardForPiece(pieceId)){
-      if(isLegalMove(m)){
+    for (Move m : calcMovesOnBoardForPiece(pieceId)) {
+      if (isLegalMove(m)) {
         moves.add(m);
       }
     }
@@ -323,179 +367,199 @@ public class Board {
    * @param pieceId the piece to be moved
    * @return the list of moves on board
    */
-  private synchronized List<Move> calcMovesOnBoardForPiece(String pieceId){
+  private synchronized List<Move> calcMovesOnBoardForPiece(String pieceId) {
     List<Move> moves = new ArrayList<>();
     Position fromPos = getPositionOfPiece(pieceId);
     Piece piece = getPieceById(pieceId);
-    if (piece.getType() == PieceType.KING_WHITE || piece.getType() == PieceType.KING_BLACK){
-      int newRow = fromPos.row+1;
+    if (piece.getType() == PieceType.KING_WHITE || piece.getType() == PieceType.KING_BLACK) {
+      int newRow = fromPos.row + 1;
       int newCol = fromPos.col;
-      if(Position.isOnBoard(newRow, newCol)){
+      if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
-      newRow = fromPos.row-1;
+      newRow = fromPos.row - 1;
       newCol = fromPos.col;
-      if(Position.isOnBoard(newRow, newCol)){
+      if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
       newRow = fromPos.row;
-      newCol = fromPos.col+1;
-      if(Position.isOnBoard(newRow, newCol)){
+      newCol = fromPos.col + 1;
+      if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
       newRow = fromPos.row;
-      newCol = fromPos.col-1;
-      if(Position.isOnBoard(newRow, newCol)){
+      newCol = fromPos.col - 1;
+      if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
-      newRow = fromPos.row+1;
-      newCol = fromPos.col+1;
-      if(Position.isOnBoard(newRow, newCol)){
+      newRow = fromPos.row + 1;
+      newCol = fromPos.col + 1;
+      if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
-      newRow = fromPos.row+1;
-      newCol = fromPos.col-1;
-      if(Position.isOnBoard(newRow, newCol)){
+      newRow = fromPos.row + 1;
+      newCol = fromPos.col - 1;
+      if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
-      newRow = fromPos.row-1;
-      newCol = fromPos.col+1;
-      if(Position.isOnBoard(newRow, newCol)){
+      newRow = fromPos.row - 1;
+      newCol = fromPos.col + 1;
+      if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
-      newRow = fromPos.row-1;
-      newCol = fromPos.col-1;
-      if(Position.isOnBoard(newRow, newCol)){
+      newRow = fromPos.row - 1;
+      newCol = fromPos.col - 1;
+      if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
-      for(Move m : getCastleMoves(piece.getColor())){
+      for (Move m : getCastleMoves(piece.getColor())) {
         moves.add(m);
       }
 
-    } else if (piece.getType() == PieceType.QUEEN_WHITE || piece.getType() == PieceType.QUEEN_BLACK) {
-      for(Move m : calcParallelMoves(fromPos)){
+    } else if (piece.getType() == PieceType.QUEEN_WHITE
+        || piece.getType() == PieceType.QUEEN_BLACK) {
+      for (Move m : calcParallelMoves(fromPos)) {
         moves.add(m);
       }
-      for(Move m : calcDiagonalMoves(fromPos)) {
-        moves.add(m);
-      }
-
-    } else if(piece.getType() == PieceType.ROOK_WHITE || piece.getType() == PieceType.ROOK_BLACK) {
-      for(Move m : calcParallelMoves(fromPos)){
+      for (Move m : calcDiagonalMoves(fromPos)) {
         moves.add(m);
       }
 
-    } else if(piece.getType() == PieceType.BISHOP_WHITE || piece.getType() == PieceType.BISHOP_BLACK) {
-      for(Move m : calcDiagonalMoves(fromPos)) {
+    } else if (piece.getType() == PieceType.ROOK_WHITE || piece.getType() == PieceType.ROOK_BLACK) {
+      for (Move m : calcParallelMoves(fromPos)) {
         moves.add(m);
       }
 
-    } else if(piece.getType() == PieceType.KNIGHT_WHITE || piece.getType() == PieceType.KNIGHT_BLACK) {
-      int newRow = fromPos.row+2;
-      int newCol = fromPos.col+1;
-      if(Position.isOnBoard(newRow, newCol)){
+    } else if (piece.getType() == PieceType.BISHOP_WHITE
+        || piece.getType() == PieceType.BISHOP_BLACK) {
+      for (Move m : calcDiagonalMoves(fromPos)) {
+        moves.add(m);
+      }
+
+    } else if (piece.getType() == PieceType.KNIGHT_WHITE
+        || piece.getType() == PieceType.KNIGHT_BLACK) {
+      int newRow = fromPos.row + 2;
+      int newCol = fromPos.col + 1;
+      if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
-      newRow = fromPos.row+2;
-      newCol = fromPos.col-1;
-      if(Position.isOnBoard(newRow, newCol)){
+      newRow = fromPos.row + 2;
+      newCol = fromPos.col - 1;
+      if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
-      newRow = fromPos.row-2;
-      newCol = fromPos.col+1;
-      if(Position.isOnBoard(newRow, newCol)){
+      newRow = fromPos.row - 2;
+      newCol = fromPos.col + 1;
+      if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
-      newRow = fromPos.row-2;
-      newCol = fromPos.col-1;
-      if(Position.isOnBoard(newRow, newCol)){
+      newRow = fromPos.row - 2;
+      newCol = fromPos.col - 1;
+      if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
-      newRow = fromPos.row+1;
-      newCol = fromPos.col+2;
-      if(Position.isOnBoard(newRow, newCol)){
+      newRow = fromPos.row + 1;
+      newCol = fromPos.col + 2;
+      if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
-      newRow = fromPos.row-1;
-      newCol = fromPos.col+2;
-      if(Position.isOnBoard(newRow, newCol)){
+      newRow = fromPos.row - 1;
+      newCol = fromPos.col + 2;
+      if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
-      newRow = fromPos.row+1;
-      newCol = fromPos.col-2;
-      if(Position.isOnBoard(newRow, newCol)){
+      newRow = fromPos.row + 1;
+      newCol = fromPos.col - 2;
+      if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
-      newRow = fromPos.row-1;
-      newCol = fromPos.col-2;
-      if(Position.isOnBoard(newRow, newCol)){
+      newRow = fromPos.row - 1;
+      newCol = fromPos.col - 2;
+      if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
 
-    } else if(piece.getType() == PieceType.PAWN_WHITE) {
-      moves.add(new Move(fromPos, new Position(fromPos.row-1, fromPos.col), piece));
-      if(!piece.hasMoved()) {
-        moves.add(new Move(fromPos, new Position(fromPos.row-2, fromPos.col), piece));
+    } else if (piece.getType() == PieceType.PAWN_WHITE) {
+      if(fromPos.row - 1 >= 1) {
+        moves.add(new Move(fromPos, new Position(fromPos.row - 1, fromPos.col), piece));
+      } else {
+        // pawn promotion on row 0 (= rank 8)
+        String moveStr = Move.calcMoveString(fromPos, new Position(fromPos.row - 1, fromPos.col), piece);
+        moves.add(new Move(moveStr + "=Q", piece));
+        moves.add(new Move(moveStr + "=R", piece));
+        moves.add(new Move(moveStr + "=B", piece));
+        moves.add(new Move(moveStr + "=N", piece));
+      }
+      if (!piece.hasMoved()) {
+        moves.add(new Move(fromPos, new Position(fromPos.row - 2, fromPos.col), piece));
       }
       //captures
-      Position leftCapture = new Position(fromPos.row-1, fromPos.col-1);
-      Position rightCapture = new Position(fromPos.row-1, fromPos.col+1);
-      if (Position.isOnBoard(leftCapture.row, leftCapture.col) && getPieceAt(leftCapture) != ""){
-        if(leftCapture.row >= 1){
+      Position leftCapture = new Position(fromPos.row - 1, fromPos.col - 1);
+      Position rightCapture = new Position(fromPos.row - 1, fromPos.col + 1);
+      if (Position.isOnBoard(leftCapture.row, leftCapture.col) && getPieceAt(leftCapture) != "") {
+        if (leftCapture.row >= 1) {
           moves.add(new Move(fromPos, leftCapture, piece));
-        }
-        else {
+        } else {
+          // leftCapture on row 0 (= rank 8)
           String moveStr = Move.calcMoveString(fromPos, leftCapture, piece);
-          moves.add(new Move(moveStr+"=Q", piece));
-          moves.add(new Move(moveStr+"=R", piece));
-          moves.add(new Move(moveStr+"=B", piece));
-          moves.add(new Move(moveStr+"=N", piece));
+          moves.add(new Move(moveStr + "=Q", piece));
+          moves.add(new Move(moveStr + "=R", piece));
+          moves.add(new Move(moveStr + "=B", piece));
+          moves.add(new Move(moveStr + "=N", piece));
         }
       }
-      if (Position.isOnBoard(rightCapture.row, rightCapture.col) && getPieceAt(rightCapture) != ""){
-        if(rightCapture.row >= 1){
+      if (Position.isOnBoard(rightCapture.row, rightCapture.col)
+          && getPieceAt(rightCapture) != "") {
+        if (rightCapture.row >= 1) {
           moves.add(new Move(fromPos, rightCapture, piece));
-        }
-        else {
+        } else {
           String moveStr = Move.calcMoveString(fromPos, rightCapture, piece);
-          moves.add(new Move(moveStr+"=Q", piece));
-          moves.add(new Move(moveStr+"=R", piece));
-          moves.add(new Move(moveStr+"=B", piece));
-          moves.add(new Move(moveStr+"=N", piece));
+          moves.add(new Move(moveStr + "=Q", piece));
+          moves.add(new Move(moveStr + "=R", piece));
+          moves.add(new Move(moveStr + "=B", piece));
+          moves.add(new Move(moveStr + "=N", piece));
         }
       }
       // TODO implement en passant
 
-    } else if(piece.getType() == PieceType.PAWN_BLACK) {
-      moves.add(new Move(fromPos, new Position(fromPos.row+1, fromPos.col), piece));
-      if(!piece.hasMoved()) {
-        moves.add(new Move(fromPos, new Position(fromPos.row+2, fromPos.col), piece));
+    } else if (piece.getType() == PieceType.PAWN_BLACK) {
+      if(fromPos.row - 1 <= 6) {
+        moves.add(new Move(fromPos, new Position(fromPos.row + 1, fromPos.col), piece));
+      } else {
+        // pawn promotion on row 7 (= rank 1)
+        String moveStr = Move.calcMoveString(fromPos, new Position(fromPos.row + 1, fromPos.col), piece);
+        moves.add(new Move(moveStr + "=Q", piece));
+        moves.add(new Move(moveStr + "=R", piece));
+        moves.add(new Move(moveStr + "=B", piece));
+        moves.add(new Move(moveStr + "=N", piece));
+      }
+      if (!piece.hasMoved()) {
+        moves.add(new Move(fromPos, new Position(fromPos.row + 2, fromPos.col), piece));
       }
       //captures
-      Position leftCapture = new Position(fromPos.row+1, fromPos.col-1);
-      Position rightCapture = new Position(fromPos.row+1, fromPos.col+1);
-      if (Position.isOnBoard(leftCapture.row, leftCapture.col) && getPieceAt(leftCapture) != ""){
-        if(leftCapture.row >= 1){
+      Position leftCapture = new Position(fromPos.row + 1, fromPos.col - 1);
+      Position rightCapture = new Position(fromPos.row + 1, fromPos.col + 1);
+      if (Position.isOnBoard(leftCapture.row, leftCapture.col) && getPieceAt(leftCapture) != "") {
+        if (leftCapture.row <= 6) {
           moves.add(new Move(fromPos, leftCapture, piece));
-        }
-        else {
+        } else {
           String moveStr = Move.calcMoveString(fromPos, leftCapture, piece);
-          moves.add(new Move(moveStr+"=Q", piece));
-          moves.add(new Move(moveStr+"=R", piece));
-          moves.add(new Move(moveStr+"=B", piece));
-          moves.add(new Move(moveStr+"=N", piece));
+          moves.add(new Move(moveStr + "=Q", piece));
+          moves.add(new Move(moveStr + "=R", piece));
+          moves.add(new Move(moveStr + "=B", piece));
+          moves.add(new Move(moveStr + "=N", piece));
         }
       }
-      if (Position.isOnBoard(rightCapture.row, rightCapture.col) && getPieceAt(rightCapture) != ""){
-        if(rightCapture.row >= 1){
+      if (Position.isOnBoard(rightCapture.row, rightCapture.col)
+          && getPieceAt(rightCapture) != "") {
+        if (rightCapture.row <= 6) {
           moves.add(new Move(fromPos, rightCapture, piece));
-        }
-        else {
+        } else {
           String moveStr = Move.calcMoveString(fromPos, rightCapture, piece);
-          moves.add(new Move(moveStr+"=Q", piece));
-          moves.add(new Move(moveStr+"=R", piece));
-          moves.add(new Move(moveStr+"=B", piece));
-          moves.add(new Move(moveStr+"=N", piece));
+          moves.add(new Move(moveStr + "=Q", piece));
+          moves.add(new Move(moveStr + "=R", piece));
+          moves.add(new Move(moveStr + "=B", piece));
+          moves.add(new Move(moveStr + "=N", piece));
         }
       }
       // TODO implement en passant
@@ -517,21 +581,21 @@ public class Board {
     int row = pos.row;
     Piece piece = getPieceById(getPieceAt(pos));
     List<Move> moves = new ArrayList<>();
-    for(int i=1; i<8; i++) {
-      int newCol = col+i;
-      if(Position.isOnBoard(row, newCol)){
+    for (int i = 1; i < 8; i++) {
+      int newCol = col + i;
+      if (Position.isOnBoard(row, newCol)) {
         moves.add(new Move(pos, new Position(row, newCol), piece));
       }
-      newCol = col-i;
-      if(Position.isOnBoard(row, newCol)){
+      newCol = col - i;
+      if (Position.isOnBoard(row, newCol)) {
         moves.add(new Move(pos, new Position(row, newCol), piece));
       }
-      int newRow = row+i;
-      if(Position.isOnBoard(newRow, col)){
+      int newRow = row + i;
+      if (Position.isOnBoard(newRow, col)) {
         moves.add(new Move(pos, new Position(newRow, col), piece));
       }
-      newRow = row-i;
-      if(Position.isOnBoard(newRow, col)){
+      newRow = row - i;
+      if (Position.isOnBoard(newRow, col)) {
         moves.add(new Move(pos, new Position(newRow, col), piece));
       }
     }
@@ -549,42 +613,119 @@ public class Board {
     int row = pos.row;
     Piece piece = getPieceById(getPieceAt(pos));
     List<Move> moves = new ArrayList<>();
-    for(int i=1; i<=7; i++) {
-      int newCol = col+i;
-      int newRow = row+i;
-      if(Position.isOnBoard(newRow, newCol)){
+    for (int i = 1; i <= 7; i++) {
+      int newCol = col + i;
+      int newRow = row + i;
+      if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(pos, new Position(newRow, newCol), piece));
       }
-      newCol = col+i;
-      newRow = row-i;
-      if(Position.isOnBoard(newRow, newCol)){
+      newCol = col + i;
+      newRow = row - i;
+      if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(pos, new Position(newRow, newCol), piece));
       }
-      newCol = col-i;
-      newRow = row+i;
-      if(Position.isOnBoard(newRow, newCol)){
+      newCol = col - i;
+      newRow = row + i;
+      if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(pos, new Position(newRow, newCol), piece));
       }
-      newCol = col-i;
-      newRow = row-i;
-      if(Position.isOnBoard(newRow, newCol)){
+      newCol = col - i;
+      newRow = row - i;
+      if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(pos, new Position(newRow, newCol), piece));
       }
     }
     return moves;
   }
 
-  private synchronized boolean isLegalMove(Move move){
+  private synchronized boolean isLegalMove(Move move) {
     Piece movedPiece = move.getMovedPiece();
     PlayerColor color = movedPiece.getColor();
 
+    // check if move tries to capture own piece
+    // System.out.println(move.getNewPosition());
     String destinationPieceId = getPieceAt(move.getNewPosition());
-    if(destinationPieceId != ""){
+    if (destinationPieceId != "") {
       Piece destinationPiece = getPieceById(destinationPieceId);
-      if (destinationPiece.getColor().equals(movedPiece.getColor())){
+      if (destinationPiece.getColor().equals(movedPiece.getColor())) {
         return false;
       }
     }
+
+    // check if any piece blocks the way for multi-square move
+    if (move.isMultiSquareMove()) {
+      int oldRow = move.getOldPosition().row;
+      int newRow = move.getNewPosition().row;
+      int oldCol = move.getOldPosition().col;
+      int newCol = move.getNewPosition().col;
+      if (move.isParallelMove()) {
+        if (oldRow < newRow) {
+          for(int i=oldRow+1; i<newRow; i++) {
+            if(getPieceAt(new Position(i, oldCol)) != "") {
+              return false;
+            }
+          }
+        } else if (oldRow > newRow) {
+          for(int i=oldRow-1; i>newRow; i--) {
+            if (getPieceAt(new Position(i, oldCol)) != "") {
+              return false;
+            }
+          }
+        } else if (oldCol < newCol) {
+          for(int i=oldCol+1; i<newCol; i++) {
+            if(getPieceAt(new Position(oldRow, i)) != "") {
+              return false;
+            }
+          }
+        } else if (oldCol > newCol) {
+          for(int i=oldCol-1; i>newCol; i--) {
+            if (getPieceAt(new Position(oldRow, i)) != "") {
+              return false;
+            }
+          }
+        } else {
+          new IllegalMoveException(move).printStackTrace();
+        }
+      } else if (move.isDiagonalMove()) {
+        int diff = Math.abs(oldRow - newRow);
+        if (oldRow < newRow && oldCol < newCol) {
+          for(int i=1; i<diff; i++) {
+            if(getPieceAt(new Position(oldRow + i, oldCol + i)) != "") {
+              return false;
+            }
+          }
+        } else if (oldRow < newRow && oldCol > newCol) {
+          for(int i=1; i<diff; i++) {
+            if (getPieceAt(new Position(oldRow + i, oldCol - i)) != "") {
+              return false;
+            }
+          }
+        } else if (oldRow > newRow && oldCol < newCol) {
+          for(int i=1; i<diff; i++) {
+            if(getPieceAt(new Position(oldRow - i, oldCol + i)) != "") {
+              return false;
+            }
+          }
+        } else if (oldRow > newRow && oldCol > newCol) {
+          for(int i=1; i<diff; i++) {
+            if (getPieceAt(new Position(oldRow - i, oldCol - i)) != "") {
+              return false;
+            }
+          }
+        } else {
+          new IllegalMoveException(move).printStackTrace();
+        }
+      }
+    }
+
+    // check if move tries to push pawn to a blocked square
+    if(move.isPawnMove()) {
+      // TODO implement en passant
+      if (move.isParallelMove() && getPieceAt(move.getNewPosition()) != "") {
+        return false;
+      }
+    }
+
     Board newBoard = calcMoveToBoard(move);
     // if(isKingChecked(color, newBoard)){
     // return false;
@@ -597,8 +738,8 @@ public class Board {
 
   public synchronized List<Piece> calcMovablePieces(PlayerColor playerColor) {
     List<Piece> movablePieces = new ArrayList<>();
-    for(Piece piece : getPieces()){
-      if(piece.getColor() == playerColor && calcMovesForPiece(piece.getId()).size() > 0) {
+    for (Piece piece : getPieces()) {
+      if (piece.getColor() == playerColor && calcMovesForPiece(piece.getId()).size() > 0) {
         movablePieces.add(piece);
       }
     }
@@ -607,15 +748,18 @@ public class Board {
 
   /**
    * Checks if the player with the specified color is checkmated on this board
+   *
    * @param color
    * @return true if it is a checkmate
    */
-  public synchronized boolean isCheckmate(PlayerColor color){
+  public synchronized boolean isCheckmate(PlayerColor color) {
     return isKingChecked(color) && calcPossibleMoves(color).size() == 0;
   }
 
   /**
-   * Checks if it is a stalemate, i.e., if the player with the specified color does not have any move left but is not checked.
+   * Checks if it is a stalemate, i.e., if the player with the specified color does not have any
+   * move left but is not checked.
+   *
    * @param color
    * @return true if it is a stalemate
    */
@@ -627,7 +771,7 @@ public class Board {
   public synchronized boolean isKingChecked(PlayerColor color) {
     PlayerColor opponentColor = color == PlayerColor.WHITE ? PlayerColor.BLACK : PlayerColor.WHITE;
     Position kingPosition = getKingPosition(color);
-    for (Move m : calcPossibleMoves(opponentColor)){
+    for (Move m : calcPossibleMoves(opponentColor)) {
       if (m.getNewPosition().equals(kingPosition)) {
         return true;
       }
