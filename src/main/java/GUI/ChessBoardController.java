@@ -2,6 +2,9 @@ package GUI;
 
 import Game.GameEngine;
 import Game.Piece;
+import Game.Player;
+import Game.PlayerColor;
+import Util.Exception.IllegalMoveException;
 import Util.Position;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -44,11 +47,16 @@ public class ChessBoardController {
   private ImageView image60, image61, image62, image63, image64, image65, image66, image67;
   @FXML
   private ImageView image70, image71, image72, image73, image74, image75, image76, image77;
+  @FXML
+  private Button knightPromotion, bishopPromotion, rookPromotion, queenPromotion;
+  @FXML
+  private ImageView knightImage, bishopImage, rookImage, queenImage;
 
   private Button[][] boardSquares;
   private ImageView[][] imageViews;
   private Position selectedFrom;
   private Position selectedTo;
+  private char selectedPromotion = '0';
 
 
 
@@ -166,6 +174,66 @@ public class ChessBoardController {
     }
   }
 
+  public synchronized void handlePromotion(Event e) {
+    Button b = (Button) e.getSource();
+    if (b.equals(knightPromotion)){
+      selectedPromotion = 'N';
+    } else if (b.equals(bishopPromotion)) {
+      selectedPromotion = 'B';
+    } else if (b.equals(rookPromotion)) {
+      selectedPromotion = 'R';
+    } else if (b.equals(queenPromotion)) {
+      selectedPromotion = 'Q';
+    } else {
+      new UnsupportedOperationException().printStackTrace();
+      selectedPromotion = '0';
+    }
+  }
+
+  public synchronized void activatePromotionButtons(PlayerColor color){
+    selectedPromotion = '0';
+
+    knightPromotion.setDisable(false);
+    bishopPromotion.setDisable(false);
+    rookPromotion.setDisable(false);
+    queenPromotion.setDisable(false);
+    knightPromotion.setVisible(true);
+    bishopPromotion.setVisible(true);
+    rookPromotion.setVisible(true);
+    queenPromotion.setVisible(true);
+
+    knightImage.setImage(color.equals(PlayerColor.WHITE) ? GUIConfig.KNIGHT_WHITE : GUIConfig.KNIGHT_BLACK);
+    bishopImage.setImage(color.equals(PlayerColor.WHITE) ? GUIConfig.BISHOP_WHITE : GUIConfig.BISHOP_BLACK);
+    rookImage.setImage(color.equals(PlayerColor.WHITE) ? GUIConfig.ROOK_WHITE : GUIConfig.ROOK_BLACK);
+    queenImage.setImage(color.equals(PlayerColor.WHITE) ? GUIConfig.QUEEN_WHITE : GUIConfig.QUEEN_BLACK);
+    knightImage.setVisible(true);
+    bishopImage.setVisible(true);
+    rookImage.setVisible(true);
+    queenImage.setVisible(true);
+  }
+
+  public synchronized void deactivatePromotionButtons(){
+    knightPromotion.setDisable(true);
+    bishopPromotion.setDisable(true);
+    rookPromotion.setDisable(true);
+    queenPromotion.setDisable(true);
+    knightPromotion.setVisible(false);
+    bishopPromotion.setVisible(false);
+    rookPromotion.setVisible(false);
+    queenPromotion.setVisible(false);
+
+    knightImage.setImage(null);
+    bishopImage.setImage(null);
+    rookImage.setImage(null);
+    queenImage.setImage(null);
+    knightImage.setVisible(false);
+    bishopImage.setVisible(false);
+    rookImage.setVisible(false);
+    queenImage.setVisible(false);
+
+    selectedPromotion = '0';
+  }
+
   public synchronized Position getPositionOfButton(Button b) {
     for (int i=0; i<=7; i++){
       for (int j=0; j<=7; j++){
@@ -188,6 +256,8 @@ public class ChessBoardController {
   public Position getSelectedTo(){
     return this.selectedTo;
   }
+
+  public char getSelectedPromotion(){return this.selectedPromotion;}
 
 
 }

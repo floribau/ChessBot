@@ -25,6 +25,7 @@ public class Player {
   }
 
   public synchronized Move makeMove(){
+    // TODO change button activation (should be activated in the beginning and then kept active until user input
     controller.resetSelectedButtons();
     while(controller.getSelectedFrom() == null || controller.getSelectedTo() == null) {
       if(controller.getSelectedFrom() == null) {
@@ -48,6 +49,21 @@ public class Player {
     Move m = new Move(controller.getSelectedFrom(), controller.getSelectedTo(), GameEngine.getCurrentBoard()
         .getPieceById(GameEngine.getCurrentBoard().getPieceAt(controller.getSelectedFrom())));
     controller.resetSelectedButtons();
+
+    if(m.isPawnMove() && (m.getNewPosition().row == 0 || m.getNewPosition().row == 7)) {
+      controller.activatePromotionButtons(color);
+      while(controller.getSelectedPromotion() == '0'){
+        try {
+          Thread.sleep(50);
+        } catch (InterruptedException e){
+          // ignore
+        }
+      }
+      String moveString = m.getMoveString() + "=" + controller.getSelectedPromotion();
+      Piece piece = m.getMovedPiece();
+      controller.deactivatePromotionButtons();
+      m = new Move(moveString, piece);
+    }
     return m;
   }
 }
