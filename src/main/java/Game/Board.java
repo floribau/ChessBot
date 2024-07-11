@@ -21,17 +21,11 @@ public class Board {
     }
   }
 
-  public Board(String[][] board) {
-
-  }
-
   private Board(Board board) {
     String[][] boardString = board.getBoard();
     this.board = new String[8][8];
     for (int i = 0; i <= 7; i++) {
-      for (int j = 0; j <= 7; j++) {
-        this.board[i][j] = boardString[i][j];
-      }
+      System.arraycopy(boardString[i], 0, this.board[i], 0, 8);
     }
     this.pieces = new ArrayList<>();
     for (Piece p : board.pieces) {
@@ -160,7 +154,7 @@ public class Board {
     Piece movedPiece = getPieceById(move.getMovedPiece().getId());
 
     //capture piece
-    if (destinationPieceId != "") {
+    if (isSquareOccupied(move.getNewPosition())) {
       Piece capturedPiece = getPieceById(destinationPieceId);
       if (capturedPiece.getColor().equals(movedPiece.getColor())) {
         new IllegalMoveException(move).printStackTrace();
@@ -185,9 +179,8 @@ public class Board {
     if (move.isEnPassant()) {
       if (movedPiece.getColor().equals(PlayerColor.WHITE)) {
         Position capturedPos = new Position(newPos.row + 1, newPos.col);
-        String capturedPieceId = getPieceAt(capturedPos);
-        if (capturedPieceId != "") {
-          Piece capturedPiece = getPieceById(capturedPieceId);
+        if (isSquareOccupied(capturedPos)) {
+          Piece capturedPiece = getPieceById(getPieceAt(capturedPos));
           setPieceAt(capturedPos, "");
           pieces.remove(capturedPiece);
         } else {
@@ -196,9 +189,8 @@ public class Board {
       } else {
         // PlayerColor.BLACK
         Position capturedPos = new Position(newPos.row - 1, newPos.col);
-        String capturedPieceId = getPieceAt(capturedPos);
-        if (capturedPieceId != "") {
-          Piece capturedPiece = getPieceById(capturedPieceId);
+        if (isSquareOccupied(capturedPos)) {
+          Piece capturedPiece = getPieceById(getPieceAt(capturedPos));
           setPieceAt(capturedPos, "");
           pieces.remove(capturedPiece);
         } else {
@@ -218,7 +210,7 @@ public class Board {
       this.setPieceAt(newPosRook, rookId);
       rookPiece.setHasMoved();
       //queen-side castles
-    } else if (move.getMovedPiece().equals("O-O-O")) {
+    } else if (move.getMoveString().equals("O-O-O")) {
       Position oldPosRook =
           movedPiece.getColor() == PlayerColor.WHITE ? new Position(7, 0) : new Position(0, 0);
       Position newPosRook = new Position(oldPosRook.row, newPos.col + 1);
@@ -303,14 +295,14 @@ public class Board {
   }
 
   public String toString() {
-    String res = "";
+    StringBuilder res = new StringBuilder();
     for (int i = 0; i <= 7; i++) {
       for (int j = 0; j <= 7; j++) {
-        res += "[" + board[i][j] + "]";
+        res.append("[").append(board[i][j]).append("]");
       }
-      res += "\n";
+      res.append("\n");
     }
-    return res;
+    return res.toString();
   }
 
   public List<Piece> getPieces() {
@@ -375,9 +367,7 @@ public class Board {
   public synchronized List<Move> calcPossibleMoves(PlayerColor playerColor) {
     List<Move> moves = new ArrayList<>();
     for (Piece piece : getPieces(playerColor)) {
-      for (Move move : calcMovesForPiece(piece.getId())) {
-        moves.add(move);
-      }
+      moves.addAll(calcMovesForPiece(piece.getId()));
     }
     return moves;
   }
@@ -414,7 +404,6 @@ public class Board {
         moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
       newRow = fromPos.row - 1;
-      newCol = fromPos.col;
       if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
@@ -423,7 +412,6 @@ public class Board {
       if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
-      newRow = fromPos.row;
       newCol = fromPos.col - 1;
       if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
@@ -448,29 +436,19 @@ public class Board {
       if (Position.isOnBoard(newRow, newCol)) {
         moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
-      for (Move m : getCastleMoves(piece.getColor())) {
-        moves.add(m);
-      }
+      moves.addAll(getCastleMoves(piece.getColor()));
 
     } else if (piece.getType() == PieceType.QUEEN_WHITE
         || piece.getType() == PieceType.QUEEN_BLACK) {
-      for (Move m : calcParallelMoves(fromPos)) {
-        moves.add(m);
-      }
-      for (Move m : calcDiagonalMoves(fromPos)) {
-        moves.add(m);
-      }
+      moves.addAll(calcParallelMoves(fromPos));
+      moves.addAll(calcDiagonalMoves(fromPos));
 
     } else if (piece.getType() == PieceType.ROOK_WHITE || piece.getType() == PieceType.ROOK_BLACK) {
-      for (Move m : calcParallelMoves(fromPos)) {
-        moves.add(m);
-      }
+      moves.addAll(calcParallelMoves(fromPos));
 
     } else if (piece.getType() == PieceType.BISHOP_WHITE
         || piece.getType() == PieceType.BISHOP_BLACK) {
-      for (Move m : calcDiagonalMoves(fromPos)) {
-        moves.add(m);
-      }
+      moves.addAll(calcDiagonalMoves(fromPos));
 
     } else if (piece.getType() == PieceType.KNIGHT_WHITE
         || piece.getType() == PieceType.KNIGHT_BLACK) {
@@ -532,7 +510,7 @@ public class Board {
       //captures
       Position leftCapture = new Position(fromPos.row - 1, fromPos.col - 1);
       Position rightCapture = new Position(fromPos.row - 1, fromPos.col + 1);
-      if (Position.isOnBoard(leftCapture.row, leftCapture.col) && getPieceAt(leftCapture) != "") {
+      if (Position.isOnBoard(leftCapture.row, leftCapture.col) && isSquareOccupied(leftCapture)) {
         if (leftCapture.row >= 1) {
           moves.add(new Move(fromPos, leftCapture, piece));
         } else {
@@ -545,7 +523,7 @@ public class Board {
         }
       }
       if (Position.isOnBoard(rightCapture.row, rightCapture.col)
-          && getPieceAt(rightCapture) != "") {
+          && isSquareOccupied(rightCapture)) {
         if (rightCapture.row >= 1) {
           moves.add(new Move(fromPos, rightCapture, piece));
         } else {
@@ -558,18 +536,18 @@ public class Board {
       }
       // en passant
       if (Position.isOnBoard(fromPos.row, fromPos.col -1)) {
-        String leftPieceId = getPieceAt(new Position(fromPos.row, fromPos.col - 1));
-        if(leftPieceId != "") {
-          Piece leftPiece = getPieceById(leftPieceId);
+        Position leftPos = new Position(fromPos.row, fromPos.col - 1);
+        if(isSquareOccupied(leftPos)) {
+          Piece leftPiece = getPieceById(getPieceAt(leftPos));
           if (leftPiece.isEnPassantPossible()) {
             moves.add(new Move(fromPos, leftCapture, piece, true));
           }
         }
       }
       if (Position.isOnBoard(fromPos.row, fromPos.col + 1)) {
-        String rightPieceId = getPieceAt(new Position(fromPos.row, fromPos.col + 1));
-        if(rightPieceId != "") {
-          Piece rightPiece = getPieceById(rightPieceId);
+        Position rightPos = new Position(fromPos.row, fromPos.col - 1);
+        if(isSquareOccupied(rightPos)) {
+          Piece rightPiece = getPieceById(getPieceAt(rightPos));
           if (rightPiece.isEnPassantPossible()) {
             moves.add(new Move(fromPos, rightCapture, piece, true));
           }
@@ -593,7 +571,7 @@ public class Board {
       //captures
       Position leftCapture = new Position(fromPos.row + 1, fromPos.col - 1);
       Position rightCapture = new Position(fromPos.row + 1, fromPos.col + 1);
-      if (Position.isOnBoard(leftCapture.row, leftCapture.col) && getPieceAt(leftCapture) != "") {
+      if (Position.isOnBoard(leftCapture.row, leftCapture.col) && isSquareOccupied(leftCapture)) {
         if (leftCapture.row <= 6) {
           moves.add(new Move(fromPos, leftCapture, piece));
         } else {
@@ -605,7 +583,7 @@ public class Board {
         }
       }
       if (Position.isOnBoard(rightCapture.row, rightCapture.col)
-          && getPieceAt(rightCapture) != "") {
+          && isSquareOccupied(rightCapture)) {
         if (rightCapture.row <= 6) {
           moves.add(new Move(fromPos, rightCapture, piece));
         } else {
@@ -618,27 +596,26 @@ public class Board {
       }
       // en passant
       if (Position.isOnBoard(fromPos.row, fromPos.col -1)) {
-        String leftPieceId = getPieceAt(new Position(fromPos.row, fromPos.col - 1));
-        if(leftPieceId != "") {
-          Piece leftPiece = getPieceById(leftPieceId);
+        Position leftPos = new Position(fromPos.row, fromPos.col - 1);
+        if(isSquareOccupied(leftPos)) {
+          Piece leftPiece = getPieceById(getPieceAt(leftPos));
           if (leftPiece.isEnPassantPossible()) {
             moves.add(new Move(fromPos, leftCapture, piece, true));
           }
         }
       }
       if (Position.isOnBoard(fromPos.row, fromPos.col + 1)) {
-        String rightPieceId = getPieceAt(new Position(fromPos.row, fromPos.col + 1));
-        if(rightPieceId != "") {
-          Piece rightPiece = getPieceById(rightPieceId);
+        Position rightPos = new Position(fromPos.row, fromPos.col + 1);
+        if(isSquareOccupied(rightPos)) {
+          Piece rightPiece = getPieceById(getPieceAt(rightPos));
           if (rightPiece.isEnPassantPossible()) {
             moves.add(new Move(fromPos, rightCapture, piece, true));
           }
         }
       }
 
-    } else {
-      // some error occurred
     }
+
     return moves;
   }
 
@@ -715,9 +692,8 @@ public class Board {
     PlayerColor color = movedPiece.getColor();
 
     // check if move tries to capture own piece
-    String destinationPieceId = getPieceAt(move.getNewPosition());
-    if (destinationPieceId != "") {
-      Piece destinationPiece = getPieceById(destinationPieceId);
+    if (isSquareOccupied(move.getNewPosition())) {
+      Piece destinationPiece = getPieceById(getPieceAt(move.getNewPosition()));
       if (destinationPiece.getColor().equals(movedPiece.getColor())) {
         return false;
       }
@@ -732,25 +708,25 @@ public class Board {
       if (move.isParallelMove()) {
         if (oldRow < newRow) {
           for(int i=oldRow+1; i<newRow; i++) {
-            if(getPieceAt(new Position(i, oldCol)) != "") {
+            if(isSquareOccupied(new Position(i, oldCol))) {
               return false;
             }
           }
         } else if (oldRow > newRow) {
           for(int i=oldRow-1; i>newRow; i--) {
-            if (getPieceAt(new Position(i, oldCol)) != "") {
+            if (isSquareOccupied(new Position(i, oldCol))) {
               return false;
             }
           }
         } else if (oldCol < newCol) {
           for(int i=oldCol+1; i<newCol; i++) {
-            if(getPieceAt(new Position(oldRow, i)) != "") {
+            if(isSquareOccupied(new Position(oldRow, i))) {
               return false;
             }
           }
         } else if (oldCol > newCol) {
           for(int i=oldCol-1; i>newCol; i--) {
-            if (getPieceAt(new Position(oldRow, i)) != "") {
+            if (isSquareOccupied(new Position(oldRow, i))) {
               return false;
             }
           }
@@ -761,25 +737,25 @@ public class Board {
         int diff = Math.abs(oldRow - newRow);
         if (oldRow < newRow && oldCol < newCol) {
           for(int i=1; i<diff; i++) {
-            if(getPieceAt(new Position(oldRow + i, oldCol + i)) != "") {
+            if(isSquareOccupied(new Position(oldRow + i, oldCol + i))) {
               return false;
             }
           }
         } else if (oldRow < newRow && oldCol > newCol) {
           for(int i=1; i<diff; i++) {
-            if (getPieceAt(new Position(oldRow + i, oldCol - i)) != "") {
+            if (isSquareOccupied(new Position(oldRow + i, oldCol - i))) {
               return false;
             }
           }
         } else if (oldRow > newRow && oldCol < newCol) {
           for(int i=1; i<diff; i++) {
-            if(getPieceAt(new Position(oldRow - i, oldCol + i)) != "") {
+            if(isSquareOccupied(new Position(oldRow - i, oldCol + i))) {
               return false;
             }
           }
         } else if (oldRow > newRow && oldCol > newCol) {
           for(int i=1; i<diff; i++) {
-            if (getPieceAt(new Position(oldRow - i, oldCol - i)) != "") {
+            if (isSquareOccupied(new Position(oldRow - i, oldCol - i))) {
               return false;
             }
           }
@@ -791,7 +767,7 @@ public class Board {
 
     if(move.isPawnMove()) {
       // check if move tries to push pawn to a blocked square
-      if (move.isParallelMove() && getPieceAt(move.getNewPosition()) != "") {
+      if (move.isParallelMove() && isSquareOccupied(move.getNewPosition())) {
         return false;
       }
     }
@@ -819,7 +795,7 @@ public class Board {
   /**
    * Checks if the player with the specified color is checkmated on this board
    *
-   * @param color
+   * @param color the color of the player
    * @return true if it is a checkmate
    */
   public synchronized boolean isCheckmate(PlayerColor color) {
@@ -830,7 +806,7 @@ public class Board {
    * Checks if it is a stalemate, i.e., if the player with the specified color does not have any
    * move left but is not checked.
    *
-   * @param color
+   * @param color the color of the player
    * @return true if it is a stalemate
    */
   public synchronized boolean isStalemate(PlayerColor color) {
@@ -856,6 +832,10 @@ public class Board {
         piece.resetEnPassantPossible();
       }
     }
+  }
+
+  public synchronized boolean isSquareOccupied(Position pos) {
+    return !getPieceAt(pos).equals("");
   }
 
 }

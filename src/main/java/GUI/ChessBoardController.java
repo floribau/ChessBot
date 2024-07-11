@@ -2,9 +2,7 @@ package GUI;
 
 import Game.GameEngine;
 import Game.Piece;
-import Game.Player;
 import Game.PlayerColor;
-import Util.Exception.IllegalMoveException;
 import Util.Position;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -98,7 +96,7 @@ public class ChessBoardController {
     } else {
       for (int i=0; i<=7; i++){
         for (int j=0; j<=7; j++){
-          if(board[i][j] != "" && board[i][j] != null){
+          if(!board[i][j].equals("") && board[i][j] != null){
             Piece piece = GameEngine.getCurrentBoard().getPieceById(board[i][j]);
             Image image = piece.getType().getImage();
             imageViews[i][j].setImage(image);
@@ -118,7 +116,7 @@ public class ChessBoardController {
   public synchronized void repaintFlipped(String[][] board){
     for (int i=0; i<=7; i++){
       for (int j=0; j<=7; j++){
-        if(board[i][j] != "" && board[i][j] != null){
+        if(!board[i][j].equals("") && board[i][j] != null){
           Piece piece = GameEngine.getCurrentBoard().getPieceById(board[i][j]);
           Image image = piece.getType().getImage();
           imageViews[7-i][7-j].setImage(image);

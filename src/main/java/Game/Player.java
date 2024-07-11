@@ -3,8 +3,8 @@ package Game;
 import GUI.ChessBoardController;
 
 public class Player {
-  private PlayerColor color;
-  private boolean humanPlayer;
+  private final PlayerColor color;
+  private final boolean humanPlayer;
   private ChessBoardController controller;
 
   public Player(PlayerColor color, boolean humanPlayer) {

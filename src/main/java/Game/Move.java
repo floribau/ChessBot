@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Move {
-  private String moveString = null;
+  private final String moveString;
   private final Position oldPos;
   private final Position newPos;
   private final Piece movedPiece;
@@ -74,10 +74,10 @@ public class Move {
 
   /**
    * calculates the string notation for a specified move. The string doesn't include promotions or captures
-   * @param oldPos
-   * @param newPos
-   * @param movedPiece
-   * @return
+   * @param oldPos - the original piece position
+   * @param newPos - the position to which the piece will be moved
+   * @param movedPiece - the piece that is moved
+   * @return moveString corresponding to the move specified by the parameters
    */
   public static String calcMoveString(Position oldPos, Position newPos, Piece movedPiece){
     // castle notation

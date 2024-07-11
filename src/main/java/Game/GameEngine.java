@@ -1,9 +1,6 @@
 package Game;
 
 import GUI.ChessBoardController;
-import Util.Position;
-import java.util.List;
-import java.util.ArrayList;
 import javafx.application.Platform;
 
 public class GameEngine {
@@ -12,7 +9,6 @@ public class GameEngine {
   private static Player player2;
   private static Player currentPlayer;
   private static ChessBoardController controller;
-  private static Thread gameThread;
 
   public synchronized static void startGame(ChessBoardController controller){
     // TODO implement logic to select game mode
@@ -33,13 +29,15 @@ public class GameEngine {
   }
 
   public synchronized static void playGame() {
-    gameThread = new Thread(() -> {
+    // TODO handle Checkmate and Stalemate
+    Thread gameThread = new Thread(() -> {
       while (!isCheckmate() && !isStalemate()) {
         Move move = currentPlayer.makeMove();
-        currentBoard.move(move);
-        Platform.runLater(() -> controller.repaint(currentBoard.getBoard()));
-        switchCurrentPlayer();
-        currentBoard.resetEnPassantPossible(currentPlayer.getColor());
+        if (currentBoard.move(move)) {
+          Platform.runLater(() -> controller.repaint(currentBoard.getBoard()));
+          switchCurrentPlayer();
+          currentBoard.resetEnPassantPossible(currentPlayer.getColor());
+        }
         try {
           Thread.sleep(50);
         } catch (InterruptedException e) {
@@ -47,6 +45,7 @@ public class GameEngine {
         }
       }
       // TODO handle Checkmate and Stalemate
+      System.out.println("Game over!");
     });
     gameThread.start();
   }
