@@ -11,6 +11,8 @@ public class Board {
 
   String[][] board;
   private List<Piece> pieces;
+  private boolean isWhiteKingChecked;
+  private boolean isBlackKingChecked;
 
   public Board() {
     this.board = new String[8][8];
@@ -22,15 +24,17 @@ public class Board {
   }
 
   private Board(Board board) {
-    String[][] boardString = board.getBoard();
     this.board = new String[8][8];
     for (int i = 0; i <= 7; i++) {
-      System.arraycopy(boardString[i], 0, this.board[i], 0, 8);
+      System.arraycopy(board.getBoard()[i], 0, this.board[i], 0, 8);
     }
+
     this.pieces = new ArrayList<>();
     for (Piece p : board.pieces) {
       this.pieces.add(p.copyPiece());
     }
+    this.isWhiteKingChecked = board.isWhiteKingChecked;
+    this.isBlackKingChecked = board.isBlackKingChecked;
   }
 
   /**
@@ -146,6 +150,9 @@ public class Board {
     this.setPieceAt(new Position(6, 5), pawn_white_5.getId());
     this.setPieceAt(new Position(6, 6), pawn_white_6.getId());
     this.setPieceAt(new Position(6, 7), pawn_white_7.getId());
+
+    this.isWhiteKingChecked = false;
+    this.isBlackKingChecked = false;
   }
 
 
@@ -259,6 +266,14 @@ public class Board {
       this.setPieceAt(newPos, p.getId());
       pieces.remove(movedPiece);
     }
+
+    // verify if move checks king
+    PlayerColor opponentColor = (movedPiece.getColor().equals(PlayerColor.WHITE)) ? PlayerColor.BLACK : PlayerColor.WHITE;
+    switch (opponentColor) {
+      case WHITE: isWhiteKingChecked = calcIsKingChecked(PlayerColor.WHITE);
+      case BLACK: isBlackKingChecked = calcIsKingChecked(PlayerColor.BLACK);
+    }
+
     return true;
   }
 
@@ -369,6 +384,30 @@ public class Board {
     for (Piece piece : getPieces(playerColor)) {
       moves.addAll(calcMovesForPiece(piece.getId()));
     }
+/*    // sets checked flag
+    // TODO verify if this is correct
+    switch (playerColor) {
+      case WHITE -> {
+        isBlackKingChecked = false;
+        for (Move m : moves) {
+          if(m.getNewPosition().equals(getKingPosition(PlayerColor.BLACK))){
+            isBlackKingChecked = true;
+            System.out.println("Black king is now in check!");
+            break;
+          }
+        }
+      }
+      case BLACK -> {
+        isWhiteKingChecked = false;
+        for (Move m : moves) {
+          if(m.getNewPosition().equals(getKingPosition(PlayerColor.WHITE))){
+            isWhiteKingChecked = true;
+            System.out.println("White king is now in check!");
+            break;
+          }
+        }
+      }
+    }*/
     return moves;
   }
 
@@ -545,7 +584,7 @@ public class Board {
         }
       }
       if (Position.isOnBoard(fromPos.row, fromPos.col + 1)) {
-        Position rightPos = new Position(fromPos.row, fromPos.col - 1);
+        Position rightPos = new Position(fromPos.row, fromPos.col + 1);
         if(isSquareOccupied(rightPos)) {
           Piece rightPiece = getPieceById(getPieceAt(rightPos));
           if (rightPiece.isEnPassantPossible()) {
@@ -773,9 +812,10 @@ public class Board {
     }
 
     Board newBoard = calcMoveToBoard(move);
-    // if(isKingChecked(color, newBoard)){
-    // return false;
-    // }
+    if(newBoard.isKingChecked(color)){
+      System.out.println("Result of isKingChecked(): King is in check");
+      return false;
+    }
 
     // TODO implement check for checks, for castling, for en passant, and for pieces blocking the way
 
@@ -813,12 +853,25 @@ public class Board {
     return !isKingChecked(color) && calcPossibleMoves(color).size() == 0;
   }
 
-  //TODO check if this works properly
   public synchronized boolean isKingChecked(PlayerColor color) {
+    switch (color) {
+      case WHITE -> {
+        return isWhiteKingChecked;
+      }
+      case BLACK -> {
+        return isBlackKingChecked;
+      }
+      default -> {
+        // should not happen
+        return false;
+      }
+    }
+  }
+
+  public synchronized boolean calcIsKingChecked(PlayerColor color) {
     PlayerColor opponentColor = (color == PlayerColor.WHITE) ? PlayerColor.BLACK : PlayerColor.WHITE;
-    Position kingPosition = getKingPosition(color);
     for (Move m : calcPossibleMoves(opponentColor)) {
-      if (m.getNewPosition().equals(kingPosition)) {
+      if (m.getNewPosition().equals(getKingPosition(color))) {
         return true;
       }
     }
