@@ -1,6 +1,8 @@
 package Game;
 
 import Util.Position;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Move {
   private String moveString = null;
@@ -12,28 +14,26 @@ public class Move {
     this.oldPos = oldPos;
     this.newPos = newPos;
     this.movedPiece = movedPiece;
+    this.moveString = Move.calcMoveString(oldPos, newPos, movedPiece);
+  }
 
-    PlayerColor color = movedPiece.getColor();
-    String pieceIdAtDestination = GameEngine.getCurrentBoard().getPieceAt(newPos);
+  public Move(String moveString, Piece movedPiece) {
+    this.moveString = moveString;
+    this.movedPiece = movedPiece;
 
-    // Castle notation
-    if(movedPiece.getType() == PieceType.KING_WHITE || movedPiece.getType() == PieceType.KING_BLACK){
-      if(newPos.row == oldPos.row){
-        if(newPos.col == oldPos.col + 2) {
-          this.moveString = "O-O";
-        }
-        else if(newPos.col == oldPos.col -2) {
-          this.moveString = "O-O-O";
-        }
-      }
-    }
-
-    // normal move notation
-    if (this.moveString == null) {
-      String moveStr = movedPiece.getType().getShortName() + "";
-      moveStr += oldPos.getChessCoordinate();
-      moveStr += newPos.getChessCoordinate();
-      this.moveString = moveStr;
+    String coordinatePattern = "([a-h][1-8]).*?([a-h][1-8])";
+    Pattern pattern = Pattern.compile(coordinatePattern);
+    Matcher matcher = pattern.matcher(this.moveString);
+    if (matcher.find()) {
+      String oldCoordinate = matcher.group(1);
+      String newCoordinate = matcher.group(2);
+      this.oldPos = new Position(oldCoordinate);
+      this.newPos = new Position(newCoordinate);
+      System.out.println();
+    } else {
+      System.out.println("No coordinates found in the notation.");
+      this.oldPos = null;
+      this.newPos = null;
     }
   }
 
@@ -59,6 +59,32 @@ public class Move {
 
   public String toString(){
     return this.moveString;
+  }
+
+  /**
+   * calculates the string notation for a specified move. The string doesn't include promotions or captures
+   * @param oldPos
+   * @param newPos
+   * @param movedPiece
+   * @return
+   */
+  public static String calcMoveString(Position oldPos, Position newPos, Piece movedPiece){
+    // castle notation
+    if(movedPiece.getType() == PieceType.KING_WHITE || movedPiece.getType() == PieceType.KING_BLACK){
+      if(newPos.row == oldPos.row){
+        if(newPos.col == oldPos.col + 2) {
+          return "O-O";
+        }
+        else if(newPos.col == oldPos.col -2) {
+          return "O-O-O";
+        }
+      }
+    }
+    // normal move notation
+    String moveStr = movedPiece.getType().getShortName() + "";
+    moveStr += oldPos.getChessCoordinate();
+    moveStr += newPos.getChessCoordinate();
+    return moveStr;
   }
 
 }

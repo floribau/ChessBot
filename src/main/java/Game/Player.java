@@ -35,7 +35,7 @@ public class Player {
         controller.disableAllButtons();
         controller.activateButton(controller.getSelectedFrom());
         String selectedPieceId = GameEngine.getCurrentBoard().getPieceAt(controller.getSelectedFrom());
-        for(Move move : GameEngine.calcMovesForPiece(selectedPieceId, GameEngine.getCurrentBoard())){
+        for(Move move : GameEngine.getCurrentBoard().calcMovesForPiece(selectedPieceId)){
           controller.activateButton(move.getNewPosition());
         }
       }

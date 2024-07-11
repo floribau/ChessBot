@@ -17,6 +17,20 @@ public class Piece {
     this.hasMoved = false;
   }
 
+  private Piece(Piece piece){
+    this.id = piece.id;
+    this.type = piece.type;
+    this.color = piece.color;
+    this.hasMoved = piece.hasMoved;
+  }
+
+  /**
+   * Provides a deep copy of the Piece instance
+   */
+  public Piece copyPiece() {
+    return new Piece(this);
+  }
+
   private synchronized static int getNextId(PieceType type){
     int nextId = pieceCounters.getOrDefault(type, 0);
     pieceCounters.put(type, nextId + 1);

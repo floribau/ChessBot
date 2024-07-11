@@ -19,17 +19,28 @@ public class Board {
   }
 
   public Board(String[][] board){
+
+  }
+
+  private Board(Board board){
+    String[][] boardString = board.getBoard();
     this.board = new String[8][8];
     for(int i=0; i<=7; i++) {
       for(int j=0; j<=7; j++) {
-        this.board[i][j] = board[i][j];
+        this.board[i][j] = boardString[i][j];
       }
+    }
+    this.pieces = new ArrayList<>();
+    for(Piece p : board.pieces) {
+      this.pieces.add(p.copyPiece());
     }
   }
 
-  public Board(Board board){
-    String[][] boardString = board.getBoard();
-    new Board(boardString);
+  /**
+   * Provides deep copy of the Board instance
+   */
+  public Board copyBoard() {
+    return new Board(this);
   }
   
   public void initBoard(){
@@ -144,7 +155,7 @@ public class Board {
   public boolean move(Move move) {
     // TODO implement move action from reading move string
     String destinationPieceId = getPieceAt(move.getNewPosition());
-    Piece movedPiece = move.getMovedPiece();
+    Piece movedPiece = getPieceById(move.getMovedPiece().getId());
     if(destinationPieceId != ""){
       Piece destinationPiece = getPieceById(destinationPieceId);
       if(destinationPiece.getColor().equals(movedPiece.getColor())){
@@ -226,6 +237,15 @@ public class Board {
   public List<Piece> getPieces() {
     return pieces;
   }
+  public List<Piece> getPieces(PlayerColor color) {
+    List<Piece> colorPieces = new ArrayList<>();
+    for (Piece p : pieces){
+      if(p.getColor().equals(color)){
+        colorPieces.add(p);
+      }
+    }
+    return colorPieces;
+  }
 
   public Position getKingPosition(PlayerColor color) {
     switch (color){
@@ -262,5 +282,356 @@ public class Board {
     }
 
     return moves;
+  }
+
+  public synchronized List<Board> calcPossibleBoards(PlayerColor playerColor){
+    List<Board> boards = new ArrayList<>();
+    for(Move move : calcPossibleMoves(playerColor)){
+      boards.add(calcMoveToBoard(move));
+    }
+    return boards;
+  }
+
+  public synchronized List<Move> calcPossibleMoves(PlayerColor playerColor) {
+    List<Move> moves = new ArrayList<>();
+    for(Piece piece : getPieces(playerColor)){
+      for (Move move : calcMovesForPiece(piece.getId())) {
+        moves.add(move);
+      }
+    }
+    return moves;
+  }
+
+  public synchronized Board calcMoveToBoard(Move move) {
+    Board newBoard = copyBoard();
+    newBoard.move(move);
+    return newBoard;
+  }
+
+  public synchronized List<Move> calcMovesForPiece(String pieceId){
+    List<Move> moves = new ArrayList<>();
+    for (Move m : calcMovesOnBoardForPiece(pieceId)){
+      if(isLegalMove(m)){
+        moves.add(m);
+      }
+    }
+    return moves;
+  }
+
+  /***
+   * Calculates all moves on board obeying the move patterns of the piece. Pieces in the way and checks are disregarded.
+   * @param pieceId the piece to be moved
+   * @return the list of moves on board
+   */
+  private synchronized List<Move> calcMovesOnBoardForPiece(String pieceId){
+    List<Move> moves = new ArrayList<>();
+    Position fromPos = getPositionOfPiece(pieceId);
+    Piece piece = getPieceById(pieceId);
+    if (piece.getType() == PieceType.KING_WHITE || piece.getType() == PieceType.KING_BLACK){
+      int newRow = fromPos.row+1;
+      int newCol = fromPos.col;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
+      }
+      newRow = fromPos.row-1;
+      newCol = fromPos.col;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
+      }
+      newRow = fromPos.row;
+      newCol = fromPos.col+1;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
+      }
+      newRow = fromPos.row;
+      newCol = fromPos.col-1;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
+      }
+      newRow = fromPos.row+1;
+      newCol = fromPos.col+1;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
+      }
+      newRow = fromPos.row+1;
+      newCol = fromPos.col-1;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
+      }
+      newRow = fromPos.row-1;
+      newCol = fromPos.col+1;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
+      }
+      newRow = fromPos.row-1;
+      newCol = fromPos.col-1;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
+      }
+      for(Move m : getCastleMoves(piece.getColor())){
+        moves.add(m);
+      }
+
+    } else if (piece.getType() == PieceType.QUEEN_WHITE || piece.getType() == PieceType.QUEEN_BLACK) {
+      for(Move m : calcParallelMoves(fromPos)){
+        moves.add(m);
+      }
+      for(Move m : calcDiagonalMoves(fromPos)) {
+        moves.add(m);
+      }
+
+    } else if(piece.getType() == PieceType.ROOK_WHITE || piece.getType() == PieceType.ROOK_BLACK) {
+      for(Move m : calcParallelMoves(fromPos)){
+        moves.add(m);
+      }
+
+    } else if(piece.getType() == PieceType.BISHOP_WHITE || piece.getType() == PieceType.BISHOP_BLACK) {
+      for(Move m : calcDiagonalMoves(fromPos)) {
+        moves.add(m);
+      }
+
+    } else if(piece.getType() == PieceType.KNIGHT_WHITE || piece.getType() == PieceType.KNIGHT_BLACK) {
+      int newRow = fromPos.row+2;
+      int newCol = fromPos.col+1;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
+      }
+      newRow = fromPos.row+2;
+      newCol = fromPos.col-1;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
+      }
+      newRow = fromPos.row-2;
+      newCol = fromPos.col+1;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
+      }
+      newRow = fromPos.row-2;
+      newCol = fromPos.col-1;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
+      }
+      newRow = fromPos.row+1;
+      newCol = fromPos.col+2;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
+      }
+      newRow = fromPos.row-1;
+      newCol = fromPos.col+2;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
+      }
+      newRow = fromPos.row+1;
+      newCol = fromPos.col-2;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
+      }
+      newRow = fromPos.row-1;
+      newCol = fromPos.col-2;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
+      }
+
+    } else if(piece.getType() == PieceType.PAWN_WHITE) {
+      moves.add(new Move(fromPos, new Position(fromPos.row-1, fromPos.col), piece));
+      if(!piece.hasMoved()) {
+        moves.add(new Move(fromPos, new Position(fromPos.row-2, fromPos.col), piece));
+      }
+      //captures
+      Position leftCapture = new Position(fromPos.row-1, fromPos.col-1);
+      Position rightCapture = new Position(fromPos.row-1, fromPos.col+1);
+      if (Position.isOnBoard(leftCapture.row, leftCapture.col) && getPieceAt(leftCapture) != ""){
+        if(leftCapture.row >= 1){
+          moves.add(new Move(fromPos, leftCapture, piece));
+        }
+        else {
+          String moveStr = Move.calcMoveString(fromPos, leftCapture, piece);
+          moves.add(new Move(moveStr+"=Q", piece));
+          moves.add(new Move(moveStr+"=R", piece));
+          moves.add(new Move(moveStr+"=B", piece));
+          moves.add(new Move(moveStr+"=N", piece));
+        }
+      }
+      if (Position.isOnBoard(rightCapture.row, rightCapture.col) && getPieceAt(rightCapture) != ""){
+        if(rightCapture.row >= 1){
+          moves.add(new Move(fromPos, rightCapture, piece));
+        }
+        else {
+          String moveStr = Move.calcMoveString(fromPos, rightCapture, piece);
+          moves.add(new Move(moveStr+"=Q", piece));
+          moves.add(new Move(moveStr+"=R", piece));
+          moves.add(new Move(moveStr+"=B", piece));
+          moves.add(new Move(moveStr+"=N", piece));
+        }
+      }
+      // TODO implement en passant
+
+    } else if(piece.getType() == PieceType.PAWN_BLACK) {
+      moves.add(new Move(fromPos, new Position(fromPos.row+1, fromPos.col), piece));
+      if(!piece.hasMoved()) {
+        moves.add(new Move(fromPos, new Position(fromPos.row+2, fromPos.col), piece));
+      }
+      //captures
+      Position leftCapture = new Position(fromPos.row+1, fromPos.col-1);
+      Position rightCapture = new Position(fromPos.row+1, fromPos.col+1);
+      if (Position.isOnBoard(leftCapture.row, leftCapture.col) && getPieceAt(leftCapture) != ""){
+        if(leftCapture.row >= 1){
+          moves.add(new Move(fromPos, leftCapture, piece));
+        }
+        else {
+          String moveStr = Move.calcMoveString(fromPos, leftCapture, piece);
+          moves.add(new Move(moveStr+"=Q", piece));
+          moves.add(new Move(moveStr+"=R", piece));
+          moves.add(new Move(moveStr+"=B", piece));
+          moves.add(new Move(moveStr+"=N", piece));
+        }
+      }
+      if (Position.isOnBoard(rightCapture.row, rightCapture.col) && getPieceAt(rightCapture) != ""){
+        if(rightCapture.row >= 1){
+          moves.add(new Move(fromPos, rightCapture, piece));
+        }
+        else {
+          String moveStr = Move.calcMoveString(fromPos, rightCapture, piece);
+          moves.add(new Move(moveStr+"=Q", piece));
+          moves.add(new Move(moveStr+"=R", piece));
+          moves.add(new Move(moveStr+"=B", piece));
+          moves.add(new Move(moveStr+"=N", piece));
+        }
+      }
+      // TODO implement en passant
+
+    } else {
+      // some error occurred
+    }
+    return moves;
+  }
+
+  /**
+   * Calculates all parallel moves from the starting position that are still on the board
+   *
+   * @param pos the starting position
+   * @return the list of all parallel moves that are still on the board
+   */
+  private synchronized List<Move> calcParallelMoves(Position pos) {
+    int col = pos.col;
+    int row = pos.row;
+    Piece piece = getPieceById(getPieceAt(pos));
+    List<Move> moves = new ArrayList<>();
+    for(int i=1; i<8; i++) {
+      int newCol = col+i;
+      if(Position.isOnBoard(row, newCol)){
+        moves.add(new Move(pos, new Position(row, newCol), piece));
+      }
+      newCol = col-i;
+      if(Position.isOnBoard(row, newCol)){
+        moves.add(new Move(pos, new Position(row, newCol), piece));
+      }
+      int newRow = row+i;
+      if(Position.isOnBoard(newRow, col)){
+        moves.add(new Move(pos, new Position(newRow, col), piece));
+      }
+      newRow = row-i;
+      if(Position.isOnBoard(newRow, col)){
+        moves.add(new Move(pos, new Position(newRow, col), piece));
+      }
+    }
+    return moves;
+  }
+
+  /**
+   * Calculates all diagonal moves from the starting position that are still on the board
+   *
+   * @param pos the starting position
+   * @return the list of all diagonal moves that are still on the board
+   */
+  private synchronized List<Move> calcDiagonalMoves(Position pos) {
+    int col = pos.col;
+    int row = pos.row;
+    Piece piece = getPieceById(getPieceAt(pos));
+    List<Move> moves = new ArrayList<>();
+    for(int i=1; i<=7; i++) {
+      int newCol = col+i;
+      int newRow = row+i;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(pos, new Position(newRow, newCol), piece));
+      }
+      newCol = col+i;
+      newRow = row-i;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(pos, new Position(newRow, newCol), piece));
+      }
+      newCol = col-i;
+      newRow = row+i;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(pos, new Position(newRow, newCol), piece));
+      }
+      newCol = col-i;
+      newRow = row-i;
+      if(Position.isOnBoard(newRow, newCol)){
+        moves.add(new Move(pos, new Position(newRow, newCol), piece));
+      }
+    }
+    return moves;
+  }
+
+  private synchronized boolean isLegalMove(Move move){
+    Piece movedPiece = move.getMovedPiece();
+    PlayerColor color = movedPiece.getColor();
+
+    String destinationPieceId = getPieceAt(move.getNewPosition());
+    if(destinationPieceId != ""){
+      Piece destinationPiece = getPieceById(destinationPieceId);
+      if (destinationPiece.getColor().equals(movedPiece.getColor())){
+        return false;
+      }
+    }
+    Board newBoard = calcMoveToBoard(move);
+    // if(isKingChecked(color, newBoard)){
+    // return false;
+    // }
+
+    // TODO implement check for checks, for castling, for en passant, and for pieces blocking the way
+
+    return true;
+  }
+
+  public synchronized List<Piece> calcMovablePieces(PlayerColor playerColor) {
+    List<Piece> movablePieces = new ArrayList<>();
+    for(Piece piece : getPieces()){
+      if(piece.getColor() == playerColor && calcMovesForPiece(piece.getId()).size() > 0) {
+        movablePieces.add(piece);
+      }
+    }
+    return movablePieces;
+  }
+
+  /**
+   * Checks if the player with the specified color is checkmated on this board
+   * @param color
+   * @return true if it is a checkmate
+   */
+  public synchronized boolean isCheckmate(PlayerColor color){
+    return isKingChecked(color) && calcPossibleMoves(color).size() == 0;
+  }
+
+  /**
+   * Checks if it is a stalemate, i.e., if the player with the specified color does not have any move left but is not checked.
+   * @param color
+   * @return true if it is a stalemate
+   */
+  public synchronized boolean isStalemate(PlayerColor color) {
+    return !isKingChecked(color) && calcPossibleMoves(color).size() == 0;
+  }
+
+  //TODO check if this works properly
+  public synchronized boolean isKingChecked(PlayerColor color) {
+    PlayerColor opponentColor = color == PlayerColor.WHITE ? PlayerColor.BLACK : PlayerColor.WHITE;
+    Position kingPosition = getKingPosition(color);
+    for (Move m : calcPossibleMoves(opponentColor)){
+      if (m.getNewPosition().equals(kingPosition)) {
+        return true;
+      }
+    }
+    return false;
   }
 }
