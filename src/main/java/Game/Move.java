@@ -87,4 +87,28 @@ public class Move {
     return moveStr;
   }
 
+  public boolean isMultiSquareMove(){
+    return Math.abs(oldPos.col - newPos.col) >= 2 || Math.abs(oldPos.row - newPos.row) >= 2;
+  }
+
+  public boolean isParallelMove(){
+    return oldPos.row == newPos.row || oldPos.col == newPos.col;
+  }
+
+  public boolean isDiagonalMove(){
+    return Math.abs(oldPos.row - newPos.row) == Math.abs(oldPos.col - newPos.col);
+  }
+
+  public boolean isKnightMove(){
+    return movedPiece.getType().equals(PieceType.KNIGHT_WHITE) || movedPiece.getType().equals(PieceType.KING_BLACK);
+  }
+
+  public boolean isPawnMove(){
+    return movedPiece.getType().equals(PieceType.PAWN_WHITE) || movedPiece.getType().equals(PieceType.PAWN_BLACK);
+  }
+
+  public boolean isPromotion(){
+    return isPawnMove() && moveString.contains("=");
+  }
+
 }
