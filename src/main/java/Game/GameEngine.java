@@ -38,7 +38,6 @@ public class GameEngine {
         Move move = currentPlayer.makeMove();
         currentBoard.move(move);
         Platform.runLater(() -> controller.repaint(currentBoard.getBoard()));
-        System.out.println(currentBoard);
         switchCurrentPlayer();
         currentBoard.resetEnPassantPossible(currentPlayer.getColor());
         try {

@@ -190,7 +190,6 @@ public class Board {
           Piece capturedPiece = getPieceById(capturedPieceId);
           setPieceAt(capturedPos, "");
           pieces.remove(capturedPiece);
-          // System.out.println(this);
         } else {
           new IllegalMoveException(move).printStackTrace();
         }
@@ -238,7 +237,6 @@ public class Board {
       String promotion;
       if (matcher.find()) {
         promotion = matcher.group(1);
-        System.out.println(promotion);
       } else {
         new IllegalMoveException(move).printStackTrace();
         promotion = null;
