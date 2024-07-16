@@ -4,8 +4,8 @@ import Game.Board;
 import Game.Piece;
 import Game.PlayerColor;
 
-public class AIUtil {
-  public synchronized static float scoreBoard(Board board) {
+public class AIHeuristics {
+  public synchronized static float evaluateBoard(Board board) {
     board.calcPossibleMoves(PlayerColor.WHITE);
     board.calcPossibleMoves(PlayerColor.BLACK);
     if (board.isCheckmate(PlayerColor.WHITE)) return Float.NEGATIVE_INFINITY;

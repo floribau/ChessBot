@@ -32,9 +32,7 @@ public class Move {
       String newCoordinate = matcher.group(2);
       this.oldPos = new Position(oldCoordinate);
       this.newPos = new Position(newCoordinate);
-      System.out.println();
     } else {
-      System.out.println("No coordinates found in the notation.");
       this.oldPos = null;
       this.newPos = null;
     }

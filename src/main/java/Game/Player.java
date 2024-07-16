@@ -27,9 +27,7 @@ public class Player {
   }
 
   public synchronized Move makeMove(){
-    // TODO change button activation (should be activated in the beginning and then kept active until user input
     controller.resetSelectedButtons();
-    controller.disableAllButtons();
     GameEngine.activateColorButtons(this.color);
     Position oldSelectedFrom = null;
     while(controller.getSelectedFrom() == null || controller.getSelectedTo() == null) {
@@ -81,6 +79,8 @@ public class Player {
       }
     }
 
+    controller.disableAllButtons();
+    System.out.println(color + " selected move " + m);
     return m;
   }
 }
