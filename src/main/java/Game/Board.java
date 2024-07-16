@@ -11,8 +11,6 @@ public class Board {
 
   String[][] board;
   private List<Piece> pieces;
-  private boolean isWhiteKingChecked;
-  private boolean isBlackKingChecked;
 
   public Board() {
     this.board = new String[8][8];
@@ -33,8 +31,6 @@ public class Board {
     for (Piece p : board.pieces) {
       this.pieces.add(p.copyPiece());
     }
-    this.isWhiteKingChecked = board.isWhiteKingChecked;
-    this.isBlackKingChecked = board.isBlackKingChecked;
   }
 
   /**
@@ -150,9 +146,6 @@ public class Board {
     this.setPieceAt(new Position(6, 5), pawn_white_5.getId());
     this.setPieceAt(new Position(6, 6), pawn_white_6.getId());
     this.setPieceAt(new Position(6, 7), pawn_white_7.getId());
-
-    this.isWhiteKingChecked = false;
-    this.isBlackKingChecked = false;
   }
 
 
@@ -267,14 +260,6 @@ public class Board {
       pieces.remove(movedPiece);
     }
 
-    // verify if move checks king
-    // TODO fix StackoverflowError
-    PlayerColor opponentColor = (movedPiece.getColor().equals(PlayerColor.WHITE)) ? PlayerColor.BLACK : PlayerColor.WHITE;
-    switch (opponentColor) {
-      case WHITE: isWhiteKingChecked = calcIsKingChecked(PlayerColor.WHITE);
-      case BLACK: isBlackKingChecked = calcIsKingChecked(PlayerColor.BLACK);
-    }
-
     return true;
   }
 
@@ -380,35 +365,26 @@ public class Board {
     return boards;
   }
 
-  public synchronized List<Move> calcPossibleMoves(PlayerColor playerColor) {
+  public synchronized List<Move> calcPossibleMoves(PlayerColor color) {
     List<Move> moves = new ArrayList<>();
-    for (Piece piece : getPieces(playerColor)) {
-      moves.addAll(calcMovesForPiece(piece.getId()));
+    for (Move m : calcLegalMovesOnBoard(color)) {
+      if (!calcMoveToBoard(m).isKingInCheck(color)) {
+        moves.add(m);
+      }
+      else {
+        System.out.println("Move " + m + " puts " + color + " king in check");
+      }
     }
-/*    // sets checked flag
-    // TODO verify if this is correct
-    switch (playerColor) {
-      case WHITE -> {
-        isBlackKingChecked = false;
-        for (Move m : moves) {
-          if(m.getNewPosition().equals(getKingPosition(PlayerColor.BLACK))){
-            isBlackKingChecked = true;
-            System.out.println("Black king is now in check!");
-            break;
-          }
-        }
+    return moves;
+  }
+
+  public synchronized List<Move> calcPossibleMovesForPiece(String pieceId) {
+    List<Move> moves = new ArrayList<>();
+    for (Move m : calcPossibleMoves(getPieceById(pieceId).getColor())) {
+      if (m.getMovedPiece().getId().equals(pieceId)) {
+        moves.add(m);
       }
-      case BLACK -> {
-        isWhiteKingChecked = false;
-        for (Move m : moves) {
-          if(m.getNewPosition().equals(getKingPosition(PlayerColor.WHITE))){
-            isWhiteKingChecked = true;
-            System.out.println("White king is now in check!");
-            break;
-          }
-        }
-      }
-    }*/
+    }
     return moves;
   }
 
@@ -418,11 +394,13 @@ public class Board {
     return newBoard;
   }
 
-  public synchronized List<Move> calcMovesForPiece(String pieceId) {
+  public synchronized List<Move> calcLegalMovesOnBoard(PlayerColor color) {
     List<Move> moves = new ArrayList<>();
-    for (Move m : calcMovesOnBoardForPiece(pieceId)) {
-      if (isLegalMove(m)) {
-        moves.add(m);
+    for (Piece p : getPieces(color)) {
+      for (Move m : calcMovesOnBoardForPiece(p.getId())) {
+        if (isLegalMove(m)) {
+          moves.add(m);
+        }
       }
     }
     return moves;
@@ -727,6 +705,11 @@ public class Board {
     return moves;
   }
 
+  /**
+   * Checks whether a given move obeys to the rules of chess, or whether it is, e.g., blocked by a piece. This method ignores whether the result of the move is a check on the own king
+   * @param move
+   * @return
+   */
   private synchronized boolean isLegalMove(Move move) {
     Piece movedPiece = move.getMovedPiece();
     PlayerColor color = movedPiece.getColor();
@@ -812,22 +795,14 @@ public class Board {
       }
     }
 
-    Board newBoard = calcMoveToBoard(move);
-    if(newBoard.isKingChecked(color)){
-      System.out.println("Result of isKingChecked(): King is in check");
-      return false;
-    }
-
-    // TODO implement check for checks, for castling, for en passant, and for pieces blocking the way
-
     return true;
   }
 
   public synchronized List<Piece> calcMovablePieces(PlayerColor playerColor) {
     List<Piece> movablePieces = new ArrayList<>();
-    for (Piece piece : getPieces()) {
-      if (piece.getColor() == playerColor && calcMovesForPiece(piece.getId()).size() > 0) {
-        movablePieces.add(piece);
+    for (Piece p : getPieces(playerColor)) {
+      if (calcPossibleMovesForPiece(p.getId()).size() > 0) {
+        movablePieces.add(p);
       }
     }
     return movablePieces;
@@ -840,7 +815,7 @@ public class Board {
    * @return true if it is a checkmate
    */
   public synchronized boolean isCheckmate(PlayerColor color) {
-    return isKingChecked(color) && calcPossibleMoves(color).size() == 0;
+    return isKingInCheck(color) && calcPossibleMoves(color).size() == 0;
   }
 
   /**
@@ -851,28 +826,13 @@ public class Board {
    * @return true if it is a stalemate
    */
   public synchronized boolean isStalemate(PlayerColor color) {
-    return !isKingChecked(color) && calcPossibleMoves(color).size() == 0;
+    return !isKingInCheck(color) && calcPossibleMoves(color).size() == 0;
   }
 
-  public synchronized boolean isKingChecked(PlayerColor color) {
-    switch (color) {
-      case WHITE -> {
-        return isWhiteKingChecked;
-      }
-      case BLACK -> {
-        return isBlackKingChecked;
-      }
-      default -> {
-        // should not happen
-        return false;
-      }
-    }
-  }
-
-  public synchronized boolean calcIsKingChecked(PlayerColor color) {
-    PlayerColor opponentColor = (color == PlayerColor.WHITE) ? PlayerColor.BLACK : PlayerColor.WHITE;
-    for (Move m : calcPossibleMoves(opponentColor)) {
+  public synchronized boolean isKingInCheck(PlayerColor color) {
+    for (Move m : calcLegalMovesOnBoard(color.getOppositeColor())) {
       if (m.getNewPosition().equals(getKingPosition(color))) {
+        System.out.println(m.getMovedPiece() + " puts " + color + " king in check on square " + m.getNewPosition());
         return true;
       }
     }

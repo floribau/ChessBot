@@ -1,6 +1,8 @@
 package Game;
 
 import GUI.ChessBoardController;
+import Util.Position;
+import javafx.scene.control.Button;
 
 public class Player {
   private final PlayerColor color;
@@ -27,19 +29,25 @@ public class Player {
   public synchronized Move makeMove(){
     // TODO change button activation (should be activated in the beginning and then kept active until user input
     controller.resetSelectedButtons();
+    controller.disableAllButtons();
+    GameEngine.activateColorButtons(this.color);
+    Position oldSelectedFrom = null;
     while(controller.getSelectedFrom() == null || controller.getSelectedTo() == null) {
-      if(controller.getSelectedFrom() == null) {
-        controller.disableAllButtons();
-        GameEngine.activateColorButtons(this.color);
+      if (controller.getSelectedFrom() == null) {
+        if (oldSelectedFrom != null) {
+          controller.disableAllButtons();
+          GameEngine.activateColorButtons(this.color);
+        }
       }
       else {
         controller.disableAllButtons();
         controller.activateButton(controller.getSelectedFrom());
         String selectedPieceId = GameEngine.getCurrentBoard().getPieceAt(controller.getSelectedFrom());
-        for(Move move : GameEngine.getCurrentBoard().calcMovesForPiece(selectedPieceId)){
+        for(Move move : GameEngine.getCurrentBoard().calcPossibleMovesForPiece(selectedPieceId)){
           controller.activateButton(move.getNewPosition());
         }
       }
+      oldSelectedFrom = controller.getSelectedFrom();
       try {
         Thread.sleep(50);
       } catch (InterruptedException e){

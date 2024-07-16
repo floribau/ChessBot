@@ -29,7 +29,6 @@ public class GameEngine {
   }
 
   public synchronized static void playGame() {
-    // TODO handle Checkmate and Stalemate
     Thread gameThread = new Thread(() -> {
       while (!isCheckmate() && !isStalemate()) {
         Move move = currentPlayer.makeMove();
@@ -45,7 +44,12 @@ public class GameEngine {
         }
       }
       // TODO handle Checkmate and Stalemate
-      System.out.println("Game over!");
+      if (isCheckmate()) {
+        System.out.println("Checkmate!");
+      }
+      if (isStalemate()) {
+        System.out.println("Stalemate!");
+      }
     });
     gameThread.start();
   }
