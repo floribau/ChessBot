@@ -375,9 +375,6 @@ public class Board {
       if (!calcMoveToBoard(m).isKingInCheck(color)) {
         moves.add(m);
       }
-      else {
-        System.out.println("Move " + m + " puts " + color + " king in check");
-      }
     }
     switch (color) {
       case WHITE -> possibleMovesForWhite = moves;
@@ -842,7 +839,6 @@ public class Board {
   public synchronized boolean isKingInCheck(PlayerColor color) {
     for (Move m : calcLegalMovesOnBoard(color.getOppositeColor())) {
       if (m.getNewPosition().equals(getKingPosition(color))) {
-        System.out.println(m.getMovedPiece() + " puts " + color + " king in check on square " + m.getNewPosition());
         return true;
       }
     }

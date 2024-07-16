@@ -1,5 +1,6 @@
 package Game;
 
+import AI.AIPlayer;
 import GUI.ChessBoardController;
 import javafx.application.Platform;
 
@@ -12,9 +13,9 @@ public class GameEngine {
 
   public synchronized static void startGame(ChessBoardController controller){
     // TODO implement logic to select game mode
-    GameEngine.player1 = new Player(PlayerColor.WHITE, true);
+    GameEngine.player1 = new AIPlayer(PlayerColor.WHITE);
     GameEngine.currentPlayer = player1;
-    GameEngine.player2 = new Player(PlayerColor.BLACK, true);
+    GameEngine.player2 = new AIPlayer(PlayerColor.BLACK);
 
     currentBoard = new Board();
     currentBoard.initBoard();

@@ -66,4 +66,6 @@ public class Piece {
 
   public boolean isEnPassantPossible() {return this.enPassantPossible;}
 
+  public int getValue() {return this.type.getValue();}
+
 }
