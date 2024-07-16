@@ -36,6 +36,7 @@ public class GameEngine {
           Platform.runLater(() -> controller.repaint(currentBoard.getBoard()));
           switchCurrentPlayer();
           currentBoard.resetEnPassantPossible(currentPlayer.getColor());
+          currentBoard.calcPossibleMoves(currentPlayer.getColor());
         }
         try {
           Thread.sleep(50);

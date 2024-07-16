@@ -9,8 +9,10 @@ import java.util.regex.Pattern;
 
 public class Board {
 
-  String[][] board;
+  private String[][] board;
   private List<Piece> pieces;
+  private List<Move> possibleMovesForWhite;
+  private List<Move> possibleMovesForBlack;
 
   public Board() {
     this.board = new String[8][8];
@@ -146,6 +148,8 @@ public class Board {
     this.setPieceAt(new Position(6, 5), pawn_white_5.getId());
     this.setPieceAt(new Position(6, 6), pawn_white_6.getId());
     this.setPieceAt(new Position(6, 7), pawn_white_7.getId());
+
+    calcPossibleMoves(PlayerColor.WHITE);
   }
 
 
@@ -375,12 +379,17 @@ public class Board {
         System.out.println("Move " + m + " puts " + color + " king in check");
       }
     }
+    switch (color) {
+      case WHITE -> possibleMovesForWhite = moves;
+      case BLACK -> possibleMovesForBlack = moves;
+    }
     return moves;
   }
 
   public synchronized List<Move> calcPossibleMovesForPiece(String pieceId) {
+    List<Move> possibleMoves = getPieceById(pieceId).getColor().equals(PlayerColor.WHITE) ? possibleMovesForWhite : possibleMovesForBlack;
     List<Move> moves = new ArrayList<>();
-    for (Move m : calcPossibleMoves(getPieceById(pieceId).getColor())) {
+    for (Move m : possibleMoves) {
       if (m.getMovedPiece().getId().equals(pieceId)) {
         moves.add(m);
       }
@@ -815,7 +824,8 @@ public class Board {
    * @return true if it is a checkmate
    */
   public synchronized boolean isCheckmate(PlayerColor color) {
-    return isKingInCheck(color) && calcPossibleMoves(color).size() == 0;
+    List<Move> possibleMoves = color.equals(PlayerColor.WHITE) ? possibleMovesForWhite : possibleMovesForBlack;
+    return isKingInCheck(color) && possibleMoves.size() == 0;
   }
 
   /**
