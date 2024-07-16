@@ -6,6 +6,7 @@
   -fx-arc-height: 60;
   -fx-pref-width: 60;
   -fx-pref-height: 60;
+  -fx-background-color: transparent;
 }
 
 .square-white {
@@ -20,4 +21,5 @@
 .image-view {
   -fx-fit-width: 60;
   -fx-fit-height: 60;
+  -fx-opacity: 1;
 }
