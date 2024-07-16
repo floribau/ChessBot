@@ -145,12 +145,14 @@ public class ChessBoardController {
     int rowPos = isFlipBoard() ? 7 - pos.row : pos.row;
     int colPos = isFlipBoard() ? 7 - pos.col : pos.col;
     boardSquares[rowPos][colPos].setDisable(false);
+    imageViews[rowPos][colPos].setDisable(false);
   }
 
   public synchronized void disableAllButtons(){
     for (int i=0; i<=7; i++){
       for (int j=0; j<=7; j++){
         boardSquares[i][j].setDisable(true);
+        imageViews[i][j].setDisable(true);
       }
     }
   }
@@ -160,7 +162,7 @@ public class ChessBoardController {
     this.selectedTo = null;
   }
 
-  public synchronized void handleSquarePress(Position pos){
+  public synchronized void handleMoveSelection(Position pos){
     if(selectedFrom == null) {
       selectedFrom = pos;
     } else if(selectedFrom.equals(pos)) {
@@ -173,13 +175,13 @@ public class ChessBoardController {
   public synchronized void buttonClicked(Event e) {
     Button b = (Button) e.getSource();
     Position sourcePos = getPositionOfButton(b);
-    handleSquarePress(sourcePos);
+    handleMoveSelection(sourcePos);
   }
 
   public synchronized void imageClicked(Event e) {
     ImageView img = (ImageView) e.getSource();
     Position sourcePos = getPositionOfImage(img);
-    handleSquarePress(sourcePos);
+    handleMoveSelection(sourcePos);
   }
 
   public synchronized void handlePromotionButton(Event e) {

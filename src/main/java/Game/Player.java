@@ -49,7 +49,7 @@ public class Player {
       }
       oldSelectedFrom = controller.getSelectedFrom();
       try {
-        Thread.sleep(50);
+        Thread.sleep(100);
       } catch (InterruptedException e){
         // ignore
       }
