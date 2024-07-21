@@ -144,4 +144,17 @@ public class Move {
     return this.enPassant;
   }
 
+  public String getPromotionPiece() {
+    if (!isPromotion()) {
+      return null;
+    }
+    String symbolPattern = "=([^=])";
+    Pattern pattern = Pattern.compile(symbolPattern);
+    Matcher matcher = pattern.matcher(moveString);
+    if (matcher.find()) {
+      return matcher.group(1);
+    }
+    return null;
+  }
+
 }

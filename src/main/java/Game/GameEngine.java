@@ -13,11 +13,11 @@ public class GameEngine {
 
   public synchronized static void startGame(ChessBoardController controller){
     // TODO implement logic to select game mode
-    GameEngine.player1 = new AIPlayer(PlayerColor.WHITE);
-    // GameEngine.player1 = new Player(PlayerColor.WHITE, false);
+    // GameEngine.player1 = new AIPlayer(PlayerColor.WHITE);
+    GameEngine.player1 = new Player(PlayerColor.WHITE, false);
     GameEngine.currentPlayer = player1;
-    GameEngine.player2 = new AIPlayer(PlayerColor.BLACK);
-    // GameEngine.player2 = new Player(PlayerColor.BLACK, false);
+    // GameEngine.player2 = new AIPlayer(PlayerColor.BLACK);
+    GameEngine.player2 = new Player(PlayerColor.BLACK, false);
 
     currentBoard = new Board();
     currentBoard.initBoard();
