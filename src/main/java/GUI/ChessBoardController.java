@@ -98,7 +98,7 @@ public class ChessBoardController {
         for (int j=0; j<=7; j++){
           if(!board[i][j].equals("") && board[i][j] != null){
             Piece piece = GameEngine.getCurrentBoard().getPieceById(board[i][j]);
-            Image image = piece.getType().getImage();
+            Image image = piece.getImage();
             imageViews[i][j].setImage(image);
           } else {
             imageViews[i][j].setImage(null);
@@ -118,7 +118,7 @@ public class ChessBoardController {
       for (int j=0; j<=7; j++){
         if(!board[i][j].equals("") && board[i][j] != null){
           Piece piece = GameEngine.getCurrentBoard().getPieceById(board[i][j]);
-          Image image = piece.getType().getImage();
+          Image image = piece.getImage();
           imageViews[7-i][7-j].setImage(image);
         } else {
           imageViews[7-i][7-j].setImage(null);

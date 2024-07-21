@@ -79,7 +79,7 @@ public class Move {
    */
   public static String calcMoveString(Position oldPos, Position newPos, Piece movedPiece){
     // castle notation
-    if(movedPiece.getType() == PieceType.KING_WHITE || movedPiece.getType() == PieceType.KING_BLACK){
+    if(movedPiece.getType() == PieceType.KING){
       if(newPos.row == oldPos.row){
         if(newPos.col == oldPos.col + 2) {
           return "O-O";
@@ -109,27 +109,27 @@ public class Move {
   }
 
   public boolean isKingMove(){
-    return movedPiece.getType().equals(PieceType.KING_WHITE) || movedPiece.getType().equals(PieceType.KING_BLACK);
+    return movedPiece.getType().equals(PieceType.KING);
   }
 
   public boolean isQueenMove(){
-    return movedPiece.getType().equals(PieceType.QUEEN_WHITE) || movedPiece.getType().equals(PieceType.QUEEN_BLACK);
+    return movedPiece.getType().equals(PieceType.QUEEN);
   }
 
   public boolean isRookMove(){
-    return movedPiece.getType().equals(PieceType.ROOK_WHITE) || movedPiece.getType().equals(PieceType.ROOK_BLACK);
+    return movedPiece.getType().equals(PieceType.ROOK);
   }
 
   public boolean isBishopMove(){
-    return movedPiece.getType().equals(PieceType.BISHOP_WHITE) || movedPiece.getType().equals(PieceType.BISHOP_BLACK);
+    return movedPiece.getType().equals(PieceType.BISHOP);
   }
 
   public boolean isKnightMove(){
-    return movedPiece.getType().equals(PieceType.KNIGHT_WHITE) || movedPiece.getType().equals(PieceType.KNIGHT_BLACK);
+    return movedPiece.getType().equals(PieceType.KNIGHT);
   }
 
   public boolean isPawnMove(){
-    return movedPiece.getType().equals(PieceType.PAWN_WHITE) || movedPiece.getType().equals(PieceType.PAWN_BLACK);
+    return movedPiece.getType().equals(PieceType.PAWN);
   }
 
   public boolean isPromotion(){

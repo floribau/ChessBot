@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class AIPlayer extends Player {
-  private HashMap<String, Float> transpositionTable;
+  private HashMap<Board, Float> transpositionTable;
 
   public AIPlayer(PlayerColor color) {
     super(color, false);
@@ -25,9 +25,9 @@ public class AIPlayer extends Player {
     PlayerColor player = maximizingPlayer ? this.getColor() : this.getColor().getOppositeColor();
     board.calcPossibleMoves(player);
 
-    if(transpositionTable.containsKey(board.toString())) {
+    if(transpositionTable.containsKey(board)) {
       System.out.println("Position known");
-      return transpositionTable.get(board.toString());
+      return transpositionTable.get(board);
     }
 
     if (depth == 0 || board.isCheckmate(player) || board.isStalemate(player)) {
@@ -36,7 +36,7 @@ public class AIPlayer extends Player {
     }
 
     List<Move> moves = board.getPossibleMoves(player);
-    orderMoves(board, moves);
+    // orderMoves(board, moves);
     float resEval;
 
     if (maximizingPlayer) {
@@ -62,7 +62,7 @@ public class AIPlayer extends Player {
       }
       resEval = minEval;
     }
-    transpositionTable.put(board.toString(), resEval);
+    transpositionTable.put(board, resEval);
     return resEval;
   }
 
@@ -75,7 +75,7 @@ public class AIPlayer extends Player {
     float beta = Float.POSITIVE_INFINITY;
 
     List<Move> moves = board.getPossibleMoves(this.getColor());
-    orderMoves(board, moves);
+    // orderMoves(board, moves);
 
     for (Move m : board.getPossibleMoves(this.getColor())) {
       Board newBoard = board.calcMoveToBoard(m);
@@ -112,4 +112,5 @@ public class AIPlayer extends Player {
       }
     });
   }
+
 }

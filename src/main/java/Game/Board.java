@@ -3,6 +3,7 @@ package Game;
 import Util.Exception.IllegalMoveException;
 import Util.Position;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,112 +45,32 @@ public class Board {
 
   public void initBoard() {
     pieces = new ArrayList<>();
-
-    Piece king_white = new Piece(PieceType.KING_WHITE, PlayerColor.WHITE);
-    Piece queen_white = new Piece(PieceType.QUEEN_WHITE, PlayerColor.WHITE);
-    Piece rook_white_0 = new Piece(PieceType.ROOK_WHITE, PlayerColor.WHITE);
-    Piece rook_white_1 = new Piece(PieceType.ROOK_WHITE, PlayerColor.WHITE);
-    Piece bishop_white_0 = new Piece(PieceType.BISHOP_WHITE, PlayerColor.WHITE);
-    Piece bishop_white_1 = new Piece(PieceType.BISHOP_WHITE, PlayerColor.WHITE);
-    Piece knight_white_0 = new Piece(PieceType.KNIGHT_WHITE, PlayerColor.WHITE);
-    Piece knight_white_1 = new Piece(PieceType.KNIGHT_WHITE, PlayerColor.WHITE);
-    Piece pawn_white_0 = new Piece(PieceType.PAWN_WHITE, PlayerColor.WHITE);
-    Piece pawn_white_1 = new Piece(PieceType.PAWN_WHITE, PlayerColor.WHITE);
-    Piece pawn_white_2 = new Piece(PieceType.PAWN_WHITE, PlayerColor.WHITE);
-    Piece pawn_white_3 = new Piece(PieceType.PAWN_WHITE, PlayerColor.WHITE);
-    Piece pawn_white_4 = new Piece(PieceType.PAWN_WHITE, PlayerColor.WHITE);
-    Piece pawn_white_5 = new Piece(PieceType.PAWN_WHITE, PlayerColor.WHITE);
-    Piece pawn_white_6 = new Piece(PieceType.PAWN_WHITE, PlayerColor.WHITE);
-    Piece pawn_white_7 = new Piece(PieceType.PAWN_WHITE, PlayerColor.WHITE);
-
-    pieces.add(king_white);
-    pieces.add(queen_white);
-    pieces.add(rook_white_0);
-    pieces.add(rook_white_1);
-    pieces.add(bishop_white_0);
-    pieces.add(bishop_white_1);
-    pieces.add(knight_white_0);
-    pieces.add(knight_white_1);
-    pieces.add(pawn_white_0);
-    pieces.add(pawn_white_1);
-    pieces.add(pawn_white_2);
-    pieces.add(pawn_white_3);
-    pieces.add(pawn_white_4);
-    pieces.add(pawn_white_5);
-    pieces.add(pawn_white_6);
-    pieces.add(pawn_white_7);
-
-    Piece king_black = new Piece(PieceType.KING_BLACK, PlayerColor.BLACK);
-    Piece queen_black = new Piece(PieceType.QUEEN_BLACK, PlayerColor.BLACK);
-    Piece rook_black_0 = new Piece(PieceType.ROOK_BLACK, PlayerColor.BLACK);
-    Piece rook_black_1 = new Piece(PieceType.ROOK_BLACK, PlayerColor.BLACK);
-    Piece bishop_black_0 = new Piece(PieceType.BISHOP_BLACK, PlayerColor.BLACK);
-    Piece bishop_black_1 = new Piece(PieceType.BISHOP_BLACK, PlayerColor.BLACK);
-    Piece knight_black_0 = new Piece(PieceType.KNIGHT_BLACK, PlayerColor.BLACK);
-    Piece knight_black_1 = new Piece(PieceType.KNIGHT_BLACK, PlayerColor.BLACK);
-    Piece pawn_black_0 = new Piece(PieceType.PAWN_BLACK, PlayerColor.BLACK);
-    Piece pawn_black_1 = new Piece(PieceType.PAWN_BLACK, PlayerColor.BLACK);
-    Piece pawn_black_2 = new Piece(PieceType.PAWN_BLACK, PlayerColor.BLACK);
-    Piece pawn_black_3 = new Piece(PieceType.PAWN_BLACK, PlayerColor.BLACK);
-    Piece pawn_black_4 = new Piece(PieceType.PAWN_BLACK, PlayerColor.BLACK);
-    Piece pawn_black_5 = new Piece(PieceType.PAWN_BLACK, PlayerColor.BLACK);
-    Piece pawn_black_6 = new Piece(PieceType.PAWN_BLACK, PlayerColor.BLACK);
-    Piece pawn_black_7 = new Piece(PieceType.PAWN_BLACK, PlayerColor.BLACK);
-
-    pieces.add(king_black);
-    pieces.add(queen_black);
-    pieces.add(rook_black_0);
-    pieces.add(rook_black_1);
-    pieces.add(bishop_black_0);
-    pieces.add(bishop_black_1);
-    pieces.add(knight_black_0);
-    pieces.add(knight_black_1);
-    pieces.add(pawn_black_0);
-    pieces.add(pawn_black_1);
-    pieces.add(pawn_black_2);
-    pieces.add(pawn_black_3);
-    pieces.add(pawn_black_4);
-    pieces.add(pawn_black_5);
-    pieces.add(pawn_black_6);
-    pieces.add(pawn_black_7);
-
-    this.setPieceAt(new Position(0, 0), rook_black_0.getId());
-    this.setPieceAt(new Position(0, 1), knight_black_0.getId());
-    this.setPieceAt(new Position(0, 2), bishop_black_0.getId());
-    this.setPieceAt(new Position(0, 3), queen_black.getId());
-    this.setPieceAt(new Position(0, 4), king_black.getId());
-    this.setPieceAt(new Position(0, 5), bishop_black_1.getId());
-    this.setPieceAt(new Position(0, 6), knight_black_1.getId());
-    this.setPieceAt(new Position(0, 7), rook_black_1.getId());
-
-    this.setPieceAt(new Position(1, 0), pawn_black_0.getId());
-    this.setPieceAt(new Position(1, 1), pawn_black_1.getId());
-    this.setPieceAt(new Position(1, 2), pawn_black_2.getId());
-    this.setPieceAt(new Position(1, 3), pawn_black_3.getId());
-    this.setPieceAt(new Position(1, 4), pawn_black_4.getId());
-    this.setPieceAt(new Position(1, 5), pawn_black_5.getId());
-    this.setPieceAt(new Position(1, 6), pawn_black_6.getId());
-    this.setPieceAt(new Position(1, 7), pawn_black_7.getId());
-
-    this.setPieceAt(new Position(7, 0), rook_white_0.getId());
-    this.setPieceAt(new Position(7, 1), knight_white_0.getId());
-    this.setPieceAt(new Position(7, 2), bishop_white_0.getId());
-    this.setPieceAt(new Position(7, 3), queen_white.getId());
-    this.setPieceAt(new Position(7, 4), king_white.getId());
-    this.setPieceAt(new Position(7, 5), bishop_white_1.getId());
-    this.setPieceAt(new Position(7, 6), knight_white_1.getId());
-    this.setPieceAt(new Position(7, 7), rook_white_1.getId());
-
-    this.setPieceAt(new Position(6, 0), pawn_white_0.getId());
-    this.setPieceAt(new Position(6, 1), pawn_white_1.getId());
-    this.setPieceAt(new Position(6, 2), pawn_white_2.getId());
-    this.setPieceAt(new Position(6, 3), pawn_white_3.getId());
-    this.setPieceAt(new Position(6, 4), pawn_white_4.getId());
-    this.setPieceAt(new Position(6, 5), pawn_white_5.getId());
-    this.setPieceAt(new Position(6, 6), pawn_white_6.getId());
-    this.setPieceAt(new Position(6, 7), pawn_white_7.getId());
-
+    initPieces(PlayerColor.WHITE);
+    initPieces(PlayerColor.BLACK);
     calcPossibleMoves(PlayerColor.WHITE);
+  }
+
+  private void initPieces(PlayerColor color) {
+    int pawnRow = color == PlayerColor.WHITE ? 6 : 1;
+    int mainRow = color == PlayerColor.WHITE ? 7 : 0;
+
+    addPiece(new Piece(PieceType.KING, color), mainRow, 4);
+    addPiece(new Piece(PieceType.QUEEN, color), mainRow, 3);
+    addPiece(new Piece(PieceType.ROOK, color), mainRow, 0);
+    addPiece(new Piece(PieceType.ROOK, color), mainRow, 7);
+    addPiece(new Piece(PieceType.BISHOP, color), mainRow, 2);
+    addPiece(new Piece(PieceType.BISHOP, color), mainRow, 5);
+    addPiece(new Piece(PieceType.KNIGHT, color), mainRow, 1);
+    addPiece(new Piece(PieceType.KNIGHT, color), mainRow, 6);
+
+    for (int i = 0; i < 8; i++) {
+      addPiece(new Piece(PieceType.PAWN, color), pawnRow, i);
+    }
+  }
+
+  private void addPiece(Piece piece, int row, int col) {
+    pieces.add(piece);
+    setPieceAt(new Position(row, col), piece.getId());
   }
 
 
@@ -226,7 +147,7 @@ public class Board {
     }
 
     // pawn promotion
-    if(move.isPromotion()){
+    if (move.isPromotion()) {
       String symbolPattern = "=([^=])";
       Pattern pattern = Pattern.compile(symbolPattern);
       Matcher matcher = pattern.matcher(move.getMoveString());
@@ -238,26 +159,14 @@ public class Board {
         promotion = null;
       }
       PieceType type = null;
-      Piece p;
-      if (move.getMovedPiece().getColor().equals(PlayerColor.WHITE)) {
-        switch (promotion) {
-          case "Q" -> type = PieceType.QUEEN_WHITE;
-          case "R" -> type = PieceType.ROOK_WHITE;
-          case "B" -> type = PieceType.BISHOP_WHITE;
-          case "N" -> type = PieceType.KNIGHT_WHITE;
-          default -> new IllegalMoveException(move).printStackTrace();
-        }
-        p = new Piece(type, PlayerColor.WHITE);
-      } else {
-        switch (promotion) {
-          case "Q" -> type = PieceType.QUEEN_BLACK;
-          case "R" -> type = PieceType.ROOK_BLACK;
-          case "B" -> type = PieceType.BISHOP_BLACK;
-          case "N" -> type = PieceType.KNIGHT_BLACK;
-          default -> new IllegalMoveException(move).printStackTrace();
-        }
-        p = new Piece(type, PlayerColor.BLACK);
+      switch (promotion) {
+        case "Q" -> type = PieceType.QUEEN;
+        case "R" -> type = PieceType.ROOK;
+        case "B" -> type = PieceType.BISHOP;
+        case "N" -> type = PieceType.KNIGHT;
+        default -> new IllegalMoveException(move).printStackTrace();
       }
+      Piece p = new Piece(type, movedPiece.getColor());
       p.setHasMoved();
       pieces.add(p);
       this.setPieceAt(newPos, p.getId());
@@ -299,17 +208,6 @@ public class Board {
     return null;
   }
 
-  public String toString() {
-    StringBuilder res = new StringBuilder();
-    for (int i = 0; i <= 7; i++) {
-      for (int j = 0; j <= 7; j++) {
-        res.append("[").append(board[i][j]).append("]");
-      }
-      res.append("\n");
-    }
-    return res.toString();
-  }
-
   public List<Piece> getPieces() {
     return pieces;
   }
@@ -325,33 +223,25 @@ public class Board {
   }
 
   public Position getKingPosition(PlayerColor color) {
-    switch (color) {
-      case WHITE -> {
-        return getPositionOfPiece(PieceType.KING_WHITE + "0");
-      }
-      case BLACK -> {
-        return getPositionOfPiece(PieceType.KING_BLACK + "0");
-      }
-      default -> {
-        return null;
-      }
-    }
+    return getPositionOfPiece(PieceType.KING + "_" + color + "0");
   }
 
   public List<Move> getCastleMoves(PlayerColor color) {
     List<Move> moves = new ArrayList<>();
-    Piece kingPiece = getPieceById("KING_" + color + "0");
-    Piece rookPiece0 = getPieceById("ROOK_" + color + "0");
-    Piece rookPiece1 = getPieceById("ROOK_" + color + "1");
+    Piece kingPiece = getPieceById(PieceType.KING.getDisplayName() + "_" + color + "0");
+    Piece rookPiece0 = getPieceById(PieceType.ROOK.getDisplayName() + "_" + color + "0");
+    Piece rookPiece1 = getPieceById(PieceType.ROOK.getDisplayName() + "_" + color + "1");
 
     if (!kingPiece.hasMoved()) {
       Position oldKingPosition = getPositionOfPiece(kingPiece.getId());
-      if (!(rookPiece0 == null) && kingPiece.getColor().equals(rookPiece0.getColor()) && !rookPiece0.hasMoved()) {
+      if (!(rookPiece0 == null) && kingPiece.getColor().equals(rookPiece0.getColor())
+          && !rookPiece0.hasMoved()) {
         Position newKingPosition = new Position(oldKingPosition.row, oldKingPosition.col - 2);
         Move bigCastle = new Move(oldKingPosition, newKingPosition, kingPiece);
         moves.add(bigCastle);
       }
-      if (!(rookPiece1 == null) && kingPiece.getColor().equals(rookPiece1.getColor()) && !rookPiece1.hasMoved()) {
+      if (!(rookPiece1 == null) && kingPiece.getColor().equals(rookPiece1.getColor())
+          && !rookPiece1.hasMoved()) {
         Position newKingPosition = new Position(oldKingPosition.row, oldKingPosition.col + 2);
         Move smallCastle = new Move(oldKingPosition, newKingPosition, kingPiece);
         moves.add(smallCastle);
@@ -384,7 +274,9 @@ public class Board {
   }
 
   public synchronized List<Move> calcPossibleMovesForPiece(String pieceId) {
-    List<Move> possibleMoves = getPieceById(pieceId).getColor().equals(PlayerColor.WHITE) ? possibleMovesForWhite : possibleMovesForBlack;
+    List<Move> possibleMoves =
+        getPieceById(pieceId).getColor().equals(PlayerColor.WHITE) ? possibleMovesForWhite
+            : possibleMovesForBlack;
     List<Move> moves = new ArrayList<>();
     for (Move m : possibleMoves) {
       if (m.getMovedPiece().getId().equals(pieceId)) {
@@ -421,7 +313,7 @@ public class Board {
     List<Move> moves = new ArrayList<>();
     Position fromPos = getPositionOfPiece(pieceId);
     Piece piece = getPieceById(pieceId);
-    if (piece.getType() == PieceType.KING_WHITE || piece.getType() == PieceType.KING_BLACK) {
+    if (piece.getType() == PieceType.KING) {
       int newRow = fromPos.row + 1;
       int newCol = fromPos.col;
       if (Position.isOnBoard(newRow, newCol)) {
@@ -462,20 +354,17 @@ public class Board {
       }
       moves.addAll(getCastleMoves(piece.getColor()));
 
-    } else if (piece.getType() == PieceType.QUEEN_WHITE
-        || piece.getType() == PieceType.QUEEN_BLACK) {
+    } else if (piece.getType() == PieceType.QUEEN) {
       moves.addAll(calcParallelMoves(fromPos));
       moves.addAll(calcDiagonalMoves(fromPos));
 
-    } else if (piece.getType() == PieceType.ROOK_WHITE || piece.getType() == PieceType.ROOK_BLACK) {
+    } else if (piece.getType() == PieceType.ROOK) {
       moves.addAll(calcParallelMoves(fromPos));
 
-    } else if (piece.getType() == PieceType.BISHOP_WHITE
-        || piece.getType() == PieceType.BISHOP_BLACK) {
+    } else if (piece.getType() == PieceType.BISHOP) {
       moves.addAll(calcDiagonalMoves(fromPos));
 
-    } else if (piece.getType() == PieceType.KNIGHT_WHITE
-        || piece.getType() == PieceType.KNIGHT_BLACK) {
+    } else if (piece.getType() == PieceType.KNIGHT) {
       int newRow = fromPos.row + 2;
       int newCol = fromPos.col + 1;
       if (Position.isOnBoard(newRow, newCol)) {
@@ -517,12 +406,13 @@ public class Board {
         moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
       }
 
-    } else if (piece.getType() == PieceType.PAWN_WHITE) {
-      if(fromPos.row - 1 >= 1) {
+    } else if (piece.getType() == PieceType.PAWN && piece.getColor().equals(PlayerColor.WHITE)) {
+      if (fromPos.row - 1 >= 1) {
         moves.add(new Move(fromPos, new Position(fromPos.row - 1, fromPos.col), piece));
       } else {
         // pawn promotion on row 0 (= rank 8)
-        String moveStr = Move.calcMoveString(fromPos, new Position(fromPos.row - 1, fromPos.col), piece);
+        String moveStr = Move.calcMoveString(fromPos, new Position(fromPos.row - 1, fromPos.col),
+            piece);
         moves.add(new Move(moveStr + "=Q", piece));
         moves.add(new Move(moveStr + "=R", piece));
         moves.add(new Move(moveStr + "=B", piece));
@@ -559,9 +449,9 @@ public class Board {
         }
       }
       // en passant
-      if (Position.isOnBoard(fromPos.row, fromPos.col -1)) {
+      if (Position.isOnBoard(fromPos.row, fromPos.col - 1)) {
         Position leftPos = new Position(fromPos.row, fromPos.col - 1);
-        if(isSquareOccupied(leftPos)) {
+        if (isSquareOccupied(leftPos)) {
           Piece leftPiece = getPieceById(getPieceAt(leftPos));
           if (leftPiece.isEnPassantPossible()) {
             moves.add(new Move(fromPos, leftCapture, piece, true));
@@ -570,7 +460,7 @@ public class Board {
       }
       if (Position.isOnBoard(fromPos.row, fromPos.col + 1)) {
         Position rightPos = new Position(fromPos.row, fromPos.col + 1);
-        if(isSquareOccupied(rightPos)) {
+        if (isSquareOccupied(rightPos)) {
           Piece rightPiece = getPieceById(getPieceAt(rightPos));
           if (rightPiece.isEnPassantPossible()) {
             moves.add(new Move(fromPos, rightCapture, piece, true));
@@ -578,12 +468,13 @@ public class Board {
         }
       }
 
-    } else if (piece.getType() == PieceType.PAWN_BLACK) {
-      if(fromPos.row - 1 <= 6) {
+    } else if (piece.getType() == PieceType.PAWN && piece.getColor().equals(PlayerColor.BLACK)) {
+      if (fromPos.row - 1 <= 6) {
         moves.add(new Move(fromPos, new Position(fromPos.row + 1, fromPos.col), piece));
       } else {
         // pawn promotion on row 7 (= rank 1)
-        String moveStr = Move.calcMoveString(fromPos, new Position(fromPos.row + 1, fromPos.col), piece);
+        String moveStr = Move.calcMoveString(fromPos, new Position(fromPos.row + 1, fromPos.col),
+            piece);
         moves.add(new Move(moveStr + "=Q", piece));
         moves.add(new Move(moveStr + "=R", piece));
         moves.add(new Move(moveStr + "=B", piece));
@@ -619,9 +510,9 @@ public class Board {
         }
       }
       // en passant
-      if (Position.isOnBoard(fromPos.row, fromPos.col -1)) {
+      if (Position.isOnBoard(fromPos.row, fromPos.col - 1)) {
         Position leftPos = new Position(fromPos.row, fromPos.col - 1);
-        if(isSquareOccupied(leftPos)) {
+        if (isSquareOccupied(leftPos)) {
           Piece leftPiece = getPieceById(getPieceAt(leftPos));
           if (leftPiece.isEnPassantPossible()) {
             moves.add(new Move(fromPos, leftCapture, piece, true));
@@ -630,7 +521,7 @@ public class Board {
       }
       if (Position.isOnBoard(fromPos.row, fromPos.col + 1)) {
         Position rightPos = new Position(fromPos.row, fromPos.col + 1);
-        if(isSquareOccupied(rightPos)) {
+        if (isSquareOccupied(rightPos)) {
           Piece rightPiece = getPieceById(getPieceAt(rightPos));
           if (rightPiece.isEnPassantPossible()) {
             moves.add(new Move(fromPos, rightCapture, piece, true));
@@ -712,7 +603,9 @@ public class Board {
   }
 
   /**
-   * Checks whether a given move obeys to the rules of chess, or whether it is, e.g., blocked by a piece. This method ignores whether the result of the move is a check on the own king
+   * Checks whether a given move obeys to the rules of chess, or whether it is, e.g., blocked by a
+   * piece. This method ignores whether the result of the move is a check on the own king
+   *
    * @param move
    * @return
    */
@@ -736,25 +629,25 @@ public class Board {
       int newCol = move.getNewPosition().col;
       if (move.isParallelMove()) {
         if (oldRow < newRow) {
-          for(int i=oldRow+1; i<newRow; i++) {
-            if(isSquareOccupied(new Position(i, oldCol))) {
+          for (int i = oldRow + 1; i < newRow; i++) {
+            if (isSquareOccupied(new Position(i, oldCol))) {
               return false;
             }
           }
         } else if (oldRow > newRow) {
-          for(int i=oldRow-1; i>newRow; i--) {
+          for (int i = oldRow - 1; i > newRow; i--) {
             if (isSquareOccupied(new Position(i, oldCol))) {
               return false;
             }
           }
         } else if (oldCol < newCol) {
-          for(int i=oldCol+1; i<newCol; i++) {
-            if(isSquareOccupied(new Position(oldRow, i))) {
+          for (int i = oldCol + 1; i < newCol; i++) {
+            if (isSquareOccupied(new Position(oldRow, i))) {
               return false;
             }
           }
         } else if (oldCol > newCol) {
-          for(int i=oldCol-1; i>newCol; i--) {
+          for (int i = oldCol - 1; i > newCol; i--) {
             if (isSquareOccupied(new Position(oldRow, i))) {
               return false;
             }
@@ -765,25 +658,25 @@ public class Board {
       } else if (move.isDiagonalMove()) {
         int diff = Math.abs(oldRow - newRow);
         if (oldRow < newRow && oldCol < newCol) {
-          for(int i=1; i<diff; i++) {
-            if(isSquareOccupied(new Position(oldRow + i, oldCol + i))) {
+          for (int i = 1; i < diff; i++) {
+            if (isSquareOccupied(new Position(oldRow + i, oldCol + i))) {
               return false;
             }
           }
         } else if (oldRow < newRow && oldCol > newCol) {
-          for(int i=1; i<diff; i++) {
+          for (int i = 1; i < diff; i++) {
             if (isSquareOccupied(new Position(oldRow + i, oldCol - i))) {
               return false;
             }
           }
         } else if (oldRow > newRow && oldCol < newCol) {
-          for(int i=1; i<diff; i++) {
-            if(isSquareOccupied(new Position(oldRow - i, oldCol + i))) {
+          for (int i = 1; i < diff; i++) {
+            if (isSquareOccupied(new Position(oldRow - i, oldCol + i))) {
               return false;
             }
           }
         } else if (oldRow > newRow && oldCol > newCol) {
-          for(int i=1; i<diff; i++) {
+          for (int i = 1; i < diff; i++) {
             if (isSquareOccupied(new Position(oldRow - i, oldCol - i))) {
               return false;
             }
@@ -794,7 +687,7 @@ public class Board {
       }
     }
 
-    if(move.isPawnMove()) {
+    if (move.isPawnMove()) {
       // check if move tries to push pawn to a blocked square
       if (move.isParallelMove() && isSquareOccupied(move.getNewPosition())) {
         return false;
@@ -821,7 +714,8 @@ public class Board {
    * @return true if it is a checkmate
    */
   public synchronized boolean isCheckmate(PlayerColor color) {
-    List<Move> possibleMoves = color.equals(PlayerColor.WHITE) ? possibleMovesForWhite : possibleMovesForBlack;
+    List<Move> possibleMoves =
+        color.equals(PlayerColor.WHITE) ? possibleMovesForWhite : possibleMovesForBlack;
     return isKingInCheck(color) && possibleMoves.size() == 0;
   }
 
@@ -846,9 +740,8 @@ public class Board {
   }
 
   public synchronized void resetEnPassantPossible(PlayerColor color) {
-    for(Piece piece : pieces) {
-      PieceType type = (color == PlayerColor.WHITE) ? PieceType.PAWN_WHITE : PieceType.PAWN_BLACK;
-      if(piece.getType().equals(type)) {
+    for (Piece piece : getPieces(color)) {
+      if (piece.getType().equals(PieceType.PAWN)) {
         piece.resetEnPassantPossible();
       }
     }
@@ -856,6 +749,48 @@ public class Board {
 
   public synchronized boolean isSquareOccupied(Position pos) {
     return !getPieceAt(pos).equals("");
+  }
+
+  public synchronized List<Move> getPossibleMoves(PlayerColor player) {
+    return player.equals(PlayerColor.WHITE) ? possibleMovesForWhite : possibleMovesForBlack;
+  }
+
+  public synchronized boolean isCapture(Move m) {
+    return isSquareOccupied(m.getNewPosition());
+  }
+
+  public synchronized boolean isMoveCheck(Move m) {
+    PlayerColor opponent = m.getMovedPiece().getColor().getOppositeColor();
+    return calcMoveToBoard(m).isKingInCheck(opponent);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Board b = (Board) o;
+    return Arrays.deepEquals(board, b.board);
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder res = new StringBuilder();
+    for (int i = 0; i <= 7; i++) {
+      for (int j = 0; j <= 7; j++) {
+        res.append("[").append(board[i][j]).append("]");
+      }
+      res.append("\n");
+    }
+    return res.toString();
+  }
+
+  @Override
+  public int hashCode() {
+    return Arrays.deepHashCode(board);
   }
 
 }
