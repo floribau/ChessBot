@@ -4,14 +4,14 @@ import Util.Exception.IllegalMoveException;
 import Util.Position;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Map;
 
 public class Board {
 
   private String[][] board;
-  private List<Piece> pieces;
+  private Map<String, Piece> pieces;
   private List<Move> possibleMovesForWhite;
   private List<Move> possibleMovesForBlack;
 
@@ -30,9 +30,9 @@ public class Board {
       System.arraycopy(board.getBoard()[i], 0, this.board[i], 0, 8);
     }
 
-    this.pieces = new ArrayList<>();
-    for (Piece p : board.pieces) {
-      this.pieces.add(p.copyPiece());
+    this.pieces = new HashMap<>();
+    for (Piece p : board.pieces.values()) {
+      this.pieces.put(p.getId(), p.copyPiece());
     }
   }
 
@@ -44,7 +44,7 @@ public class Board {
   }
 
   public void initBoard() {
-    pieces = new ArrayList<>();
+    pieces = new HashMap<>();
     initPieces(PlayerColor.WHITE);
     initPieces(PlayerColor.BLACK);
     calcPossibleMoves(PlayerColor.WHITE);
@@ -69,7 +69,7 @@ public class Board {
   }
 
   private void addPiece(Piece piece, int row, int col) {
-    pieces.add(piece);
+    pieces.put(piece.getId(), piece);
     setPieceAt(new Position(row, col), piece.getId());
   }
 
@@ -85,7 +85,7 @@ public class Board {
         new IllegalMoveException(move).printStackTrace();
         return false;
       }
-      pieces.remove(getPieceById(destinationPieceId));
+      pieces.remove(destinationPieceId);
     }
 
     // move piece
@@ -115,29 +115,7 @@ public class Board {
 
     // pawn promotion
     if (move.isPromotion()) {
-      String symbolPattern = "=([^=])";
-      Pattern pattern = Pattern.compile(symbolPattern);
-      Matcher matcher = pattern.matcher(move.getMoveString());
-      String promotion;
-      if (matcher.find()) {
-        promotion = matcher.group(1);
-      } else {
-        new IllegalMoveException(move).printStackTrace();
-        promotion = null;
-      }
-      PieceType type = null;
-      switch (promotion) {
-        case "Q" -> type = PieceType.QUEEN;
-        case "R" -> type = PieceType.ROOK;
-        case "B" -> type = PieceType.BISHOP;
-        case "N" -> type = PieceType.KNIGHT;
-        default -> new IllegalMoveException(move).printStackTrace();
-      }
-      Piece p = new Piece(type, movedPiece.getColor());
-      p.setHasMoved();
-      pieces.add(p);
-      this.setPieceAt(newPos, p.getId());
-      pieces.remove(movedPiece);
+      handlePromotion(move, movedPiece, newPos);
     }
 
     return true;
@@ -148,9 +126,8 @@ public class Board {
         newPos.row + (movedPiece.getColor().equals(PlayerColor.WHITE) ? 1 : -1);
     Position capturedPos = new Position(newRow, newPos.col);
     if (isSquareOccupied(capturedPos)) {
-      Piece capturedPiece = getPieceById(getPieceAt(capturedPos));
+      pieces.remove(getPieceAt(capturedPos));
       setPieceAt(capturedPos, "");
-      pieces.remove(capturedPiece);
     } else {
       new IllegalMoveException(move).printStackTrace();
     }
@@ -167,6 +144,30 @@ public class Board {
     rookPiece.setHasMoved();
   }
 
+  private void handlePromotion(Move move, Piece movedPiece, Position newPos) {
+    String promotion = move.getPromotionPiece();
+    if (promotion != null) {
+      PieceType type;
+      switch (promotion) {
+        case "Q" -> type = PieceType.QUEEN;
+        case "R" -> type = PieceType.ROOK;
+        case "B" -> type = PieceType.BISHOP;
+        case "N" -> type = PieceType.KNIGHT;
+        default -> {
+          new IllegalMoveException(move).printStackTrace();
+          type = null;
+        }
+      }
+      Piece p = new Piece(type, movedPiece.getColor());
+      p.setHasMoved();
+      pieces.put(p.getId(), p);
+      this.setPieceAt(newPos, p.getId());
+      pieces.remove(movedPiece.getId());
+    } else {
+      new IllegalMoveException(move).printStackTrace();
+    }
+  }
+
   public String[][] getBoard() {
     return this.board;
   }
@@ -176,12 +177,14 @@ public class Board {
   }
 
   public Piece getPieceById(String pieceId) {
-    for (Piece piece : pieces) {
-      if (piece.getId().equals(pieceId)) {
-        return piece;
+    if (pieces.get(pieceId) == null) {
+      System.out.println("Pieces HashMap is not working for " + pieceId);
+      System.out.println(this);
+      for(String str : pieces.keySet()) {
+        System.out.print(str + " ");
       }
     }
-    return null;
+    return pieces.get(pieceId);
   }
 
   public void setPieceAt(Position pos, String pieceId) {
@@ -200,12 +203,12 @@ public class Board {
   }
 
   public List<Piece> getPieces() {
-    return pieces;
+    return (List<Piece>) pieces.values();
   }
 
   public List<Piece> getPieces(PlayerColor color) {
     List<Piece> colorPieces = new ArrayList<>();
-    for (Piece p : pieces) {
+    for (Piece p : pieces.values()) {
       if (p.getColor().equals(color)) {
         colorPieces.add(p);
       }

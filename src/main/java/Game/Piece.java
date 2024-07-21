@@ -105,4 +105,16 @@ public class Piece {
     return img;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Piece p = (Piece) o;
+    return id.equals(p.id);
+  }
+
 }
