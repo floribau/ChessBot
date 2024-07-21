@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class Board {
 
-  private String[][] board;
+  private final String[][] board;
   private Map<String, Piece> pieces;
   private List<Move> possibleMovesForWhite;
   private List<Move> possibleMovesForBlack;
@@ -268,74 +268,6 @@ public class Board {
   }
 
   /**
-   * Calculates all parallel moves from the starting position that are still on the board
-   *
-   * @param pos the starting position
-   * @return the list of all parallel moves that are still on the board
-   */
-  private synchronized List<Move> calcParallelMoves(Position pos) {
-    int col = pos.col;
-    int row = pos.row;
-    Piece piece = getPieceById(getPieceAt(pos));
-    List<Move> moves = new ArrayList<>();
-    for (int i = 1; i < 8; i++) {
-      int newCol = col + i;
-      if (Position.isOnBoard(row, newCol)) {
-        moves.add(new Move(pos, new Position(row, newCol), piece));
-      }
-      newCol = col - i;
-      if (Position.isOnBoard(row, newCol)) {
-        moves.add(new Move(pos, new Position(row, newCol), piece));
-      }
-      int newRow = row + i;
-      if (Position.isOnBoard(newRow, col)) {
-        moves.add(new Move(pos, new Position(newRow, col), piece));
-      }
-      newRow = row - i;
-      if (Position.isOnBoard(newRow, col)) {
-        moves.add(new Move(pos, new Position(newRow, col), piece));
-      }
-    }
-    return moves;
-  }
-
-  /**
-   * Calculates all diagonal moves from the starting position that are still on the board
-   *
-   * @param pos the starting position
-   * @return the list of all diagonal moves that are still on the board
-   */
-  private synchronized List<Move> calcDiagonalMoves(Position pos) {
-    int col = pos.col;
-    int row = pos.row;
-    Piece piece = getPieceById(getPieceAt(pos));
-    List<Move> moves = new ArrayList<>();
-    for (int i = 1; i <= 7; i++) {
-      int newCol = col + i;
-      int newRow = row + i;
-      if (Position.isOnBoard(newRow, newCol)) {
-        moves.add(new Move(pos, new Position(newRow, newCol), piece));
-      }
-      newCol = col + i;
-      newRow = row - i;
-      if (Position.isOnBoard(newRow, newCol)) {
-        moves.add(new Move(pos, new Position(newRow, newCol), piece));
-      }
-      newCol = col - i;
-      newRow = row + i;
-      if (Position.isOnBoard(newRow, newCol)) {
-        moves.add(new Move(pos, new Position(newRow, newCol), piece));
-      }
-      newCol = col - i;
-      newRow = row - i;
-      if (Position.isOnBoard(newRow, newCol)) {
-        moves.add(new Move(pos, new Position(newRow, newCol), piece));
-      }
-    }
-    return moves;
-  }
-
-  /**
    * Checks whether a given move obeys to the rules of chess, or whether it is, e.g., blocked by a
    * piece. This method ignores whether the result of the move is a check on the own king
    *
@@ -344,7 +276,6 @@ public class Board {
    */
   private synchronized boolean isLegalMove(Move move) {
     Piece movedPiece = move.getMovedPiece();
-    PlayerColor color = movedPiece.getColor();
 
     // check if move tries to capture own piece
     if (isSquareOccupied(move.getNewPosition())) {
@@ -422,9 +353,7 @@ public class Board {
 
     if (move.isPawnMove()) {
       // check if move tries to push pawn to a blocked square
-      if (move.isParallelMove() && isSquareOccupied(move.getNewPosition())) {
-        return false;
-      }
+      return !move.isParallelMove() || !isSquareOccupied(move.getNewPosition());
     }
 
     return true;
