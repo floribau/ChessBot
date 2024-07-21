@@ -102,26 +102,7 @@ public class Board {
 
     // en passant
     if (move.isEnPassant()) {
-      if (movedPiece.getColor().equals(PlayerColor.WHITE)) {
-        Position capturedPos = new Position(newPos.row + 1, newPos.col);
-        if (isSquareOccupied(capturedPos)) {
-          Piece capturedPiece = getPieceById(getPieceAt(capturedPos));
-          setPieceAt(capturedPos, "");
-          pieces.remove(capturedPiece);
-        } else {
-          new IllegalMoveException(move).printStackTrace();
-        }
-      } else {
-        // PlayerColor.BLACK
-        Position capturedPos = new Position(newPos.row - 1, newPos.col);
-        if (isSquareOccupied(capturedPos)) {
-          Piece capturedPiece = getPieceById(getPieceAt(capturedPos));
-          setPieceAt(capturedPos, "");
-          pieces.remove(capturedPiece);
-        } else {
-          new IllegalMoveException(move).printStackTrace();
-        }
-      }
+      handleEnPassant(move, movedPiece, newPos);
     }
 
     //king-side castles
@@ -174,6 +155,21 @@ public class Board {
     }
 
     return true;
+  }
+
+  public void handleEnPassant(Move move, Piece movedPiece, Position newPos) {
+    int newRow =
+        newPos.row + (movedPiece.getColor().equals(PlayerColor.WHITE) ? 1 : -1);
+    Position capturedPos = new Position(newRow, newPos.col);
+    if (isSquareOccupied(capturedPos)) {
+      Piece capturedPiece = getPieceById(getPieceAt(capturedPos));
+      setPieceAt(capturedPos, "");
+      pieces.remove(capturedPiece);
+    } else {
+      System.out.println(this);
+      System.out.println("Captured Pos: " + capturedPos);
+      new IllegalMoveException(move).printStackTrace();
+    }
   }
 
   public String[][] getBoard() {
