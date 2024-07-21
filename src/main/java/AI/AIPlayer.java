@@ -36,7 +36,7 @@ public class AIPlayer extends Player {
     }
 
     List<Move> moves = board.getPossibleMoves(player);
-    // orderMoves(board, moves);
+    orderMoves(board, moves);
     float resEval;
 
     if (maximizingPlayer) {

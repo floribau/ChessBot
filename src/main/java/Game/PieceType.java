@@ -4,7 +4,7 @@ import GUI.GUIConfig;
 import javafx.scene.image.Image;
 
 public enum PieceType {
-  KING("KING", 'K', Integer.MAX_VALUE),
+  KING("KING", 'K', 0),
   QUEEN("QUEEN", 'Q', 9),
   ROOK("ROOK", 'R', 5),
   BISHOP("BISHOP",'B', 3),
