@@ -105,26 +105,12 @@ public class Board {
       handleEnPassant(move, movedPiece, newPos);
     }
 
-    //king-side castles
     if (move.getMoveString().equals("O-O")) {
-      Position oldPosRook =
-          movedPiece.getColor() == PlayerColor.WHITE ? new Position(7, 7) : new Position(0, 7);
-      Position newPosRook = new Position(oldPosRook.row, newPos.col - 1);
-      String rookId = getPieceAt(oldPosRook);
-      Piece rookPiece = getPieceById(rookId);
-      this.setPieceAt(oldPosRook, "");
-      this.setPieceAt(newPosRook, rookId);
-      rookPiece.setHasMoved();
-      //queen-side castles
+      //king-side castles
+      handleCastle(newPos, 7);
     } else if (move.getMoveString().equals("O-O-O")) {
-      Position oldPosRook =
-          movedPiece.getColor() == PlayerColor.WHITE ? new Position(7, 0) : new Position(0, 0);
-      Position newPosRook = new Position(oldPosRook.row, newPos.col + 1);
-      String rookId = getPieceAt(oldPosRook);
-      Piece rookPiece = getPieceById(rookId);
-      this.setPieceAt(oldPosRook, "");
-      this.setPieceAt(newPosRook, rookId);
-      rookPiece.setHasMoved();
+      //queen-side castles
+      handleCastle(newPos, 0);
     }
 
     // pawn promotion
@@ -157,7 +143,7 @@ public class Board {
     return true;
   }
 
-  public void handleEnPassant(Move move, Piece movedPiece, Position newPos) {
+  private void handleEnPassant(Move move, Piece movedPiece, Position newPos) {
     int newRow =
         newPos.row + (movedPiece.getColor().equals(PlayerColor.WHITE) ? 1 : -1);
     Position capturedPos = new Position(newRow, newPos.col);
@@ -166,10 +152,19 @@ public class Board {
       setPieceAt(capturedPos, "");
       pieces.remove(capturedPiece);
     } else {
-      System.out.println(this);
-      System.out.println("Captured Pos: " + capturedPos);
       new IllegalMoveException(move).printStackTrace();
     }
+  }
+
+  private void handleCastle(Position newPos, int rookCol) {
+    int newCol = newPos.col + (rookCol == 7 ? -1 : 1);
+    Position oldPosRook = new Position(newPos.row, rookCol);
+    Position newPosRook = new Position(newPos.row, newCol);
+    String rookId = getPieceAt(oldPosRook);
+    Piece rookPiece = getPieceById(rookId);
+    this.setPieceAt(oldPosRook, "");
+    this.setPieceAt(newPosRook, rookId);
+    rookPiece.setHasMoved();
   }
 
   public String[][] getBoard() {
