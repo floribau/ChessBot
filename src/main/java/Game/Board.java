@@ -177,13 +177,6 @@ public class Board {
   }
 
   public Piece getPieceById(String pieceId) {
-    if (pieces.get(pieceId) == null) {
-      System.out.println("Pieces HashMap is not working for " + pieceId);
-      System.out.println(this);
-      for(String str : pieces.keySet()) {
-        System.out.print(str + " ");
-      }
-    }
     return pieces.get(pieceId);
   }
 
@@ -203,7 +196,7 @@ public class Board {
   }
 
   public List<Piece> getPieces() {
-    return (List<Piece>) pieces.values();
+    return new ArrayList<>(pieces.values());
   }
 
   public List<Piece> getPieces(PlayerColor color) {
@@ -218,39 +211,6 @@ public class Board {
 
   public Position getKingPosition(PlayerColor color) {
     return getPositionOfPiece(PieceType.KING + "_" + color + "0");
-  }
-
-  public List<Move> getCastleMoves(PlayerColor color) {
-    List<Move> moves = new ArrayList<>();
-    Piece kingPiece = getPieceById(PieceType.KING.getDisplayName() + "_" + color + "0");
-    Piece rookPiece0 = getPieceById(PieceType.ROOK.getDisplayName() + "_" + color + "0");
-    Piece rookPiece1 = getPieceById(PieceType.ROOK.getDisplayName() + "_" + color + "1");
-
-    if (!kingPiece.hasMoved()) {
-      Position oldKingPosition = getPositionOfPiece(kingPiece.getId());
-      if (!(rookPiece0 == null) && kingPiece.getColor().equals(rookPiece0.getColor())
-          && !rookPiece0.hasMoved()) {
-        Position newKingPosition = new Position(oldKingPosition.row, oldKingPosition.col - 2);
-        Move bigCastle = new Move(oldKingPosition, newKingPosition, kingPiece);
-        moves.add(bigCastle);
-      }
-      if (!(rookPiece1 == null) && kingPiece.getColor().equals(rookPiece1.getColor())
-          && !rookPiece1.hasMoved()) {
-        Position newKingPosition = new Position(oldKingPosition.row, oldKingPosition.col + 2);
-        Move smallCastle = new Move(oldKingPosition, newKingPosition, kingPiece);
-        moves.add(smallCastle);
-      }
-    }
-
-    return moves;
-  }
-
-  public synchronized List<Board> calcPossibleBoards(PlayerColor playerColor) {
-    List<Board> boards = new ArrayList<>();
-    for (Move move : calcPossibleMoves(playerColor)) {
-      boards.add(calcMoveToBoard(move));
-    }
-    return boards;
   }
 
   public synchronized List<Move> calcPossibleMoves(PlayerColor color) {
@@ -304,228 +264,7 @@ public class Board {
    * @return the list of moves on board
    */
   private synchronized List<Move> calcMovesOnBoardForPiece(String pieceId) {
-    List<Move> moves = new ArrayList<>();
-    Position fromPos = getPositionOfPiece(pieceId);
-    Piece piece = getPieceById(pieceId);
-    if (piece.getType() == PieceType.KING) {
-      int newRow = fromPos.row + 1;
-      int newCol = fromPos.col;
-      if (Position.isOnBoard(newRow, newCol)) {
-        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
-      }
-      newRow = fromPos.row - 1;
-      if (Position.isOnBoard(newRow, newCol)) {
-        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
-      }
-      newRow = fromPos.row;
-      newCol = fromPos.col + 1;
-      if (Position.isOnBoard(newRow, newCol)) {
-        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
-      }
-      newCol = fromPos.col - 1;
-      if (Position.isOnBoard(newRow, newCol)) {
-        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
-      }
-      newRow = fromPos.row + 1;
-      newCol = fromPos.col + 1;
-      if (Position.isOnBoard(newRow, newCol)) {
-        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
-      }
-      newRow = fromPos.row + 1;
-      newCol = fromPos.col - 1;
-      if (Position.isOnBoard(newRow, newCol)) {
-        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
-      }
-      newRow = fromPos.row - 1;
-      newCol = fromPos.col + 1;
-      if (Position.isOnBoard(newRow, newCol)) {
-        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
-      }
-      newRow = fromPos.row - 1;
-      newCol = fromPos.col - 1;
-      if (Position.isOnBoard(newRow, newCol)) {
-        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
-      }
-      moves.addAll(getCastleMoves(piece.getColor()));
-
-    } else if (piece.getType() == PieceType.QUEEN) {
-      moves.addAll(calcParallelMoves(fromPos));
-      moves.addAll(calcDiagonalMoves(fromPos));
-
-    } else if (piece.getType() == PieceType.ROOK) {
-      moves.addAll(calcParallelMoves(fromPos));
-
-    } else if (piece.getType() == PieceType.BISHOP) {
-      moves.addAll(calcDiagonalMoves(fromPos));
-
-    } else if (piece.getType() == PieceType.KNIGHT) {
-      int newRow = fromPos.row + 2;
-      int newCol = fromPos.col + 1;
-      if (Position.isOnBoard(newRow, newCol)) {
-        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
-      }
-      newRow = fromPos.row + 2;
-      newCol = fromPos.col - 1;
-      if (Position.isOnBoard(newRow, newCol)) {
-        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
-      }
-      newRow = fromPos.row - 2;
-      newCol = fromPos.col + 1;
-      if (Position.isOnBoard(newRow, newCol)) {
-        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
-      }
-      newRow = fromPos.row - 2;
-      newCol = fromPos.col - 1;
-      if (Position.isOnBoard(newRow, newCol)) {
-        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
-      }
-      newRow = fromPos.row + 1;
-      newCol = fromPos.col + 2;
-      if (Position.isOnBoard(newRow, newCol)) {
-        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
-      }
-      newRow = fromPos.row - 1;
-      newCol = fromPos.col + 2;
-      if (Position.isOnBoard(newRow, newCol)) {
-        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
-      }
-      newRow = fromPos.row + 1;
-      newCol = fromPos.col - 2;
-      if (Position.isOnBoard(newRow, newCol)) {
-        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
-      }
-      newRow = fromPos.row - 1;
-      newCol = fromPos.col - 2;
-      if (Position.isOnBoard(newRow, newCol)) {
-        moves.add(new Move(fromPos, new Position(newRow, newCol), piece));
-      }
-
-    } else if (piece.getType() == PieceType.PAWN && piece.getColor().equals(PlayerColor.WHITE)) {
-      if (fromPos.row - 1 >= 1) {
-        moves.add(new Move(fromPos, new Position(fromPos.row - 1, fromPos.col), piece));
-      } else {
-        // pawn promotion on row 0 (= rank 8)
-        String moveStr = Move.calcMoveString(fromPos, new Position(fromPos.row - 1, fromPos.col),
-            piece);
-        moves.add(new Move(moveStr + "=Q", piece));
-        moves.add(new Move(moveStr + "=R", piece));
-        moves.add(new Move(moveStr + "=B", piece));
-        moves.add(new Move(moveStr + "=N", piece));
-      }
-      if (!piece.hasMoved()) {
-        moves.add(new Move(fromPos, new Position(fromPos.row - 2, fromPos.col), piece));
-      }
-      //captures
-      Position leftCapture = new Position(fromPos.row - 1, fromPos.col - 1);
-      Position rightCapture = new Position(fromPos.row - 1, fromPos.col + 1);
-      if (Position.isOnBoard(leftCapture.row, leftCapture.col) && isSquareOccupied(leftCapture)) {
-        if (leftCapture.row >= 1) {
-          moves.add(new Move(fromPos, leftCapture, piece));
-        } else {
-          // leftCapture on row 0 (= rank 8)
-          String moveStr = Move.calcMoveString(fromPos, leftCapture, piece);
-          moves.add(new Move(moveStr + "=Q", piece));
-          moves.add(new Move(moveStr + "=R", piece));
-          moves.add(new Move(moveStr + "=B", piece));
-          moves.add(new Move(moveStr + "=N", piece));
-        }
-      }
-      if (Position.isOnBoard(rightCapture.row, rightCapture.col)
-          && isSquareOccupied(rightCapture)) {
-        if (rightCapture.row >= 1) {
-          moves.add(new Move(fromPos, rightCapture, piece));
-        } else {
-          String moveStr = Move.calcMoveString(fromPos, rightCapture, piece);
-          moves.add(new Move(moveStr + "=Q", piece));
-          moves.add(new Move(moveStr + "=R", piece));
-          moves.add(new Move(moveStr + "=B", piece));
-          moves.add(new Move(moveStr + "=N", piece));
-        }
-      }
-      // en passant
-      if (Position.isOnBoard(fromPos.row, fromPos.col - 1)) {
-        Position leftPos = new Position(fromPos.row, fromPos.col - 1);
-        if (isSquareOccupied(leftPos)) {
-          Piece leftPiece = getPieceById(getPieceAt(leftPos));
-          if (leftPiece.isEnPassantPossible()) {
-            moves.add(new Move(fromPos, leftCapture, piece, true));
-          }
-        }
-      }
-      if (Position.isOnBoard(fromPos.row, fromPos.col + 1)) {
-        Position rightPos = new Position(fromPos.row, fromPos.col + 1);
-        if (isSquareOccupied(rightPos)) {
-          Piece rightPiece = getPieceById(getPieceAt(rightPos));
-          if (rightPiece.isEnPassantPossible()) {
-            moves.add(new Move(fromPos, rightCapture, piece, true));
-          }
-        }
-      }
-
-    } else if (piece.getType() == PieceType.PAWN && piece.getColor().equals(PlayerColor.BLACK)) {
-      if (fromPos.row - 1 <= 6) {
-        moves.add(new Move(fromPos, new Position(fromPos.row + 1, fromPos.col), piece));
-      } else {
-        // pawn promotion on row 7 (= rank 1)
-        String moveStr = Move.calcMoveString(fromPos, new Position(fromPos.row + 1, fromPos.col),
-            piece);
-        moves.add(new Move(moveStr + "=Q", piece));
-        moves.add(new Move(moveStr + "=R", piece));
-        moves.add(new Move(moveStr + "=B", piece));
-        moves.add(new Move(moveStr + "=N", piece));
-      }
-      if (!piece.hasMoved()) {
-        moves.add(new Move(fromPos, new Position(fromPos.row + 2, fromPos.col), piece));
-      }
-      //captures
-      Position leftCapture = new Position(fromPos.row + 1, fromPos.col - 1);
-      Position rightCapture = new Position(fromPos.row + 1, fromPos.col + 1);
-      if (Position.isOnBoard(leftCapture.row, leftCapture.col) && isSquareOccupied(leftCapture)) {
-        if (leftCapture.row <= 6) {
-          moves.add(new Move(fromPos, leftCapture, piece));
-        } else {
-          String moveStr = Move.calcMoveString(fromPos, leftCapture, piece);
-          moves.add(new Move(moveStr + "=Q", piece));
-          moves.add(new Move(moveStr + "=R", piece));
-          moves.add(new Move(moveStr + "=B", piece));
-          moves.add(new Move(moveStr + "=N", piece));
-        }
-      }
-      if (Position.isOnBoard(rightCapture.row, rightCapture.col)
-          && isSquareOccupied(rightCapture)) {
-        if (rightCapture.row <= 6) {
-          moves.add(new Move(fromPos, rightCapture, piece));
-        } else {
-          String moveStr = Move.calcMoveString(fromPos, rightCapture, piece);
-          moves.add(new Move(moveStr + "=Q", piece));
-          moves.add(new Move(moveStr + "=R", piece));
-          moves.add(new Move(moveStr + "=B", piece));
-          moves.add(new Move(moveStr + "=N", piece));
-        }
-      }
-      // en passant
-      if (Position.isOnBoard(fromPos.row, fromPos.col - 1)) {
-        Position leftPos = new Position(fromPos.row, fromPos.col - 1);
-        if (isSquareOccupied(leftPos)) {
-          Piece leftPiece = getPieceById(getPieceAt(leftPos));
-          if (leftPiece.isEnPassantPossible()) {
-            moves.add(new Move(fromPos, leftCapture, piece, true));
-          }
-        }
-      }
-      if (Position.isOnBoard(fromPos.row, fromPos.col + 1)) {
-        Position rightPos = new Position(fromPos.row, fromPos.col + 1);
-        if (isSquareOccupied(rightPos)) {
-          Piece rightPiece = getPieceById(getPieceAt(rightPos));
-          if (rightPiece.isEnPassantPossible()) {
-            moves.add(new Move(fromPos, rightCapture, piece, true));
-          }
-        }
-      }
-
-    }
-
-    return moves;
+    return MoveCalculator.calcMovesOnBoardForPiece(this, pieceId);
   }
 
   /**
