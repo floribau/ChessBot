@@ -84,7 +84,7 @@ public class AIPlayer extends Player {
     for (Move m : board.getPossibleMoves(this.getColor())) {
       Board newBoard = board.calcMoveToBoard(m);
       float eval = minimax(newBoard, depth - 1, alpha, beta, false);
-      if (eval > maxEval || (eval == maxEval && Math.random() >= 0.5)) {
+      if (eval == Float.NEGATIVE_INFINITY  || eval > maxEval || (eval == maxEval && Math.random() >= 0.5)) {
         maxEval = eval;
         bestMove = m;
       }
