@@ -5,17 +5,16 @@ import Game.GamePhase;
 import Game.Move;
 import Game.Player;
 import Game.PlayerColor;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
+// import java.util.HashMap;
 import java.util.List;
 
 public class AIPlayer extends Player {
-  private HashMap<Board, Float> transpositionTable;
+  // private final HashMap<Board, Float> transpositionTable;
 
   public AIPlayer(PlayerColor color) {
     super(color, false);
-    transpositionTable = new HashMap<>();
+    // transpositionTable = new HashMap<>();
   }
 
   public synchronized Move makeMove() {
@@ -79,7 +78,7 @@ public class AIPlayer extends Player {
     float beta = Float.POSITIVE_INFINITY;
 
     List<Move> moves = board.getPossibleMoves(this.getColor());
-    // orderMoves(board, moves);
+    orderMoves(board, moves);
 
     for (Move m : board.getPossibleMoves(this.getColor())) {
       Board newBoard = board.calcMoveToBoard(m);
@@ -94,7 +93,7 @@ public class AIPlayer extends Player {
   }
 
   private void orderMoves(Board board, List<Move> moves) {
-    Collections.sort(moves, new Comparator<>() {
+    moves.sort(new Comparator<>() {
       @Override
       public int compare(Move o1, Move o2) {
         return scoreMove(o2) - scoreMove(o1);
@@ -103,7 +102,8 @@ public class AIPlayer extends Player {
       private int scoreMove(Move move) {
         if (board.isCapture(move)) {
           int movedValue = move.getMovedPiece().getValue();
-          int capturedValue = board.getPieceById(board.getPieceAt(move.getNewPosition())).getValue();
+          int capturedValue = board.getPieceById(board.getPieceAt(move.getNewPosition()))
+              .getValue();
           return 10 + capturedValue - movedValue;
         }
         if (move.isPromotion()) {
