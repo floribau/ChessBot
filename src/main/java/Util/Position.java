@@ -28,8 +28,22 @@ public class Position {
     return "" + colChar + rowInt;
   }
 
+  public int getDistance(Position pos) {
+    // Chebyshev distance
+    return Math.max(Math.abs(this.row - pos.row), Math.abs(this.col - pos.col));
+  }
+
   public static boolean isOnBoard(int row, int col) {
     return row >= 0 && row <= 7 && col >= 0 && col <= 7;
+  }
+
+  public static int calcCenterDistance(Position pos) {
+    Position[] center = {new Position(3, 3), new Position(3, 4), new Position(4, 3), new Position(4, 4)};
+    int minDist = Integer.MAX_VALUE;
+    for (Position centerPos : center) {
+      minDist = Math.min(minDist, centerPos.getDistance(pos));
+    }
+    return minDist;
   }
 
 }

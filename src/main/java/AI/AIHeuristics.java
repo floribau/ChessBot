@@ -67,7 +67,7 @@ public class AIHeuristics {
     if (AIConfig.kingSafetyWeight == 0) return 0;
     int score = 0;
     score += evaluateKingSafety(board, PlayerColor.WHITE);
-    score += evaluateKingSafety(board, PlayerColor.BLACK);
+    score -= evaluateKingSafety(board, PlayerColor.BLACK);
     return score;
   }
 
@@ -87,7 +87,7 @@ public class AIHeuristics {
       }
     }
     if (board.hasCastled(color)) {
-      score++;
+      score += 3;
     }
     return score;
   }
@@ -159,25 +159,17 @@ public class AIHeuristics {
   private static int scoreDevelopment(Board board) {
     if (AIConfig.developmentWeight == 0) return 0;
     boolean isPieceWhite;
-    int rowDiff;
-    int countDevelopedPieces = 0;
-    int countDevelopedRows = 0;
-    int countUndevelopedPieces = 0;
+    int score = 0;
     for (Piece p : board.getPieces()) {
       isPieceWhite = p.getColor() == PlayerColor.WHITE;
       if (p.getType() == PieceType.KNIGHT || p.getType() == PieceType.BISHOP) {
-        Position piecePos = board.getPositionOfPiece(p.getId());
-        rowDiff = Math.abs((isPieceWhite ? 7 : 0) - piecePos.row);
-        if (rowDiff != 0) {
-          countDevelopedPieces += isPieceWhite ? 1 : -1;
-        }
-        countDevelopedRows += isPieceWhite ? rowDiff : -1 * rowDiff;
+        score += (isPieceWhite ? -1 : 1) * Position.calcCenterDistance(board.getPositionOfPiece(p.getId()));
       }
-      if (!p.hasMoved()) {
-        countUndevelopedPieces += isPieceWhite ? 1 : -1;
+      if (!p.hasMoved() && p.getType() != PieceType.PAWN) {
+        score += isPieceWhite ? -1 : 1;
       }
     }
-    return countDevelopedPieces * countDevelopedRows - countUndevelopedPieces;
+    return score;
   }
 
   private static int scoreCenterControl(Board board) {
