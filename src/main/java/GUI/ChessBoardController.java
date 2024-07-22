@@ -55,8 +55,6 @@ public class ChessBoardController {
   @FXML
   private MenuButton startButton;
   @FXML
-  private MenuItem huhu, huai, aihu, aiai;
-  @FXML
   private Label endLabel;
 
   private Button[][] boardSquares;
