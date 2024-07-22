@@ -14,8 +14,8 @@ public class GameEngine {
   private static int moveCount;
 
   public synchronized static void startGame(ChessBoardController controller, boolean humanPlayer1, boolean humanPlayer2){
-    GameEngine.player1 = humanPlayer1 ? new Player(PlayerColor.WHITE, false) : new AIPlayer(PlayerColor.WHITE);
-    GameEngine.player2 = humanPlayer2 ? new Player(PlayerColor.BLACK, false) : new AIPlayer(PlayerColor.BLACK);
+    GameEngine.player1 = humanPlayer1 ? new Player(PlayerColor.WHITE, true) : new AIPlayer(PlayerColor.WHITE);
+    GameEngine.player2 = humanPlayer2 ? new Player(PlayerColor.BLACK, true) : new AIPlayer(PlayerColor.BLACK);
     GameEngine.currentPlayer = player1;
 
     Piece.pieceCounters.clear();
