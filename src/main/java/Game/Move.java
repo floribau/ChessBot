@@ -62,10 +62,6 @@ public class Move {
     return this.movedPiece;
   }
 
-  public boolean equals(Move m) {
-    return moveString.equals(m.moveString);
-  }
-
   public String toString(){
     return this.moveString;
   }
@@ -108,26 +104,6 @@ public class Move {
     return Math.abs(oldPos.row - newPos.row) == Math.abs(oldPos.col - newPos.col);
   }
 
-  public boolean isKingMove(){
-    return movedPiece.getType().equals(PieceType.KING);
-  }
-
-  public boolean isQueenMove(){
-    return movedPiece.getType().equals(PieceType.QUEEN);
-  }
-
-  public boolean isRookMove(){
-    return movedPiece.getType().equals(PieceType.ROOK);
-  }
-
-  public boolean isBishopMove(){
-    return movedPiece.getType().equals(PieceType.BISHOP);
-  }
-
-  public boolean isKnightMove(){
-    return movedPiece.getType().equals(PieceType.KNIGHT);
-  }
-
   public boolean isPawnMove(){
     return movedPiece.getType().equals(PieceType.PAWN);
   }
@@ -155,6 +131,18 @@ public class Move {
       return matcher.group(1);
     }
     return null;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Move m = (Move) o;
+    return moveString.equals(m.moveString);
   }
 
 }
