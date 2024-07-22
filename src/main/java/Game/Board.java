@@ -15,6 +15,8 @@ public class Board {
   private Map<String, Piece> pieces;
   private List<Move> possibleMovesForWhite;
   private List<Move> possibleMovesForBlack;
+  private boolean whiteCastled;
+  private boolean blackCastled;
 
   public Board() {
     this.board = new String[8][8];
@@ -23,6 +25,8 @@ public class Board {
         this.board[i][j] = "";
       }
     }
+    whiteCastled = false;
+    blackCastled = false;
   }
 
   private Board(Board board) {
@@ -30,6 +34,8 @@ public class Board {
     for (int i = 0; i <= 7; i++) {
       System.arraycopy(board.getBoard()[i], 0, this.board[i], 0, 8);
     }
+    this.whiteCastled = board.whiteCastled;
+    this.blackCastled = board.blackCastled;
 
     this.pieces = new HashMap<>();
     for (Piece p : board.pieces.values()) {
@@ -143,6 +149,7 @@ public class Board {
     this.setPieceAt(oldPosRook, "");
     this.setPieceAt(newPosRook, rookId);
     rookPiece.setHasMoved();
+    setHasCastled(rookPiece.getColor());
   }
 
   private void handlePromotion(Move move, Piece movedPiece, Position newPos) {
@@ -429,6 +436,17 @@ public class Board {
 
   public synchronized int countMajorPieces() {
     return pieces.values().stream().filter(piece -> piece.getType() != PieceType.PAWN).collect(Collectors.toList()).size();
+  }
+
+  public synchronized void setHasCastled(PlayerColor color) {
+    switch (color) {
+      case WHITE -> whiteCastled = true;
+      case BLACK -> blackCastled = true;
+    }
+  }
+
+  public synchronized boolean hasCastled(PlayerColor color) {
+    return color == PlayerColor.WHITE ? whiteCastled : blackCastled;
   }
 
   @Override

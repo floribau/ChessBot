@@ -36,7 +36,8 @@ public class AIHeuristics {
         + AIConfig.mobilityWeight * scoreMobility(board)
         + AIConfig.pawnStructureWeight * scorePawnStructure(board)
         + AIConfig.centerControlWeight * scoreCenterControl(board)
-        + AIConfig.developmentWeight * scoreDevelopment(board);
+        + AIConfig.developmentWeight * scoreDevelopment(board)
+        + AIConfig.kingSafetyWeight * scoreKingSafety(board);
   }
 
   private static int scoreMaterial(Board board) {
@@ -64,9 +65,31 @@ public class AIHeuristics {
 
   private static int scoreKingSafety(Board board) {
     if (AIConfig.kingSafetyWeight == 0) return 0;
+    int score = 0;
+    score += evaluateKingSafety(board, PlayerColor.WHITE);
+    score += evaluateKingSafety(board, PlayerColor.BLACK);
+    return score;
+  }
 
-    // TODO implement
-    return 0;
+  private static int evaluateKingSafety(Board board, PlayerColor color) {
+    Position kingPos = board.getKingPosition(color);
+    int direction = color == PlayerColor.WHITE ? -1 : 1;
+    int score = 0;
+    for (int colOffset = -1; colOffset <= 1; colOffset++) {
+      for (int rowOffset = 1; rowOffset <= 2; rowOffset++) {
+        if (Position.isOnBoard(kingPos.row + direction * rowOffset, kingPos.col + colOffset) && board.isSquareOccupied(new Position(kingPos.row + direction * rowOffset, kingPos.col + colOffset))) {
+          Piece piece = board.getPieceById(board.getPieceAt(new Position(kingPos.row + direction * rowOffset, kingPos.col + colOffset)));
+          if (piece.isFriendlyPawn(color)) {
+            score++;
+            break;
+          }
+        }
+      }
+    }
+    if (board.hasCastled(color)) {
+      score++;
+    }
+    return score;
   }
 
   private static int scorePawnStructure(Board board) {

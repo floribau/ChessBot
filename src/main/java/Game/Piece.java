@@ -105,6 +105,10 @@ public class Piece {
     return img;
   }
 
+  public boolean isFriendlyPawn(PlayerColor color) {
+    return type == PieceType.PAWN && this.color == color;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
