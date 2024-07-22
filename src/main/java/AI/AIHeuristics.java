@@ -163,10 +163,11 @@ public class AIHeuristics {
     for (Piece p : board.getPieces()) {
       isPieceWhite = p.getColor() == PlayerColor.WHITE;
       if (p.getType() == PieceType.KNIGHT || p.getType() == PieceType.BISHOP) {
-        score += (isPieceWhite ? -1 : 1) * Position.calcCenterDistance(board.getPositionOfPiece(p.getId()));
+        int centerDistance = Position.calcCenterDistance(board.getPositionOfPiece(p.getId()));
+        score += (isPieceWhite ? 1 : -1) * Math.abs(3 - centerDistance);
       }
-      if (!p.hasMoved() && p.getType() != PieceType.PAWN) {
-        score += isPieceWhite ? -1 : 1;
+      if (p.hasMoved() && p.getType() != PieceType.PAWN) {
+        score += isPieceWhite ? 1 : -1;
       }
     }
     return score;
