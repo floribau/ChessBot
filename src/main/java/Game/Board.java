@@ -434,10 +434,19 @@ public class Board {
     return calcMoveToBoard(m).isKingInCheck(opponent);
   }
 
-  public synchronized int countMajorPieces() {
+  public synchronized List<Piece> getMajorPieces() {
     return pieces.values().stream()
         .filter(piece -> (piece.getType() != PieceType.PAWN) && piece.getType() != PieceType.KING)
-        .collect(Collectors.toList()).size();
+        .collect(Collectors.toList());
+  }
+
+  public synchronized List<Piece> getMajorPieces(PlayerColor color) {
+    return getMajorPieces().stream().filter((piece -> piece.getColor() == color))
+        .collect(Collectors.toList());
+  }
+
+  public synchronized int countMajorPieces() {
+    return getMajorPieces().size();
   }
 
   public synchronized void setHasCastled(PlayerColor color) {

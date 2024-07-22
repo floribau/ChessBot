@@ -3,6 +3,7 @@ package AI;
 import Game.Board;
 import Game.GameEngine;
 import Game.GamePhase;
+import Game.Move;
 import Game.Piece;
 import Game.PieceType;
 import Game.PlayerColor;
@@ -23,25 +24,38 @@ public class AIHeuristics {
       return 0;
     }
 
-    if (GameEngine.getPhase() == GamePhase.MIDDLE_GAME) {
-      AIConfig.developmentWeight = 0;
-      AIConfig.centerControlWeight = 0;
-      AIConfig.materialWeight = 3;
+    float materialWeight = AIConfig.MATERIAL_WEIGHT;
+    float mobilityWeight = AIConfig.MOBILITY_WEIGHT;
+    float pawnStructureWeight = AIConfig.PAWN_STRUCTURE_WEIGHT;
+    float centerControlWeight = AIConfig.CENTER_CONTROL_WEIGHT;
+    float developmentWeight = AIConfig.DEVELOPMENT_WEIGHT;
+    float kingSafetyWeight = AIConfig.KING_SAFETY_WEIGHT;
+    float batteriesWeight = AIConfig.BATTERIES_WEIGHT;
+
+    if(GameEngine.getPhase() == GamePhase.OPENING) {
+      batteriesWeight = 0;
     }
-    if (GameEngine.getPhase() == GamePhase.END_GAME) {
-      AIConfig.kingSafetyWeight = 0;
+    else if (GameEngine.getPhase() == GamePhase.MIDDLE_GAME) {
+      developmentWeight = 0;
+      centerControlWeight = 0;
+      materialWeight = 3;
+      batteriesWeight = AIConfig.BATTERIES_WEIGHT;
+    }
+    else if (GameEngine.getPhase() == GamePhase.END_GAME) {
+      kingSafetyWeight = 0;
+      batteriesWeight = 0;
     }
 
-    return AIConfig.materialWeight * scoreMaterial(board)
-        + AIConfig.mobilityWeight * scoreMobility(board)
-        + AIConfig.pawnStructureWeight * scorePawnStructure(board)
-        + AIConfig.centerControlWeight * scoreCenterControl(board)
-        + AIConfig.developmentWeight * scoreDevelopment(board)
-        + AIConfig.kingSafetyWeight * scoreKingSafety(board);
+    return materialWeight != 0 ? materialWeight * scoreMaterial(board) : 0
+        + mobilityWeight != 0 ? mobilityWeight * scoreMobility(board) : 0
+        + pawnStructureWeight != 0 ? pawnStructureWeight * scorePawnStructure(board) : 0
+        + centerControlWeight != 0 ? centerControlWeight * scoreCenterControl(board) : 0
+        + developmentWeight != 0 ? developmentWeight * scoreDevelopment(board) : 0
+        + kingSafetyWeight != 0 ? kingSafetyWeight * scoreKingSafety(board) : 0
+        + batteriesWeight != 0 ? batteriesWeight * scoreBatteries(board) : 0;
   }
 
   private static int scoreMaterial(Board board) {
-    if (AIConfig.materialWeight == 0) return 0;
     int score = 0;
     for (Piece p : board.getPieces()) {
       if (p.getColor().equals(PlayerColor.WHITE)) {
@@ -54,7 +68,6 @@ public class AIHeuristics {
   }
 
   private static int scoreMobility(Board board) {
-    if (AIConfig.mobilityWeight == 0) return 0;
     int score = 0;
     for (Piece p : board.getPieces()) {
       int mobility = board.calcPossibleMovesForPiece(p.getId()).size();
@@ -64,7 +77,6 @@ public class AIHeuristics {
   }
 
   private static int scoreKingSafety(Board board) {
-    if (AIConfig.kingSafetyWeight == 0) return 0;
     int score = 0;
     score += evaluateKingSafety(board, PlayerColor.WHITE);
     score -= evaluateKingSafety(board, PlayerColor.BLACK);
@@ -93,7 +105,6 @@ public class AIHeuristics {
   }
 
   private static int scorePawnStructure(Board board) {
-    if (AIConfig.pawnStructureWeight == 0) return 0;
     int score = 0;
     score += evaluateDoublePawns(board, PlayerColor.WHITE);
     score -= evaluateDoublePawns(board, PlayerColor.BLACK);
@@ -157,7 +168,6 @@ public class AIHeuristics {
   }
 
   private static int scoreDevelopment(Board board) {
-    if (AIConfig.developmentWeight == 0) return 0;
     boolean isPieceWhite;
     int score = 0;
     for (Piece p : board.getPieces()) {
@@ -186,7 +196,6 @@ public class AIHeuristics {
   }
 
   private static int scoreCenterControl(Board board) {
-    if (AIConfig.centerControlWeight == 0) return 0;
     int score = 0;
     Position[] center = {new Position(3, 3), new Position(3, 4), new Position(4, 3),
         new Position(4, 4)};
@@ -194,6 +203,34 @@ public class AIHeuristics {
       if (board.isSquareOccupied(pos)) {
         Piece piece = board.getPieceById(board.getPieceAt(pos));
         score += (piece.getColor() == PlayerColor.WHITE) ? 1 : -1;
+      }
+    }
+    return score;
+  }
+
+  private static int scoreBatteries(Board board) {
+    int score = 0;
+    score += evalBatteries(board, PlayerColor.WHITE);
+    score -= evalBatteries(board, PlayerColor.BLACK);
+    return score;
+  }
+
+  private static int evalBatteries(Board board, PlayerColor color) {
+    int score = 0;
+    int batteryCount;
+    for (Piece opponentPiece : board.getPieces(color.getOppositeColor())) {
+      batteryCount = 0;
+      Position opponentPiecePosition = board.getPositionOfPiece(opponentPiece.getId());
+      for (Piece piece : board.getMajorPieces(color)) {
+        for (Move move : board.calcPossibleMovesForPiece(piece.getId())) {
+          if (move.getNewPosition().equals(opponentPiecePosition)) {
+            batteryCount++;
+            break;
+          }
+        }
+      }
+      if (batteryCount >= 2) {
+        score += batteryCount;
       }
     }
     return score;
