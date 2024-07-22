@@ -75,7 +75,7 @@ public class GameEngine {
   }
 
   private synchronized static void switchGamePhase() {
-    if (phase == GamePhase.OPENING && moveCount >= 12) {
+    if (phase == GamePhase.OPENING && moveCount >= 14) {
       phase = GamePhase.MIDDLE_GAME;
       System.out.println("Switched to Middle game");
     } else if (phase == GamePhase.MIDDLE_GAME && currentBoard.countMajorPieces() <= 6) {

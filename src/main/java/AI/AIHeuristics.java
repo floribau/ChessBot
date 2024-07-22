@@ -26,10 +26,10 @@ public class AIHeuristics {
     if (GameEngine.getPhase() == GamePhase.MIDDLE_GAME) {
       AIConfig.developmentWeight = 0;
       AIConfig.centerControlWeight = 0;
+      AIConfig.materialWeight = 3;
     }
     if (GameEngine.getPhase() == GamePhase.END_GAME) {
       AIConfig.kingSafetyWeight = 0;
-      AIConfig.materialWeight = 3;
     }
 
     return AIConfig.materialWeight * scoreMaterial(board)
