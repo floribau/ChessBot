@@ -66,7 +66,7 @@ public class GameEngine {
     gameThread.start();
   }
 
-  public synchronized static void switchCurrentPlayer(){
+  private synchronized static void switchCurrentPlayer(){
     if (currentPlayer == player1) {
       currentPlayer = player2;
     } else {
@@ -74,7 +74,7 @@ public class GameEngine {
     }
   }
 
-  public synchronized static void switchGamePhase() {
+  private synchronized static void switchGamePhase() {
     if (phase == GamePhase.OPENING && moveCount >= 10) {
       phase = GamePhase.MIDDLE_GAME;
     } else if (phase == GamePhase.MIDDLE_GAME && currentBoard.countMajorPieces() <= 6) {
@@ -118,6 +118,10 @@ public class GameEngine {
 
   public synchronized static ChessBoardController getController(){
     return controller;
+  }
+
+  public synchronized static GamePhase getPhase() {
+    return phase;
   }
 
 }
