@@ -38,7 +38,7 @@ public class AIHeuristics {
     else if (GameEngine.getPhase() == GamePhase.MIDDLE_GAME) {
       developmentWeight = 0;
       centerControlWeight = 0;
-      materialWeight = 3;
+      materialWeight = 2 * AIConfig.MATERIAL_WEIGHT;
       batteriesWeight = AIConfig.BATTERIES_WEIGHT;
     }
     else if (GameEngine.getPhase() == GamePhase.END_GAME) {
