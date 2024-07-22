@@ -1,6 +1,8 @@
 package AI;
 
 import Game.Board;
+import Game.GameEngine;
+import Game.GamePhase;
 import Game.Piece;
 import Game.PieceType;
 import Game.PlayerColor;
@@ -20,6 +22,16 @@ public class AIHeuristics {
     if (board.isStalemate(PlayerColor.WHITE) || board.isStalemate(PlayerColor.BLACK)) {
       return 0;
     }
+
+    if (GameEngine.getPhase() == GamePhase.MIDDLE_GAME) {
+      AIConfig.developmentWeight = 0;
+      AIConfig.centerControlWeight = 0;
+    }
+    if (GameEngine.getPhase() == GamePhase.END_GAME) {
+      AIConfig.kingSafetyWeight = 0;
+      AIConfig.materialWeight = 3;
+    }
+
     return AIConfig.materialWeight * scoreMaterial(board)
         + AIConfig.mobilityWeight * scoreMobility(board)
         + AIConfig.pawnStructureWeight * scorePawnStructure(board)
@@ -28,6 +40,7 @@ public class AIHeuristics {
   }
 
   private static int scoreMaterial(Board board) {
+    if (AIConfig.materialWeight == 0) return 0;
     int score = 0;
     for (Piece p : board.getPieces()) {
       if (p.getColor().equals(PlayerColor.WHITE)) {
@@ -40,6 +53,7 @@ public class AIHeuristics {
   }
 
   private static int scoreMobility(Board board) {
+    if (AIConfig.mobilityWeight == 0) return 0;
     int score = 0;
     for (Piece p : board.getPieces()) {
       int mobility = board.calcPossibleMovesForPiece(p.getId()).size();
@@ -49,11 +63,14 @@ public class AIHeuristics {
   }
 
   private static int scoreKingSafety(Board board) {
+    if (AIConfig.kingSafetyWeight == 0) return 0;
+
     // TODO implement
     return 0;
   }
 
   private static int scorePawnStructure(Board board) {
+    if (AIConfig.pawnStructureWeight == 0) return 0;
     int score = 0;
     score += evaluateDoublePawns(board, PlayerColor.WHITE);
     score -= evaluateDoublePawns(board, PlayerColor.BLACK);
@@ -117,6 +134,7 @@ public class AIHeuristics {
   }
 
   private static int scoreDevelopment(Board board) {
+    if (AIConfig.developmentWeight == 0) return 0;
     boolean isPieceWhite;
     int rowDiff;
     int countDevelopedPieces = 0;
@@ -140,6 +158,7 @@ public class AIHeuristics {
   }
 
   private static int scoreCenterControl(Board board) {
+    if (AIConfig.centerControlWeight == 0) return 0;
     int score = 0;
     Position[] center = {new Position(3, 3), new Position(3, 4), new Position(4, 3),
         new Position(4, 4)};
