@@ -25,12 +25,15 @@ public class AIPlayer extends Player {
     PlayerColor player = maximizingPlayer ? this.getColor() : this.getColor().getOppositeColor();
     board.calcPossibleMoves(player);
 
+    /*
     if(transpositionTable.containsKey(board)) {
       System.out.println("Position known");
       return transpositionTable.get(board);
     }
+    */
 
     if (depth == 0 || board.isCheckmate(player) || board.isStalemate(player)) {
+      board.calcPossibleMoves(player.getOppositeColor());
       int neg = this.getColor().equals(PlayerColor.WHITE) ? 1 : -1;
       return neg * AIHeuristics.evaluateBoard(board);
     }
@@ -62,7 +65,7 @@ public class AIPlayer extends Player {
       }
       resEval = minEval;
     }
-    transpositionTable.put(board, resEval);
+    // transpositionTable.put(board, resEval);
     return resEval;
   }
 
