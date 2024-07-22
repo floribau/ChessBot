@@ -145,14 +145,12 @@ public class ChessBoardController {
     int rowPos = isFlipBoard() ? 7 - pos.row : pos.row;
     int colPos = isFlipBoard() ? 7 - pos.col : pos.col;
     boardSquares[rowPos][colPos].setDisable(false);
-    imageViews[rowPos][colPos].setDisable(false);
   }
 
   public synchronized void disableAllButtons(){
     for (int i=0; i<=7; i++){
       for (int j=0; j<=7; j++){
         boardSquares[i][j].setDisable(true);
-        imageViews[i][j].setDisable(true);
       }
     }
   }
@@ -178,12 +176,6 @@ public class ChessBoardController {
     handleMoveSelection(sourcePos);
   }
 
-  public synchronized void imageClicked(Event e) {
-    ImageView img = (ImageView) e.getSource();
-    Position sourcePos = getPositionOfImage(img);
-    handleMoveSelection(sourcePos);
-  }
-
   public synchronized void handlePromotionButton(Event e) {
     Button b = (Button) e.getSource();
     if (b.equals(knightPromotion)){
@@ -193,22 +185,6 @@ public class ChessBoardController {
     } else if (b.equals(rookPromotion)) {
       selectedPromotion = 'R';
     } else if (b.equals(queenPromotion)) {
-      selectedPromotion = 'Q';
-    } else {
-      new UnsupportedOperationException().printStackTrace();
-      selectedPromotion = '0';
-    }
-  }
-
-  public synchronized void handlePromotionImage(Event e) {
-    ImageView img = (ImageView) e.getSource();
-    if (img.equals(knightImage)){
-      selectedPromotion = 'N';
-    } else if (img.equals(bishopImage)) {
-      selectedPromotion = 'B';
-    } else if (img.equals(rookImage)) {
-      selectedPromotion = 'R';
-    } else if (img.equals(queenImage)) {
       selectedPromotion = 'Q';
     } else {
       new UnsupportedOperationException().printStackTrace();
@@ -264,21 +240,6 @@ public class ChessBoardController {
     for (int i=0; i<=7; i++){
       for (int j=0; j<=7; j++){
         if (boardSquares[i][j].equals(b)){
-          if (isFlipBoard()) {
-            return new Position(7-i, 7-j);
-          } else {
-            return new Position(i,j);
-          }
-        }
-      }
-    }
-    return null;
-  }
-
-  public synchronized Position getPositionOfImage(ImageView img) {
-    for (int i=0; i<=7; i++){
-      for (int j=0; j<=7; j++){
-        if (imageViews[i][j].equals(img)){
           if (isFlipBoard()) {
             return new Position(7-i, 7-j);
           } else {
