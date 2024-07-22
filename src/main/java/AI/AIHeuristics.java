@@ -14,10 +14,10 @@ public class AIHeuristics {
 
   public static float evaluateBoard(Board board) {
     if (board.isCheckmate(PlayerColor.WHITE)) {
-      return Float.NEGATIVE_INFINITY;
+      return -1000;
     }
     if (board.isCheckmate(PlayerColor.BLACK)) {
-      return Float.POSITIVE_INFINITY;
+      return 1000;
     }
     if (board.isStalemate(PlayerColor.WHITE) || board.isStalemate(PlayerColor.BLACK)) {
       return 0;

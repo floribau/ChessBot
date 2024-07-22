@@ -84,7 +84,7 @@ public class AIPlayer extends Player {
     for (Move m : board.getPossibleMoves(this.getColor())) {
       Board newBoard = board.calcMoveToBoard(m);
       float eval = minimax(newBoard, depth - 1, alpha, beta, false);
-      if (eval == Float.NEGATIVE_INFINITY  || eval > maxEval || (eval == maxEval && Math.random() >= 0.5)) {
+      if (eval > maxEval || (GameEngine.getPhase() != GamePhase.END_GAME && eval == maxEval && Math.random() >= 0.5)) {
         maxEval = eval;
         bestMove = m;
       }
@@ -110,7 +110,7 @@ public class AIPlayer extends Player {
           return GameEngine.getPhase() == GamePhase.END_GAME ? 9 : 5;
         }
         if (board.isMoveCheck(move)) {
-          return GameEngine.getPhase() == GamePhase.OPENING ? 2 : 10;
+          return GameEngine.getPhase() == GamePhase.OPENING ? 2 : 20;
         }
         return 1;
       }
