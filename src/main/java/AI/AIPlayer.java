@@ -1,6 +1,7 @@
 package AI;
 import Game.Board;
 import Game.GameEngine;
+import Game.GamePhase;
 import Game.Move;
 import Game.Player;
 import Game.PlayerColor;
@@ -106,10 +107,10 @@ public class AIPlayer extends Player {
           return 10 + capturedValue - movedValue;
         }
         if (move.isPromotion()) {
-          return 5;
+          return GameEngine.getPhase() == GamePhase.END_GAME ? 9 : 5;
         }
         if (board.isMoveCheck(move)) {
-          return 2;
+          return GameEngine.getPhase() == GamePhase.OPENING ? 2 : 10;
         }
         return 1;
       }
