@@ -58,7 +58,7 @@ public class AIHeuristics {
     int score = 0;
     for (Piece p : board.getPieces()) {
       int mobility = board.calcPossibleMovesForPiece(p.getId()).size();
-      score += (p.getColor() == PlayerColor.WHITE) ? mobility : -mobility;
+      score += (p.getColor() == PlayerColor.WHITE) ? mobility : -1 * mobility;
     }
     return score;
   }

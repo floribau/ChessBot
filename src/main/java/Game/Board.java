@@ -435,7 +435,9 @@ public class Board {
   }
 
   public synchronized int countMajorPieces() {
-    return pieces.values().stream().filter(piece -> piece.getType() != PieceType.PAWN).collect(Collectors.toList()).size();
+    return pieces.values().stream()
+        .filter(piece -> (piece.getType() != PieceType.PAWN) && piece.getType() != PieceType.KING)
+        .collect(Collectors.toList()).size();
   }
 
   public synchronized void setHasCastled(PlayerColor color) {
