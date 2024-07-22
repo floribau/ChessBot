@@ -224,6 +224,13 @@ public class Board {
   public synchronized List<Move> calcPossibleMoves(PlayerColor color) {
     List<Move> moves = new ArrayList<>();
     for (Move m : calcLegalMovesOnBoard(color)) {
+      if (m.isCastle()) {
+        int neighborCol = m.getOldPosition().col + (m.getNewPosition().col - m.getOldPosition().col) / 2;
+        Move neighborSquareMove = new Move(m.getOldPosition(), new Position(m.getNewPosition().row, neighborCol), m.getMovedPiece());
+        if (calcMoveToBoard(neighborSquareMove).isKingInCheck(color)) {
+          continue;
+        }
+      }
       if (!calcMoveToBoard(m).isKingInCheck(color)) {
         moves.add(m);
       }
