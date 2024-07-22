@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Board {
 
@@ -424,6 +425,10 @@ public class Board {
   public synchronized boolean isMoveCheck(Move m) {
     PlayerColor opponent = m.getMovedPiece().getColor().getOppositeColor();
     return calcMoveToBoard(m).isKingInCheck(opponent);
+  }
+
+  public synchronized int countMajorPieces() {
+    return pieces.values().stream().filter(piece -> piece.getType() != PieceType.PAWN).collect(Collectors.toList()).size();
   }
 
   @Override

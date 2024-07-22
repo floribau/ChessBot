@@ -10,6 +10,8 @@ public class GameEngine {
   private static Player player2;
   private static Player currentPlayer;
   private static ChessBoardController controller;
+  private static GamePhase phase;
+  private static int moveCount;
 
   public synchronized static void startGame(ChessBoardController controller){
     // TODO implement logic to select game mode
@@ -21,6 +23,8 @@ public class GameEngine {
 
     currentBoard = new Board();
     currentBoard.initBoard();
+    phase = GamePhase.OPENING;
+    moveCount = 0;
 
     GameEngine.controller = controller;
     controller.disableAllButtons();
@@ -37,6 +41,8 @@ public class GameEngine {
         Move move = currentPlayer.makeMove();
         if (currentBoard.move(move)) {
           Platform.runLater(() -> controller.repaint(currentBoard.getBoard()));
+          moveCount++;
+          switchGamePhase();
           switchCurrentPlayer();
           currentBoard.resetEnPassantPossible(currentPlayer.getColor());
           currentBoard.calcPossibleMoves(currentPlayer.getColor());
@@ -60,11 +66,19 @@ public class GameEngine {
     gameThread.start();
   }
 
-  public synchronized  static void switchCurrentPlayer(){
+  public synchronized static void switchCurrentPlayer(){
     if (currentPlayer == player1) {
       currentPlayer = player2;
     } else {
       currentPlayer = player1;
+    }
+  }
+
+  public synchronized static void switchGamePhase() {
+    if (phase == GamePhase.OPENING && moveCount >= 10) {
+      phase = GamePhase.MIDDLE_GAME;
+    } else if (phase == GamePhase.MIDDLE_GAME && currentBoard.countMajorPieces() <= 6) {
+      phase = GamePhase.END_GAME;
     }
   }
 
