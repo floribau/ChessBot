@@ -7,7 +7,7 @@ import javafx.scene.image.Image;
 
 public class Piece {
 
-  private static final Map<PieceTuple, Integer> pieceCounters = new HashMap<>();
+  public static final Map<PieceTuple, Integer> pieceCounters = new HashMap<>();
   private final String id;
   private final PieceType type;
   private final PlayerColor color;

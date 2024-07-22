@@ -1,189 +1,374 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-
-<AnchorPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.ChessBoardController">
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<AnchorPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+  fx:controller="GUI.ChessBoardController">
   <children>
-    <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="480.0" stylesheets="styles.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="480.0" prefWidth="480.0" stylesheets="styles.css"
+      xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
       <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
       </columnConstraints>
       <rowConstraints>
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
       </rowConstraints>
 
       <children>
-        <Button fx:id="rect00" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <Button fx:id="rect01" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-        <Button fx:id="rect02" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-        <Button fx:id="rect03" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="3" GridPane.rowIndex="0" />
-        <Button fx:id="rect04" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="4" GridPane.rowIndex="0" />
-        <Button fx:id="rect05" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="5" GridPane.rowIndex="0" />
-        <Button fx:id="rect06" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="6" GridPane.rowIndex="0" />
-        <Button fx:id="rect07" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="7" GridPane.rowIndex="0" />
+        <Button fx:id="rect00" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <Button fx:id="rect01" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+        <Button fx:id="rect02" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+        <Button fx:id="rect03" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+        <Button fx:id="rect04" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="4" GridPane.rowIndex="0"/>
+        <Button fx:id="rect05" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="5" GridPane.rowIndex="0"/>
+        <Button fx:id="rect06" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="6" GridPane.rowIndex="0"/>
+        <Button fx:id="rect07" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="7" GridPane.rowIndex="0"/>
 
-        <Button fx:id="rect10" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <Button fx:id="rect11" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-        <Button fx:id="rect12" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-        <Button fx:id="rect13" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-        <Button fx:id="rect14" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-        <Button fx:id="rect15" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="5" GridPane.rowIndex="1" />
-        <Button fx:id="rect16" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="6" GridPane.rowIndex="1" />
-        <Button fx:id="rect17" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+        <Button fx:id="rect10" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <Button fx:id="rect11" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <Button fx:id="rect12" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+        <Button fx:id="rect13" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+        <Button fx:id="rect14" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="4" GridPane.rowIndex="1"/>
+        <Button fx:id="rect15" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="5" GridPane.rowIndex="1"/>
+        <Button fx:id="rect16" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="6" GridPane.rowIndex="1"/>
+        <Button fx:id="rect17" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="7" GridPane.rowIndex="1"/>
 
-        <Button fx:id="rect20" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-        <Button fx:id="rect21" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-        <Button fx:id="rect22" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-        <Button fx:id="rect23" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-        <Button fx:id="rect24" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-        <Button fx:id="rect25" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="5" GridPane.rowIndex="2" />
-        <Button fx:id="rect26" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="6" GridPane.rowIndex="2" />
-        <Button fx:id="rect27" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="7" GridPane.rowIndex="2" />
+        <Button fx:id="rect20" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <Button fx:id="rect21" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        <Button fx:id="rect22" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+        <Button fx:id="rect23" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="3" GridPane.rowIndex="2"/>
+        <Button fx:id="rect24" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="4" GridPane.rowIndex="2"/>
+        <Button fx:id="rect25" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="5" GridPane.rowIndex="2"/>
+        <Button fx:id="rect26" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="6" GridPane.rowIndex="2"/>
+        <Button fx:id="rect27" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="7" GridPane.rowIndex="2"/>
 
-        <Button fx:id="rect30" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-        <Button fx:id="rect31" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-        <Button fx:id="rect32" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-        <Button fx:id="rect33" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-        <Button fx:id="rect34" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-        <Button fx:id="rect35" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="5" GridPane.rowIndex="3" />
-        <Button fx:id="rect36" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="6" GridPane.rowIndex="3" />
-        <Button fx:id="rect37" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="7" GridPane.rowIndex="3" />
+        <Button fx:id="rect30" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <Button fx:id="rect31" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+        <Button fx:id="rect32" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+        <Button fx:id="rect33" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="3" GridPane.rowIndex="3"/>
+        <Button fx:id="rect34" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="4" GridPane.rowIndex="3"/>
+        <Button fx:id="rect35" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="5" GridPane.rowIndex="3"/>
+        <Button fx:id="rect36" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="6" GridPane.rowIndex="3"/>
+        <Button fx:id="rect37" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="7" GridPane.rowIndex="3"/>
 
-        <Button fx:id="rect40" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-        <Button fx:id="rect41" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-        <Button fx:id="rect42" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-        <Button fx:id="rect43" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-        <Button fx:id="rect44" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="4" GridPane.rowIndex="4" />
-        <Button fx:id="rect45" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="5" GridPane.rowIndex="4" />
-        <Button fx:id="rect46" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="6" GridPane.rowIndex="4" />
-        <Button fx:id="rect47" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="7" GridPane.rowIndex="4" />
+        <Button fx:id="rect40" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+        <Button fx:id="rect41" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+        <Button fx:id="rect42" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="2" GridPane.rowIndex="4"/>
+        <Button fx:id="rect43" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="3" GridPane.rowIndex="4"/>
+        <Button fx:id="rect44" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="4" GridPane.rowIndex="4"/>
+        <Button fx:id="rect45" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="5" GridPane.rowIndex="4"/>
+        <Button fx:id="rect46" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="6" GridPane.rowIndex="4"/>
+        <Button fx:id="rect47" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="7" GridPane.rowIndex="4"/>
 
-        <Button fx:id="rect50" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-        <Button fx:id="rect51" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-        <Button fx:id="rect52" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-        <Button fx:id="rect53" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="3" GridPane.rowIndex="5" />
-        <Button fx:id="rect54" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="4" GridPane.rowIndex="5" />
-        <Button fx:id="rect55" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="5" GridPane.rowIndex="5" />
-        <Button fx:id="rect56" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="6" GridPane.rowIndex="5" />
-        <Button fx:id="rect57" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="7" GridPane.rowIndex="5" />
+        <Button fx:id="rect50" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+        <Button fx:id="rect51" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+        <Button fx:id="rect52" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="2" GridPane.rowIndex="5"/>
+        <Button fx:id="rect53" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="3" GridPane.rowIndex="5"/>
+        <Button fx:id="rect54" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="4" GridPane.rowIndex="5"/>
+        <Button fx:id="rect55" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="5" GridPane.rowIndex="5"/>
+        <Button fx:id="rect56" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="6" GridPane.rowIndex="5"/>
+        <Button fx:id="rect57" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="7" GridPane.rowIndex="5"/>
 
-        <Button fx:id="rect60" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="0" GridPane.rowIndex="6" />
-        <Button fx:id="rect61" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-        <Button fx:id="rect62" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-        <Button fx:id="rect63" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="3" GridPane.rowIndex="6" />
-        <Button fx:id="rect64" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="4" GridPane.rowIndex="6" />
-        <Button fx:id="rect65" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="5" GridPane.rowIndex="6" />
-        <Button fx:id="rect66" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="6" GridPane.rowIndex="6" />
-        <Button fx:id="rect67" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="7" GridPane.rowIndex="6" />
+        <Button fx:id="rect60" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+        <Button fx:id="rect61" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+        <Button fx:id="rect62" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="2" GridPane.rowIndex="6"/>
+        <Button fx:id="rect63" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="3" GridPane.rowIndex="6"/>
+        <Button fx:id="rect64" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="4" GridPane.rowIndex="6"/>
+        <Button fx:id="rect65" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="5" GridPane.rowIndex="6"/>
+        <Button fx:id="rect66" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="6" GridPane.rowIndex="6"/>
+        <Button fx:id="rect67" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="7" GridPane.rowIndex="6"/>
 
-        <Button fx:id="rect70" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="0" GridPane.rowIndex="7" />
-        <Button fx:id="rect71" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-        <Button fx:id="rect72" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="2" GridPane.rowIndex="7" />
-        <Button fx:id="rect73" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="3" GridPane.rowIndex="7" />
-        <Button fx:id="rect74" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="4" GridPane.rowIndex="7" />
-        <Button fx:id="rect75" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="5" GridPane.rowIndex="7" />
-        <Button fx:id="rect76" onAction="#buttonClicked" styleClass="button square-black" GridPane.columnIndex="6" GridPane.rowIndex="7" />
-        <Button fx:id="rect77" onAction="#buttonClicked" styleClass="button square-white" GridPane.columnIndex="7" GridPane.rowIndex="7" />
+        <Button fx:id="rect70" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+        <Button fx:id="rect71" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+        <Button fx:id="rect72" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="2" GridPane.rowIndex="7"/>
+        <Button fx:id="rect73" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="3" GridPane.rowIndex="7"/>
+        <Button fx:id="rect74" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="4" GridPane.rowIndex="7"/>
+        <Button fx:id="rect75" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="5" GridPane.rowIndex="7"/>
+        <Button fx:id="rect76" onAction="#buttonClicked" styleClass="button square-black"
+          GridPane.columnIndex="6" GridPane.rowIndex="7"/>
+        <Button fx:id="rect77" onAction="#buttonClicked" styleClass="button square-white"
+          GridPane.columnIndex="7" GridPane.rowIndex="7"/>
 
-        <ImageView fx:id="image00" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <ImageView fx:id="image01" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-        <ImageView fx:id="image02" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-        <ImageView fx:id="image03" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="3" GridPane.rowIndex="0" />
-        <ImageView fx:id="image04" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="4" GridPane.rowIndex="0" />
-        <ImageView fx:id="image05" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="5" GridPane.rowIndex="0" />
-        <ImageView fx:id="image06" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="6" GridPane.rowIndex="0" />
-        <ImageView fx:id="image07" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="7" GridPane.rowIndex="0" />
+        <ImageView fx:id="image00" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <ImageView fx:id="image01" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+        <ImageView fx:id="image02" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+        <ImageView fx:id="image03" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+        <ImageView fx:id="image04" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="4" GridPane.rowIndex="0"/>
+        <ImageView fx:id="image05" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="5" GridPane.rowIndex="0"/>
+        <ImageView fx:id="image06" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="6" GridPane.rowIndex="0"/>
+        <ImageView fx:id="image07" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="7" GridPane.rowIndex="0"/>
 
-        <ImageView fx:id="image10" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <ImageView fx:id="image11" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-        <ImageView fx:id="image12" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-        <ImageView fx:id="image13" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-        <ImageView fx:id="image14" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-        <ImageView fx:id="image15" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="5" GridPane.rowIndex="1" />
-        <ImageView fx:id="image16" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="6" GridPane.rowIndex="1" />
-        <ImageView fx:id="image17" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+        <ImageView fx:id="image10" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <ImageView fx:id="image11" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <ImageView fx:id="image12" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+        <ImageView fx:id="image13" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+        <ImageView fx:id="image14" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="4" GridPane.rowIndex="1"/>
+        <ImageView fx:id="image15" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="5" GridPane.rowIndex="1"/>
+        <ImageView fx:id="image16" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="6" GridPane.rowIndex="1"/>
+        <ImageView fx:id="image17" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="7" GridPane.rowIndex="1"/>
 
-        <ImageView fx:id="image20" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-        <ImageView fx:id="image21" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-        <ImageView fx:id="image22" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-        <ImageView fx:id="image23" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-        <ImageView fx:id="image24" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-        <ImageView fx:id="image25" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="5" GridPane.rowIndex="2" />
-        <ImageView fx:id="image26" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="6" GridPane.rowIndex="2" />
-        <ImageView fx:id="image27" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="7" GridPane.rowIndex="2" />
+        <ImageView fx:id="image20" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <ImageView fx:id="image21" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        <ImageView fx:id="image22" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+        <ImageView fx:id="image23" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
+        <ImageView fx:id="image24" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="4" GridPane.rowIndex="2"/>
+        <ImageView fx:id="image25" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="5" GridPane.rowIndex="2"/>
+        <ImageView fx:id="image26" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="6" GridPane.rowIndex="2"/>
+        <ImageView fx:id="image27" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="7" GridPane.rowIndex="2"/>
 
-        <ImageView fx:id="image30" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-        <ImageView fx:id="image31" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-        <ImageView fx:id="image32" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-        <ImageView fx:id="image33" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-        <ImageView fx:id="image34" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-        <ImageView fx:id="image35" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="5" GridPane.rowIndex="3" />
-        <ImageView fx:id="image36" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="6" GridPane.rowIndex="3" />
-        <ImageView fx:id="image37" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="7" GridPane.rowIndex="3" />
+        <ImageView fx:id="image30" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <ImageView fx:id="image31" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+        <ImageView fx:id="image32" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+        <ImageView fx:id="image33" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="3" GridPane.rowIndex="3"/>
+        <ImageView fx:id="image34" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="4" GridPane.rowIndex="3"/>
+        <ImageView fx:id="image35" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="5" GridPane.rowIndex="3"/>
+        <ImageView fx:id="image36" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="6" GridPane.rowIndex="3"/>
+        <ImageView fx:id="image37" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="7" GridPane.rowIndex="3"/>
 
-        <ImageView fx:id="image40" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-        <ImageView fx:id="image41" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-        <ImageView fx:id="image42" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-        <ImageView fx:id="image43" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-        <ImageView fx:id="image44" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="4" GridPane.rowIndex="4" />
-        <ImageView fx:id="image45" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="5" GridPane.rowIndex="4" />
-        <ImageView fx:id="image46" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="6" GridPane.rowIndex="4" />
-        <ImageView fx:id="image47" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="7" GridPane.rowIndex="4" />
+        <ImageView fx:id="image40" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+        <ImageView fx:id="image41" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+        <ImageView fx:id="image42" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="2" GridPane.rowIndex="4"/>
+        <ImageView fx:id="image43" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="3" GridPane.rowIndex="4"/>
+        <ImageView fx:id="image44" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="4" GridPane.rowIndex="4"/>
+        <ImageView fx:id="image45" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="5" GridPane.rowIndex="4"/>
+        <ImageView fx:id="image46" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="6" GridPane.rowIndex="4"/>
+        <ImageView fx:id="image47" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="7" GridPane.rowIndex="4"/>
 
-        <ImageView fx:id="image50" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-        <ImageView fx:id="image51" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-        <ImageView fx:id="image52" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-        <ImageView fx:id="image53" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="3" GridPane.rowIndex="5" />
-        <ImageView fx:id="image54" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="4" GridPane.rowIndex="5" />
-        <ImageView fx:id="image55" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="5" GridPane.rowIndex="5" />
-        <ImageView fx:id="image56" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="6" GridPane.rowIndex="5" />
-        <ImageView fx:id="image57" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="7" GridPane.rowIndex="5" />
+        <ImageView fx:id="image50" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+        <ImageView fx:id="image51" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+        <ImageView fx:id="image52" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="2" GridPane.rowIndex="5"/>
+        <ImageView fx:id="image53" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="3" GridPane.rowIndex="5"/>
+        <ImageView fx:id="image54" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="4" GridPane.rowIndex="5"/>
+        <ImageView fx:id="image55" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="5" GridPane.rowIndex="5"/>
+        <ImageView fx:id="image56" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="6" GridPane.rowIndex="5"/>
+        <ImageView fx:id="image57" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="7" GridPane.rowIndex="5"/>
 
-        <ImageView fx:id="image60" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="0" GridPane.rowIndex="6" />
-        <ImageView fx:id="image61" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-        <ImageView fx:id="image62" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-        <ImageView fx:id="image63" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="3" GridPane.rowIndex="6" />
-        <ImageView fx:id="image64" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="4" GridPane.rowIndex="6" />
-        <ImageView fx:id="image65" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="5" GridPane.rowIndex="6" />
-        <ImageView fx:id="image66" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="6" GridPane.rowIndex="6" />
-        <ImageView fx:id="image67" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="7" GridPane.rowIndex="6" />
+        <ImageView fx:id="image60" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+        <ImageView fx:id="image61" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+        <ImageView fx:id="image62" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="2" GridPane.rowIndex="6"/>
+        <ImageView fx:id="image63" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="3" GridPane.rowIndex="6"/>
+        <ImageView fx:id="image64" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="4" GridPane.rowIndex="6"/>
+        <ImageView fx:id="image65" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="5" GridPane.rowIndex="6"/>
+        <ImageView fx:id="image66" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="6" GridPane.rowIndex="6"/>
+        <ImageView fx:id="image67" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="7" GridPane.rowIndex="6"/>
 
-        <ImageView fx:id="image70" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="0" GridPane.rowIndex="7" />
-        <ImageView fx:id="image71" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-        <ImageView fx:id="image72" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="2" GridPane.rowIndex="7" />
-        <ImageView fx:id="image73" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="3" GridPane.rowIndex="7" />
-        <ImageView fx:id="image74" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="4" GridPane.rowIndex="7" />
-        <ImageView fx:id="image75" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="5" GridPane.rowIndex="7" />
-        <ImageView fx:id="image76" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="6" GridPane.rowIndex="7" />
-        <ImageView fx:id="image77" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="7" GridPane.rowIndex="7" />
+        <ImageView fx:id="image70" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+        <ImageView fx:id="image71" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+        <ImageView fx:id="image72" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="2" GridPane.rowIndex="7"/>
+        <ImageView fx:id="image73" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="3" GridPane.rowIndex="7"/>
+        <ImageView fx:id="image74" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="4" GridPane.rowIndex="7"/>
+        <ImageView fx:id="image75" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="5" GridPane.rowIndex="7"/>
+        <ImageView fx:id="image76" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="6" GridPane.rowIndex="7"/>
+        <ImageView fx:id="image77" fitHeight="60" fitWidth="60" mouseTransparent="True"
+          styleClass="image-view" GridPane.columnIndex="7" GridPane.rowIndex="7"/>
       </children>
     </GridPane>
 
-    <GridPane layoutX="140.0" layoutY="215.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="50.0" minWidth="200.0" prefHeight="50.0" prefWidth="200.0" stylesheets="styles.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
-      <Button fx:id="knightPromotion" minHeight="50.0" minWidth="50.0" onAction="#handlePromotionButton" styleClass="button" GridPane.columnIndex="0" GridPane.rowIndex="0" visible="false" />
-      <Button fx:id="bishopPromotion" minHeight="50.0" minWidth="50.0" onAction="#handlePromotionButton" styleClass="button" GridPane.columnIndex="1" GridPane.rowIndex="0" visible="false" />
-      <Button fx:id="rookPromotion" minHeight="50.0" minWidth="50.0" onAction="#handlePromotionButton" styleClass="button" GridPane.columnIndex="2" GridPane.rowIndex="0" visible="false" />
-      <Button fx:id="queenPromotion" minHeight="50.0" minWidth="50.0" onAction="#handlePromotionButton" styleClass="button" GridPane.columnIndex="3" GridPane.rowIndex="0" visible="false" />
-      <ImageView fx:id="knightImage" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="0" GridPane.rowIndex="0" visible="false" />
-      <ImageView fx:id="bishopImage" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="1" GridPane.rowIndex="0" visible="false" />
-      <ImageView fx:id="rookImage" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="2" GridPane.rowIndex="0" visible="false" />
-      <ImageView fx:id="queenImage" fitHeight="60" fitWidth="60" styleClass="image-view" mouseTransparent="True" GridPane.columnIndex="3" GridPane.rowIndex="0" visible="false" />
+    <GridPane layoutX="140.0" layoutY="215.0" maxHeight="-Infinity" maxWidth="-Infinity"
+      minHeight="50.0" minWidth="200.0" prefHeight="50.0" prefWidth="200.0" stylesheets="styles.css"
+      xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+      <Button fx:id="knightPromotion" minHeight="50.0" minWidth="50.0"
+        onAction="#handlePromotionButton" styleClass="button" visible="false"
+        GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+      <Button fx:id="bishopPromotion" minHeight="50.0" minWidth="50.0"
+        onAction="#handlePromotionButton" styleClass="button" visible="false"
+        GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+      <Button fx:id="rookPromotion" minHeight="50.0" minWidth="50.0"
+        onAction="#handlePromotionButton" styleClass="button" visible="false"
+        GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+      <Button fx:id="queenPromotion" minHeight="50.0" minWidth="50.0"
+        onAction="#handlePromotionButton" styleClass="button" visible="false"
+        GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+      <ImageView fx:id="knightImage" fitHeight="60" fitWidth="60" mouseTransparent="True"
+        styleClass="image-view" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+      <ImageView fx:id="bishopImage" fitHeight="60" fitWidth="60" mouseTransparent="True"
+        styleClass="image-view" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+      <ImageView fx:id="rookImage" fitHeight="60" fitWidth="60" mouseTransparent="True"
+        styleClass="image-view" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+      <ImageView fx:id="queenImage" fitHeight="60" fitWidth="60" mouseTransparent="True"
+        styleClass="image-view" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+      <columnConstraints>
+        <ColumnConstraints/>
+        <ColumnConstraints/>
+        <ColumnConstraints/>
+        <ColumnConstraints/>
+      </columnConstraints>
+      <rowConstraints>
+        <RowConstraints/>
+      </rowConstraints>
     </GridPane>
+
+    <Label fx:id="endLabel" alignment="CENTER" layoutX="150.0" layoutY="100.0"
+      text="Checkmate! White won" visible="false" AnchorPane.bottomAnchor="333.0"
+      AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="100.0"
+      style="-fx-background-color: lightgrey;">
+      <font>
+        <Font size="32.0"/>
+      </font>
+    </Label>
+    <MenuButton fx:id="startButton" layoutX="70.0" layoutY="250.0" mnemonicParsing="false"
+      text="Click to play Chess!">
+      <items>
+        <MenuItem fx:id="huhu" mnemonicParsing="false" onAction="#startHumanGame"
+          text="Human vs. Human"/>
+        <MenuItem fx:id="huai" mnemonicParsing="false" onAction="#startHumanAIGame"
+          text="Play as White vs. AI"/>
+        <MenuItem fx:id="aihu" mnemonicParsing="false" onAction="#startAIHumanGame"
+          text="Play as Black vs. AI"/>
+        <MenuItem fx:id="aiai" mnemonicParsing="false" onAction="#startAIGame"
+          text="Simulate AI vs. AI"/>
+      </items>
+      <font>
+        <Font size="30.0"/>
+      </font>
+    </MenuButton>
   </children>
 </AnchorPane>

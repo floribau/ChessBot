@@ -6,6 +6,9 @@ import Game.PlayerColor;
 import Util.Position;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Button;
@@ -49,6 +52,12 @@ public class ChessBoardController {
   private Button knightPromotion, bishopPromotion, rookPromotion, queenPromotion;
   @FXML
   private ImageView knightImage, bishopImage, rookImage, queenImage;
+  @FXML
+  private MenuButton startButton;
+  @FXML
+  private MenuItem huhu, huai, aihu, aiai;
+  @FXML
+  private Label endLabel;
 
   private Button[][] boardSquares;
   private ImageView[][] imageViews;
@@ -56,6 +65,8 @@ public class ChessBoardController {
   private Position selectedTo;
   private char selectedPromotion = '0';
 
+  public ChessBoardController() {
+  }
 
 
   @FXML
@@ -190,6 +201,48 @@ public class ChessBoardController {
       new UnsupportedOperationException().printStackTrace();
       selectedPromotion = '0';
     }
+  }
+
+  public void startHumanGame() {
+    handleStartGame();
+    GameEngine.startGame(this, true, true);
+  }
+
+  public void startHumanAIGame() {
+    handleStartGame();
+    GameEngine.startGame(this,true, false);
+  }
+
+  public void startAIHumanGame() {
+    handleStartGame();
+    GameEngine.startGame(this, false, true);
+  }
+
+  public void startAIGame() {
+    handleStartGame();
+    GameEngine.startGame(this, false, false);
+  }
+
+  public void handleStartGame() {
+    endLabel.setVisible(false);
+    startButton.setVisible(false);
+    startButton.setDisable(true);
+  }
+
+  public void handleGameOver(PlayerColor color) {
+    endLabel.setText("Checkmate! " + color + " won");
+    endLabel.setVisible(true);
+    startButton.setText("Click to play again!");
+    startButton.setDisable(false);
+    startButton.setVisible(true);
+  }
+
+  public void handleGameOver() {
+    endLabel.setText("Stalemate!");
+    endLabel.setVisible(true);
+    startButton.setText("Click to play again!");
+    startButton.setDisable(false);
+    startButton.setVisible(true);
   }
 
   public synchronized void activatePromotionButtons(PlayerColor color){

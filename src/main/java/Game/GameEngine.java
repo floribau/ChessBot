@@ -13,14 +13,12 @@ public class GameEngine {
   private static GamePhase phase;
   private static int moveCount;
 
-  public synchronized static void startGame(ChessBoardController controller){
-    // TODO implement logic to select game mode
-    // GameEngine.player1 = new AIPlayer(PlayerColor.WHITE);
-    GameEngine.player1 = new Player(PlayerColor.WHITE, false);
+  public synchronized static void startGame(ChessBoardController controller, boolean humanPlayer1, boolean humanPlayer2){
+    GameEngine.player1 = humanPlayer1 ? new Player(PlayerColor.WHITE, false) : new AIPlayer(PlayerColor.WHITE);
+    GameEngine.player2 = humanPlayer2 ? new Player(PlayerColor.BLACK, false) : new AIPlayer(PlayerColor.BLACK);
     GameEngine.currentPlayer = player1;
-    GameEngine.player2 = new AIPlayer(PlayerColor.BLACK);
-    // GameEngine.player2 = new Player(PlayerColor.BLACK, false);
 
+    Piece.pieceCounters.clear();
     currentBoard = new Board();
     currentBoard.initBoard();
     phase = GamePhase.OPENING;
@@ -53,15 +51,18 @@ public class GameEngine {
           throw new RuntimeException(e);
         }
       }
-      // TODO handle Checkmate and Stalemate
+
       controller.disableAllButtons();
-      controller.repaint(currentBoard.getBoard());
       if (isCheckmate()) {
+        Platform.runLater(() -> controller.handleGameOver(currentPlayer.getColor().getOppositeColor()));
         System.out.println("Checkmate!");
       }
       if (isStalemate()) {
+        Platform.runLater(() -> controller.handleGameOver());
         System.out.println("Stalemate!");
       }
+      currentBoard = new Board();
+      controller.repaint(currentBoard.getBoard());
     });
     gameThread.start();
   }
