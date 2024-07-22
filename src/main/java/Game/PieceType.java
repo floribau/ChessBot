@@ -1,8 +1,5 @@
 package Game;
 
-import GUI.GUIConfig;
-import javafx.scene.image.Image;
-
 public enum PieceType {
   KING("KING", 'K', 0),
   QUEEN("QUEEN", 'Q', 9),

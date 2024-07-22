@@ -2,7 +2,6 @@ package Game;
 
 import GUI.ChessBoardController;
 import Util.Position;
-import javafx.scene.control.Button;
 
 public class Player {
   private final PlayerColor color;
