@@ -155,7 +155,7 @@ public class AIHeuristics {
             if (board.isSquareOccupied(pos)) {
               Piece piece = board.getPieceById(board.getPieceAt(pos));
               if (piece.getType() == PieceType.PAWN && piece.getColor() == color) {
-                break Pawn;
+                continue Pawn;
               }
             }
           }
