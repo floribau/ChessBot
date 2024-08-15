@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class StartSceneController {
@@ -87,4 +88,21 @@ public class StartSceneController {
     stage.setMaximized(true);
     stage.show();
   }
+
+  public void openSettings() {
+    try {
+      FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("SettingsScene.fxml"));
+      Parent settingsRoot = fxmlLoader.load();
+
+      Stage settingsStage = new Stage();
+      settingsStage.setTitle("Settings");
+      settingsStage.initModality(Modality.APPLICATION_MODAL);  // Makes the settings window modal
+      settingsStage.setResizable(false);  // Optional: make the settings window non-resizable
+      settingsStage.setScene(new Scene(settingsRoot));
+      settingsStage.showAndWait();  // Wait until the settings window is closed
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
 }
