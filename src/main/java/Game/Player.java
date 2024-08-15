@@ -1,12 +1,12 @@
 package Game;
 
-import GUI.ChessBoardController;
+import GUI.GameSceneController;
 import Util.Position;
 
 public class Player {
   private final PlayerColor color;
   private final boolean humanPlayer;
-  private ChessBoardController controller;
+  private GameSceneController controller;
 
   public Player(PlayerColor color, boolean humanPlayer) {
     this.color = color;

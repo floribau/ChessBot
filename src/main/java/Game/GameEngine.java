@@ -1,7 +1,7 @@
 package Game;
 
 import AI.AIPlayer;
-import GUI.ChessBoardController;
+import GUI.GameSceneController;
 import javafx.application.Platform;
 
 public class GameEngine {
@@ -9,11 +9,11 @@ public class GameEngine {
   private static Player player1;
   private static Player player2;
   private static Player currentPlayer;
-  private static ChessBoardController controller;
+  private static GameSceneController controller;
   private static GamePhase phase;
   private static int moveCount;
 
-  public synchronized static void startGame(ChessBoardController controller, boolean humanPlayer1, boolean humanPlayer2){
+  public synchronized static void startGame(GameSceneController controller, boolean humanPlayer1, boolean humanPlayer2){
     GameEngine.player1 = humanPlayer1 ? new Player(PlayerColor.WHITE, true) : new AIPlayer(PlayerColor.WHITE);
     GameEngine.player2 = humanPlayer2 ? new Player(PlayerColor.BLACK, true) : new AIPlayer(PlayerColor.BLACK);
     GameEngine.currentPlayer = player1;
@@ -119,7 +119,7 @@ public class GameEngine {
     return currentBoard.isStalemate(currentPlayer.getColor());
   }
 
-  public synchronized static ChessBoardController getController(){
+  public synchronized static GameSceneController getController(){
     return controller;
   }
 

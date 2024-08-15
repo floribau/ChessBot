@@ -1,3 +1,4 @@
+import GUI.StartSceneController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -7,10 +8,15 @@ import javafx.stage.Stage;
 public class Main extends Application {
   @Override
   public synchronized void start(Stage primaryStage) throws Exception {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("/ChessBoard.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("StartScene.fxml"));
     Parent root = loader.load();
-    primaryStage.setTitle("Chess");
-    primaryStage.setScene(new Scene(root, 480, 480));
+
+    StartSceneController controller = loader.getController();
+    controller.setStage(primaryStage);
+
+    primaryStage.setTitle("Chess Engine");
+    primaryStage.setScene(new Scene(root, 1280, 720));
+    primaryStage.setMaximized(true);
     primaryStage.show();
   }
 
