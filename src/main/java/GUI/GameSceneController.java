@@ -4,17 +4,15 @@ import Game.GameEngine;
 import Game.Piece;
 import Game.PlayerColor;
 import Util.Position;
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Button;
 
 
-public class ChessBoardController {
+public class GameSceneController {
 
   @FXML
   private Button rect00, rect01, rect02, rect03, rect04, rect05, rect06, rect07;
@@ -53,9 +51,7 @@ public class ChessBoardController {
   @FXML
   private ImageView knightImage, bishopImage, rookImage, queenImage;
   @FXML
-  private MenuButton startButton;
-  @FXML
-  private Label endLabel;
+  private ImageView backgroundImageView;
 
   private Button[][] boardSquares;
   private ImageView[][] imageViews;
@@ -63,7 +59,7 @@ public class ChessBoardController {
   private Position selectedTo;
   private char selectedPromotion = '0';
 
-  public ChessBoardController() {
+  public GameSceneController() {
   }
 
 
@@ -89,7 +85,10 @@ public class ChessBoardController {
         {image60, image61, image62, image63, image64, image65, image66, image67},
         {image70, image71, image72, image73, image74, image75, image76, image77},
     };
-
+    Platform.runLater(() -> {
+      backgroundImageView.fitWidthProperty().bind(backgroundImageView.getScene().widthProperty());
+      backgroundImageView.fitHeightProperty().bind(backgroundImageView.getScene().heightProperty());
+    });
     changeGUISettings();
   }
 
@@ -138,13 +137,14 @@ public class ChessBoardController {
 
   @FXML
   public synchronized void changeGUISettings() {
+    backgroundImageView.setImage(GUIConfig.getLayout().getBackground());
     for (int i=0; i<=7; i++){
       for (int j=0; j<=7; j++){
         Button rect = boardSquares[i][j];
         if ((i+j)%2 == 0) {
-          rect.setStyle("-fx-background-color: " + GUIConfig.colorToHexString(GUIConfig.WHITE_SQUARE_COLOR));
+          rect.setStyle("-fx-background-color: " + GUIConfig.colorToHexString(GUIConfig.getLayout().getWhiteColor()));
         } else {
-          rect.setStyle("-fx-background-color: " + GUIConfig.colorToHexString(GUIConfig.BLACK_SQUARE_COLOR));
+          rect.setStyle("-fx-background-color: " + GUIConfig.colorToHexString(GUIConfig.getLayout().getBlackColor()));
         }
       }
     }
@@ -201,46 +201,12 @@ public class ChessBoardController {
     }
   }
 
-  public void startHumanGame() {
-    handleStartGame();
-    GameEngine.startGame(this, true, true);
-  }
-
-  public void startHumanAIGame() {
-    handleStartGame();
-    GameEngine.startGame(this,true, false);
-  }
-
-  public void startAIHumanGame() {
-    handleStartGame();
-    GameEngine.startGame(this, false, true);
-  }
-
-  public void startAIGame() {
-    handleStartGame();
-    GameEngine.startGame(this, false, false);
-  }
-
-  public void handleStartGame() {
-    endLabel.setVisible(false);
-    startButton.setVisible(false);
-    startButton.setDisable(true);
-  }
-
   public void handleGameOver(PlayerColor color) {
-    endLabel.setText("Checkmate! " + color + " won");
-    endLabel.setVisible(true);
-    startButton.setText("Click to play again!");
-    startButton.setDisable(false);
-    startButton.setVisible(true);
+    // TODO redo work
   }
 
   public void handleGameOver() {
-    endLabel.setText("Stalemate!");
-    endLabel.setVisible(true);
-    startButton.setText("Click to play again!");
-    startButton.setDisable(false);
-    startButton.setVisible(true);
+    // TODO redo work
   }
 
   public synchronized void activatePromotionButtons(PlayerColor color){
