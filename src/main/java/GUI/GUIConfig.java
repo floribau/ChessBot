@@ -4,14 +4,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 
 public class GUIConfig {
-  public static Color WHITE_SQUARE_COLOR = Color.BEIGE;
-  public static Color BLACK_SQUARE_COLOR = Color.SADDLEBROWN;
+  private static GUILayout layout = GUILayout.COLORFUL_LAYOUT;
 
   public static Image KING_WHITE = new Image(ClassLoader.getSystemResource("images/king-white.png").toString());
-
   public static Image KING_BLACK = new Image(ClassLoader.getSystemResource("images/king-black.png").toString());
   public static Image QUEEN_WHITE = new Image(ClassLoader.getSystemResource("images/queen-white.png").toString());
-
   public static Image QUEEN_BLACK = new Image(ClassLoader.getSystemResource("images/queen-black.png").toString());
   public static Image ROOK_WHITE = new Image(ClassLoader.getSystemResource("images/rook-white.png").toString());
   public static Image ROOK_BLACK = new Image(ClassLoader.getSystemResource("images/rook-black.png").toString());
@@ -28,5 +25,13 @@ public class GUIConfig {
     int b = (int) (color.getBlue() * 255);
 
     return String.format("#%02X%02X%02X", r, g, b);
+  }
+
+  public static GUILayout getLayout() {
+    return layout;
+  }
+
+  public static void setLayout(GUILayout layout) {
+    GUIConfig.layout = layout;
   }
 }
