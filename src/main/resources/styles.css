@@ -8,6 +8,10 @@
   -fx-pref-height: 60;
 }
 
+.button:disabled {
+  -fx-opacity: 0.6;
+}
+
 .square-white {
   -fx-fill: white;
 }
