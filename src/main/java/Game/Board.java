@@ -75,6 +75,30 @@ public class Board {
     }
   }
 
+  public void initPuzzle() {
+    pieces = new HashMap<>();
+    // white pieces
+    addPiece(new Piece(PieceType.KNIGHT, PlayerColor.WHITE), 2, 5);
+    addPiece(new Piece(PieceType.PAWN, PlayerColor.WHITE), 4, 3);
+    addPiece(new Piece(PieceType.PAWN, PlayerColor.WHITE), 5, 2);
+    addPiece(new Piece(PieceType.PAWN, PlayerColor.WHITE), 6, 1);
+    addPiece(new Piece(PieceType.PAWN, PlayerColor.WHITE), 6, 7);
+    addPiece(new Piece(PieceType.BISHOP, PlayerColor.WHITE), 5, 3);
+    addPiece(new Piece(PieceType.QUEEN, PlayerColor.WHITE), 5, 4);
+    addPiece(new Piece(PieceType.KING, PlayerColor.WHITE), 6, 3);
+    addPiece(new Piece(PieceType.ROOK, PlayerColor.WHITE), 7, 6);
+    // black pieces
+    addPiece(new Piece(PieceType.KING, PlayerColor.BLACK), 0, 5);
+    addPiece(new Piece(PieceType.ROOK, PlayerColor.BLACK), 0, 7);
+    addPiece(new Piece(PieceType.PAWN, PlayerColor.BLACK), 1, 0);
+    addPiece(new Piece(PieceType.PAWN, PlayerColor.BLACK), 1, 1);
+    addPiece(new Piece(PieceType.PAWN, PlayerColor.BLACK), 1, 2);
+    addPiece(new Piece(PieceType.PAWN, PlayerColor.BLACK), 1, 7);
+    addPiece(new Piece(PieceType.BISHOP, PlayerColor.BLACK), 2, 1);
+    addPiece(new Piece(PieceType.PAWN, PlayerColor.BLACK), 2, 6);
+    addPiece(new Piece(PieceType.QUEEN, PlayerColor.BLACK), 6, 0);
+  }
+
   private void addPiece(Piece piece, int row, int col) {
     pieces.put(piece.getId(), piece);
     setPieceAt(new Position(row, col), piece.getId());
@@ -146,10 +170,12 @@ public class Board {
     Position newPosRook = new Position(newPos.row, newCol);
     String rookId = getPieceAt(oldPosRook);
     Piece rookPiece = getPieceById(rookId);
-    this.setPieceAt(oldPosRook, "");
-    this.setPieceAt(newPosRook, rookId);
-    rookPiece.setHasMoved();
-    setHasCastled(rookPiece.getColor());
+    if (rookPiece != null) {
+      this.setPieceAt(oldPosRook, "");
+      this.setPieceAt(newPosRook, rookId);
+      rookPiece.setHasMoved();
+      setHasCastled(rookPiece.getColor());
+    }
   }
 
   private void handlePromotion(Move move, Piece movedPiece, Position newPos) {
