@@ -3,24 +3,34 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.image.Image?>
 
-<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.StartSceneController">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.StartSceneController">
   <!-- Background Image -->
-  <ImageView fx:id="backgroundImageView" fitHeight="0.0" fitWidth="0.0" preserveRatio="false" />
-
-  <!-- AnchorPane for settings button -->
-  <AnchorPane>
-    <Button fx:id="settingsButton" text="Settings" onAction="#openSettings"
-      AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0"/>
-  </AnchorPane>
+  <ImageView fx:id="backgroundImageView" fitHeight="0.0" fitWidth="0.0" preserveRatio="false"
+    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+    AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"/>
 
   <!-- Centered HBox for Buttons -->
-  <VBox fx:id="buttonContainer" alignment="center" spacing="10">
-    <Button fx:id="whiteButton" text="Play as White" onAction="#startWhiteGame" />
-    <Button fx:id="blackButton" text="Play as Black" onAction="#startBlackGame" />
-    <Button fx:id="humanButton" text="Play human game" onAction="#startHumanGame" />
-    <Button fx:id="aiButton" text="Simulate AI game" onAction="#startAIGame" />
+  <VBox fx:id="buttonContainer" alignment="center" spacing="10"
+    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+    AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0">
+    <Button fx:id="whiteButton" text="Play as White" onAction="#startWhiteGame"/>
+    <Button fx:id="blackButton" text="Play as Black" onAction="#startBlackGame"/>
+    <Button fx:id="humanButton" text="Play human game" onAction="#startHumanGame"/>
+    <Button fx:id="aiButton" text="Simulate AI game" onAction="#startAIGame"/>
   </VBox>
-</StackPane>
+
+  <!-- Settings Button -->
+  <Button fx:id="settingsButton" onAction="#openSettings"
+    AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0" disable="false">
+    <graphic>
+      <ImageView fitWidth="50" fitHeight="50" mouseTransparent="true" preserveRatio="true">
+        <image>
+          <Image url="images/settings.png"/>
+        </image>
+      </ImageView>
+    </graphic>
+  </Button>
+</AnchorPane>

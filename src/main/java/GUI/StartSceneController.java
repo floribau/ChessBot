@@ -91,7 +91,7 @@ public class StartSceneController {
 
   public void openSettings() {
     try {
-      FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("SettingsScene.fxml"));
+      FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/SettingsScene.fxml"));
       Parent settingsRoot = fxmlLoader.load();
 
       Stage settingsStage = new Stage();
