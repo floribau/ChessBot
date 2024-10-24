@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class AIPlayer extends Player {
-  private static final HashMap<Board, Float> TRANSPOSITION_TABLE = new HashMap<>();
+  private static final HashMap<Board, TranspositionTableEntry> TRANSPOSITION_TABLE = new HashMap<>();
   private static int POSITION_COUNT = 0;
   private static int DUPLICATE_COUNT = 0;
 
@@ -23,19 +23,28 @@ public class AIPlayer extends Player {
   }
 
   public float minimax(Board board, int depth, float alpha, float beta, PlayerColor player) {
+
+    if (TRANSPOSITION_TABLE.containsKey(board)) {
+      TranspositionTableEntry entry = TRANSPOSITION_TABLE.get(board);
+      if (entry.depth() >= depth) {
+        DUPLICATE_COUNT++;
+        return entry.score();
+      }
+    }
+
     boolean isWhitePlayer = player == PlayerColor.WHITE;
     board.calcPossibleMoves(player);
 
     if (depth == 0 || board.isCheckmate(player) || board.isStalemate(player)) {
       if (TRANSPOSITION_TABLE.containsKey(board)) {
         DUPLICATE_COUNT++;
-        return TRANSPOSITION_TABLE.get(board);
+        return TRANSPOSITION_TABLE.get(board).score();
       }
 
       POSITION_COUNT++;
       board.calcPossibleMoves(player.getOppositeColor());
       float score = AIHeuristics.evaluateBoard(board);
-      TRANSPOSITION_TABLE.put(board, score);
+      TRANSPOSITION_TABLE.put(board, new TranspositionTableEntry(depth, score));
       return score;
     }
 
@@ -66,7 +75,10 @@ public class AIPlayer extends Player {
       }
       resEval = minEval;
     }
-    // transpositionTable.put(board, resEval);
+
+    if (!TRANSPOSITION_TABLE.containsKey(board) || TRANSPOSITION_TABLE.get(board).depth() < depth) {
+      TRANSPOSITION_TABLE.put(board, new TranspositionTableEntry(depth, resEval));
+    }
     return resEval;
   }
 
