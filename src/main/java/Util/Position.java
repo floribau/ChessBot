@@ -14,11 +14,20 @@ public class Position {
     row = 8 - Character.getNumericValue(chessCoordinate.charAt(1));
   }
 
+  @Override
   public String toString(){
     return getChessCoordinate();
   }
 
-  public boolean equals(Position p) {
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Position p = (Position) o;
     return this.row == p.row && this.col == p.col;
   }
 
