@@ -21,8 +21,8 @@ public class AIPlayer extends Player {
     return findBestMove(GameEngine.getCurrentBoard(), 3);
   }
 
-  public float minimax(Board board, int depth, float alpha, float beta, boolean maximizingPlayer) {
-    PlayerColor player = maximizingPlayer ? this.getColor() : this.getColor().getOppositeColor();
+  public float minimax(Board board, int depth, float alpha, float beta, PlayerColor player) {
+    boolean isWhitePlayer = player == PlayerColor.WHITE;
     board.calcPossibleMoves(player);
 
     /*
@@ -35,18 +35,18 @@ public class AIPlayer extends Player {
     if (depth == 0 || board.isCheckmate(player) || board.isStalemate(player)) {
       board.calcPossibleMoves(player.getOppositeColor());
       int neg = this.getColor().equals(PlayerColor.WHITE) ? 1 : -1;
-      return neg * AIHeuristics.evaluateBoard(board);
+      return AIHeuristics.evaluateBoard(board);
     }
 
     List<Move> moves = board.getPossibleMoves(player);
     orderMoves(board, moves);
     float resEval;
 
-    if (maximizingPlayer) {
+    if (isWhitePlayer) {
       float maxEval = Float.NEGATIVE_INFINITY;
       for (Move m : board.getPossibleMoves(player)) {
         Board newBoard = board.calcMoveToBoard(m);
-        maxEval = Float.max(maxEval, minimax(newBoard, depth - 1, alpha, beta, false));
+        maxEval = Float.max(maxEval, minimax(newBoard, depth - 1, alpha, beta, player.getOppositeColor()));
         alpha = Float.max(alpha, maxEval);
         if (beta <= alpha) {
           break;
@@ -57,7 +57,7 @@ public class AIPlayer extends Player {
       float minEval = Float.POSITIVE_INFINITY;
       for (Move m : board.getPossibleMoves(player)) {
         Board newBoard = board.calcMoveToBoard(m);
-        minEval = Float.min(minEval, minimax(newBoard, depth - 1, alpha, beta, true));
+        minEval = Float.min(minEval, minimax(newBoard, depth - 1, alpha, beta, player.getOppositeColor()));
         beta = Float.min(beta, minEval);
         if (beta <= alpha) {
           break;
@@ -70,25 +70,28 @@ public class AIPlayer extends Player {
   }
 
   public Move findBestMove(Board board, int depth) {
-    board.calcPossibleMoves(this.getColor());
+    PlayerColor player = this.getColor();
+    boolean isWhitePlayer = player == PlayerColor.WHITE;
+    board.calcPossibleMoves(player);
 
     Move bestMove = null;
-    float maxEval = Float.NEGATIVE_INFINITY;
+    float bestEval = isWhitePlayer ? Float.NEGATIVE_INFINITY : Float.POSITIVE_INFINITY;
     float alpha = Float.NEGATIVE_INFINITY;
     float beta = Float.POSITIVE_INFINITY;
 
-    List<Move> moves = board.getPossibleMoves(this.getColor());
+    List<Move> moves = board.getPossibleMoves(player);
     orderMoves(board, moves);
 
-    for (Move m : board.getPossibleMoves(this.getColor())) {
+    for (Move m : moves) {
       Board newBoard = board.calcMoveToBoard(m);
-      float eval = minimax(newBoard, depth - 1, alpha, beta, false);
-      if (eval > maxEval || (GameEngine.getPhase() != GamePhase.END_GAME && eval == maxEval && Math.random() >= 0.5)) {
-        maxEval = eval;
+      float eval = minimax(newBoard, depth - 1, alpha, beta, player.getOppositeColor());
+      if ((isWhitePlayer && eval > bestEval) || (!isWhitePlayer && eval < bestEval)) {
+        // || (GameEngine.getPhase() != GamePhase.END_GAME && eval == maxEval && Math.random() >= 0.5)
+        bestEval = eval;
         bestMove = m;
       }
     }
-    System.out.println("Best move for " + this.getColor() + " is " + bestMove + ", score: " + maxEval);
+    System.out.println("Best move for " + this.getColor() + " is " + bestMove + ", score: " + bestEval);
     return bestMove;
   }
 
