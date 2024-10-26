@@ -11,15 +11,16 @@ import java.util.List;
 
 public class AIPlayer extends Player {
   private static final HashMap<Board, TranspositionTableEntry> TRANSPOSITION_TABLE = new HashMap<>();
-  private static int POSITION_COUNT = 0;
-  private static int DUPLICATE_COUNT = 0;
+  private static final int INITIAL_DEPTH = 3;
+  private static int posCount = 0;
+  private static int duplicateCount = 0;
 
   public AIPlayer(PlayerColor color) {
     super(color, false);
   }
 
   public synchronized Move makeMove() {
-    return findBestMove(GameEngine.getCurrentBoard(), 3);
+    return findBestMove(GameEngine.getCurrentBoard(), INITIAL_DEPTH);
   }
 
   public float minimax(Board board, int depth, float alpha, float beta, PlayerColor player) {
@@ -27,7 +28,7 @@ public class AIPlayer extends Player {
     if (TRANSPOSITION_TABLE.containsKey(board)) {
       TranspositionTableEntry entry = TRANSPOSITION_TABLE.get(board);
       if (entry.depth() >= depth) {
-        DUPLICATE_COUNT++;
+        duplicateCount++;
         return entry.score();
       }
     }
@@ -36,14 +37,9 @@ public class AIPlayer extends Player {
     board.calcPossibleMoves(player);
 
     if (depth == 0 || board.isCheckmate(player) || board.isStalemate(player)) {
-      if (TRANSPOSITION_TABLE.containsKey(board)) {
-        DUPLICATE_COUNT++;
-        return TRANSPOSITION_TABLE.get(board).score();
-      }
-
-      POSITION_COUNT++;
+      posCount++;
       board.calcPossibleMoves(player.getOppositeColor());
-      float score = AIHeuristics.evaluateBoard(board);
+      float score = AIHeuristics.eval(board);
       TRANSPOSITION_TABLE.put(board, new TranspositionTableEntry(depth, score));
       return score;
     }
@@ -54,9 +50,21 @@ public class AIPlayer extends Player {
 
     if (isWhitePlayer) {
       float maxEval = Float.NEGATIVE_INFINITY;
+      float eval;
       for (Move m : board.getPossibleMoves(player)) {
         Board newBoard = board.calcMoveToBoard(m);
-        maxEval = Float.max(maxEval, minimax(newBoard, depth - 1, alpha, beta, player.getOppositeColor()));
+
+        // null-window pruning after certain depth
+        // if (depth <= INITIAL_DEPTH - 2) {
+        eval = minimax(newBoard, depth - 1, alpha, alpha + 1, player.getOppositeColor());
+        // }
+        // regular minimax call
+        // if (depth > INITIAL_DEPTH - 2 || eval > alpha) {
+        if (eval > alpha) {
+          eval = minimax(newBoard, depth - 1, alpha, beta, player.getOppositeColor());
+        }
+
+        maxEval = Float.max(maxEval, eval);
         alpha = Float.max(alpha, maxEval);
         if (beta <= alpha) {
           break;
@@ -65,9 +73,21 @@ public class AIPlayer extends Player {
       resEval = maxEval;
     } else {
       float minEval = Float.POSITIVE_INFINITY;
+      float eval;
       for (Move m : board.getPossibleMoves(player)) {
         Board newBoard = board.calcMoveToBoard(m);
-        minEval = Float.min(minEval, minimax(newBoard, depth - 1, alpha, beta, player.getOppositeColor()));
+
+        // null-window pruning after certain depth
+        // if (depth <= INITIAL_DEPTH - 2) {
+        eval = minimax(newBoard, depth - 1, beta - 1, beta, player.getOppositeColor());
+        // }
+        // regular minimax call
+        // if (depth > INITIAL_DEPTH - 2 || eval < beta) {
+        if (eval < beta) {
+          eval = minimax(newBoard, depth - 1, alpha, beta, player.getOppositeColor());
+        }
+
+        minEval = Float.min(minEval, eval);
         beta = Float.min(beta, minEval);
         if (beta <= alpha) {
           break;
@@ -83,8 +103,8 @@ public class AIPlayer extends Player {
   }
 
   public Move findBestMove(Board board, int depth) {
-    POSITION_COUNT = 0;
-    DUPLICATE_COUNT = 0;
+    posCount = 0;
+    duplicateCount = 0;
 
     PlayerColor player = this.getColor();
     boolean isWhitePlayer = player == PlayerColor.WHITE;
@@ -108,7 +128,7 @@ public class AIPlayer extends Player {
       }
     }
     System.out.println("Best move for " + this.getColor() + " is " + bestMove + ", score: " + bestEval);
-    System.out.println("Positions evaluated: " + POSITION_COUNT + ", duplicates eliminated: " + DUPLICATE_COUNT);
+    System.out.println("Positions evaluated: " + posCount + ", duplicates eliminated: " + duplicateCount);
     return bestMove;
   }
 

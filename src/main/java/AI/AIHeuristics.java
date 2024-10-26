@@ -13,7 +13,7 @@ import java.util.List;
 
 public class AIHeuristics {
 
-  public static float evaluateBoard(Board board) {
+  public static float eval(Board board) {
     if (board.isCheckmate(PlayerColor.WHITE)) {
       return -1000;
     }
