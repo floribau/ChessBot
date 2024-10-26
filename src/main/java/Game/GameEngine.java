@@ -46,7 +46,7 @@ public class GameEngine {
           currentBoard.calcPossibleMoves(currentPlayer.getColor());
         }
         try {
-          Thread.sleep(50);
+          Thread.sleep(100);
         } catch (InterruptedException e) {
           throw new RuntimeException(e);
         }
