@@ -8,8 +8,7 @@ import Game.Piece;
 import Game.PieceType;
 import Game.PlayerColor;
 import Util.Position;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 
 public class AIHeuristics {
 
@@ -110,66 +109,37 @@ public class AIHeuristics {
   private static int scorePawnStructure(Board board, float weight) {
     if (weight == 0) return 0;
     int score = 0;
-    score += evaluateDoublePawns(board, PlayerColor.WHITE);
-    score -= evaluateDoublePawns(board, PlayerColor.BLACK);
-    score += evaluateIsolatedPawns(board, PlayerColor.WHITE);
-    score -= evaluateIsolatedPawns(board, PlayerColor.BLACK);
+    score += evalPawns(board, PlayerColor.WHITE);
+    score -= evalPawns(board, PlayerColor.BLACK);
     return score;
   }
 
-  private static int evaluateDoublePawns(Board board, PlayerColor color) {
+  private static int evalPawns(Board board, PlayerColor color) {
+    HashSet<Integer> pawnCols = new HashSet<>();
     int score = 0;
-    for (int col = 0; col <= 7; col++) {
-      int pawnCount = 0;
-      for (int row = 0; row <= 7; row++) {
-        Position pos = new Position(row, col);
-        if (board.isSquareOccupied(pos)) {
-          Piece piece = board.getPieceById(board.getPieceAt(pos));
-          if (piece.getType() == PieceType.PAWN && piece.getColor() == color) {
-            pawnCount++;
-          }
+
+    // eval double pawns
+    for (Piece piece : board.getPieces(color)) {
+      if (piece.isType(PieceType.PAWN)) {
+        if (!pawnCols.add(board.getPositionOfPiece(piece.getId()).col)) {
+          score--;
         }
       }
-      if (pawnCount > 1) {
-        score -= pawnCount - 1;
+    }
+
+    // eval isolated pawns
+    for (Piece piece : board.getPieces(color)) {
+      if (piece.isType(PieceType.PAWN)) {
+        int pieceCol = board.getPositionOfPiece(piece.getId()).col;
+        if (!(pawnCols.contains(pieceCol - 1) || pawnCols.contains(pieceCol + 1))) {
+          score -= 2;
+        }
       }
     }
+
     return score;
   }
 
-  private static int evaluateIsolatedPawns(Board board, PlayerColor color) {
-    int score = 0;
-    Pawn:
-    for (Piece pawn : board.getPieces(color)) {
-      int col = board.getPositionOfPiece(pawn.getId()).col;
-      if (pawn.getType() == PieceType.PAWN) {
-        for (int row = 0; row <= 7; row++) {
-          List<Position> positions = new ArrayList<>();
-          if (col > 0) {
-            // check left col
-            Position leftPos = new Position(row, col - 1);
-            positions.add(leftPos);
-          }
-          if (col < 7) {
-            // check right col
-            Position rightPos = new Position(row, col + 1);
-            positions.add(rightPos);
-          }
-          for (Position pos : positions) {
-            if (board.isSquareOccupied(pos)) {
-              Piece piece = board.getPieceById(board.getPieceAt(pos));
-              if (piece.getType() == PieceType.PAWN && piece.getColor() == color) {
-                continue Pawn;
-              }
-            }
-          }
-        }
-        // no pawns in adjacent files => isolated pawn
-        score -= 2;
-      }
-    }
-    return score;
-  }
 
   private static int scoreDevelopment(Board board, float weight) {
     if (weight == 0) return 0;

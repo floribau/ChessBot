@@ -52,6 +52,10 @@ public class Piece {
     return this.type;
   }
 
+  public boolean isType(PieceType type) {
+    return this.type == type;
+  }
+
   public PlayerColor getColor() {
     return this.color;
   }
