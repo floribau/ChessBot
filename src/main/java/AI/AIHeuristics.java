@@ -25,10 +25,7 @@ public class AIHeuristics {
 
     float materialWeight = AIConfig.MATERIAL_WEIGHT;
     float positionWeight = AIConfig.POSITION_WEIGHT;
-    float mobilityWeight = AIConfig.MOBILITY_WEIGHT;
     float pawnStructureWeight = AIConfig.PAWN_STRUCTURE_WEIGHT;
-    float centerControlWeight = AIConfig.CENTER_CONTROL_WEIGHT;
-    float developmentWeight = AIConfig.DEVELOPMENT_WEIGHT;
     float kingSafetyWeight = AIConfig.KING_SAFETY_WEIGHT;
     float batteriesWeight = AIConfig.BATTERIES_WEIGHT;
 
@@ -36,8 +33,6 @@ public class AIHeuristics {
       batteriesWeight = 0;
     }
     else if (GameEngine.getPhase() == GamePhase.MIDDLE_GAME) {
-      // developmentWeight = 0;
-      // centerControlWeight = 0;
       materialWeight = 2 * AIConfig.MATERIAL_WEIGHT;
       batteriesWeight = AIConfig.BATTERIES_WEIGHT;
     }
@@ -48,10 +43,7 @@ public class AIHeuristics {
 
     return (materialWeight != 0 ? materialWeight * scoreMaterial(board) : 0)
         + (positionWeight != 0 ? positionWeight * scorePiecePositions(board) : 0)
-        // + (mobilityWeight != 0 ? mobilityWeight * scoreMobility(board) : 0)
         + (pawnStructureWeight != 0 ? pawnStructureWeight * scorePawnStructure(board) : 0)
-        // + (centerControlWeight != 0 ? centerControlWeight * scoreCenterControl(board) : 0)
-        // + (developmentWeight != 0 ? developmentWeight * scoreDevelopment(board) : 0)
         + (kingSafetyWeight != 0 ? kingSafetyWeight * scoreKingSafety(board) : 0)
         + (batteriesWeight != 0 ? batteriesWeight * scoreBatteries(board) : 0);
   }
@@ -73,15 +65,6 @@ public class AIHeuristics {
     for (Piece p : board.getPieces()) {
       int neg = p.getColor().isWhite() ? 1 : -1;
       score += neg * PieceSquareTables.scorePiecePos(p, board.getPositionOfPiece(p));
-    }
-    return score;
-  }
-
-  private static int scoreMobility(Board board) {
-    int score = 0;
-    for (Piece p : board.getPieces()) {
-      int mobility = board.calcPossibleMovesForPiece(p.getId()).size();
-      score += (p.getColor().isWhite()) ? mobility : -1 * mobility;
     }
     return score;
   }
@@ -141,48 +124,6 @@ public class AIHeuristics {
       }
     }
 
-    return score;
-  }
-
-
-  private static int scoreDevelopment(Board board) {
-    boolean isPieceWhite;
-    int score = 0;
-    for (Piece p : board.getPieces()) {
-      isPieceWhite = p.getColor() == PlayerColor.WHITE;
-      if (p.getType() == PieceType.KNIGHT || p.getType() == PieceType.BISHOP) {
-        int centerDistance = Position.calcCenterDistance(board.getPositionOfPiece(p.getId()));
-        score += (isPieceWhite ? 1 : -1) * evaluateDevelopment(centerDistance);
-      }
-      if (p.hasMoved() && p.getType() != PieceType.PAWN) {
-        score += isPieceWhite ? 1 : -1;
-      }
-    }
-    return score;
-  }
-
-  private static int evaluateDevelopment(int centerDistance) {
-    int res;
-    switch (centerDistance) {
-      case 0 -> res = 4;
-      case 1 -> res = 3;
-      case 2 -> res = 2;
-      case 3 -> res = 1;
-      default -> res = 0;
-    }
-    return res;
-  }
-
-  private static int scoreCenterControl(Board board) {
-    int score = 0;
-    Position[] center = {new Position(3, 3), new Position(3, 4), new Position(4, 3),
-        new Position(4, 4)};
-    for (Position pos : center) {
-      if (board.isSquareOccupied(pos)) {
-        Piece piece = board.getPieceById(board.getPieceAt(pos));
-        score += (piece.getColor() == PlayerColor.WHITE) ? 1 : -1;
-      }
-    }
     return score;
   }
 
