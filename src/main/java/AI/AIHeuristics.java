@@ -24,6 +24,7 @@ public class AIHeuristics {
     }
 
     float materialWeight = AIConfig.MATERIAL_WEIGHT;
+    float positionWeight = AIConfig.POSITION_WEIGHT;
     float mobilityWeight = AIConfig.MOBILITY_WEIGHT;
     float pawnStructureWeight = AIConfig.PAWN_STRUCTURE_WEIGHT;
     float centerControlWeight = AIConfig.CENTER_CONTROL_WEIGHT;
@@ -35,8 +36,8 @@ public class AIHeuristics {
       batteriesWeight = 0;
     }
     else if (GameEngine.getPhase() == GamePhase.MIDDLE_GAME) {
-      developmentWeight = 0;
-      centerControlWeight = 0;
+      // developmentWeight = 0;
+      // centerControlWeight = 0;
       materialWeight = 2 * AIConfig.MATERIAL_WEIGHT;
       batteriesWeight = AIConfig.BATTERIES_WEIGHT;
     }
@@ -45,20 +46,20 @@ public class AIHeuristics {
       batteriesWeight = 0;
     }
 
-    return materialWeight * scoreMaterial(board, materialWeight)
-        + mobilityWeight * scoreMobility(board, mobilityWeight)
-        + pawnStructureWeight * scorePawnStructure(board, pawnStructureWeight)
-        + centerControlWeight * scoreCenterControl(board, centerControlWeight)
-        + developmentWeight * scoreDevelopment(board, developmentWeight)
-        + kingSafetyWeight * scoreKingSafety(board, kingSafetyWeight)
-        + batteriesWeight * scoreBatteries(board, batteriesWeight);
+    return (materialWeight != 0 ? materialWeight * scoreMaterial(board) : 0)
+        + (positionWeight != 0 ? positionWeight * scorePiecePositions(board) : 0)
+        // + (mobilityWeight != 0 ? mobilityWeight * scoreMobility(board) : 0)
+        + (pawnStructureWeight != 0 ? pawnStructureWeight * scorePawnStructure(board) : 0)
+        // + (centerControlWeight != 0 ? centerControlWeight * scoreCenterControl(board) : 0)
+        // + (developmentWeight != 0 ? developmentWeight * scoreDevelopment(board) : 0)
+        + (kingSafetyWeight != 0 ? kingSafetyWeight * scoreKingSafety(board) : 0)
+        + (batteriesWeight != 0 ? batteriesWeight * scoreBatteries(board) : 0);
   }
 
-  private static int scoreMaterial(Board board, float weight) {
-    if (weight == 0) return 0;
+  private static int scoreMaterial(Board board) {
     int score = 0;
     for (Piece p : board.getPieces()) {
-      if (p.getColor().equals(PlayerColor.WHITE)) {
+      if (p.getColor().isWhite()) {
         score += p.getValue();
       } else {
         score -= p.getValue();
@@ -67,18 +68,25 @@ public class AIHeuristics {
     return score;
   }
 
-  private static int scoreMobility(Board board, float weight) {
-    if (weight == 0) return 0;
+  private static int scorePiecePositions(Board board) {
     int score = 0;
     for (Piece p : board.getPieces()) {
-      int mobility = board.calcPossibleMovesForPiece(p.getId()).size();
-      score += (p.getColor() == PlayerColor.WHITE) ? mobility : -1 * mobility;
+      int neg = p.getColor().isWhite() ? 1 : -1;
+      score += neg * PieceSquareTables.scorePiecePos(p, board.getPositionOfPiece(p));
     }
     return score;
   }
 
-  private static int scoreKingSafety(Board board, float weight) {
-    if (weight == 0) return 0;
+  private static int scoreMobility(Board board) {
+    int score = 0;
+    for (Piece p : board.getPieces()) {
+      int mobility = board.calcPossibleMovesForPiece(p.getId()).size();
+      score += (p.getColor().isWhite()) ? mobility : -1 * mobility;
+    }
+    return score;
+  }
+
+  private static int scoreKingSafety(Board board) {
     int score = 0;
     score += evaluateKingSafety(board, PlayerColor.WHITE);
     score -= evaluateKingSafety(board, PlayerColor.BLACK);
@@ -87,7 +95,7 @@ public class AIHeuristics {
 
   private static int evaluateKingSafety(Board board, PlayerColor color) {
     Position kingPos = board.getKingPosition(color);
-    int direction = color == PlayerColor.WHITE ? -1 : 1;
+    int direction = color.isWhite() ? -1 : 1;
     int score = 0;
     for (int colOffset = -1; colOffset <= 1; colOffset++) {
       for (int rowOffset = 1; rowOffset <= 2; rowOffset++) {
@@ -106,8 +114,7 @@ public class AIHeuristics {
     return score;
   }
 
-  private static int scorePawnStructure(Board board, float weight) {
-    if (weight == 0) return 0;
+  private static int scorePawnStructure(Board board) {
     int score = 0;
     score += evalPawns(board, PlayerColor.WHITE);
     score -= evalPawns(board, PlayerColor.BLACK);
@@ -121,7 +128,7 @@ public class AIHeuristics {
     // eval double pawns
     for (Piece piece : board.getPieces(color)) {
       if (piece.isType(PieceType.PAWN)) {
-        if (!pawnCols.add(board.getPositionOfPiece(piece.getId()).col)) {
+        if (!pawnCols.add(board.getPositionOfPiece(piece).col)) {
           score--;
         }
       }
@@ -130,7 +137,7 @@ public class AIHeuristics {
     // eval isolated pawns
     for (Piece piece : board.getPieces(color)) {
       if (piece.isType(PieceType.PAWN)) {
-        int pieceCol = board.getPositionOfPiece(piece.getId()).col;
+        int pieceCol = board.getPositionOfPiece(piece).col;
         if (!(pawnCols.contains(pieceCol - 1) || pawnCols.contains(pieceCol + 1))) {
           score -= 2;
         }
@@ -141,8 +148,7 @@ public class AIHeuristics {
   }
 
 
-  private static int scoreDevelopment(Board board, float weight) {
-    if (weight == 0) return 0;
+  private static int scoreDevelopment(Board board) {
     boolean isPieceWhite;
     int score = 0;
     for (Piece p : board.getPieces()) {
@@ -170,8 +176,7 @@ public class AIHeuristics {
     return res;
   }
 
-  private static int scoreCenterControl(Board board, float weight) {
-    if (weight == 0) return 0;
+  private static int scoreCenterControl(Board board) {
     int score = 0;
     Position[] center = {new Position(3, 3), new Position(3, 4), new Position(4, 3),
         new Position(4, 4)};
@@ -184,8 +189,7 @@ public class AIHeuristics {
     return score;
   }
 
-  private static int scoreBatteries(Board board, float weight) {
-    if (weight == 0) return 0;
+  private static int scoreBatteries(Board board) {
     int score = 0;
     score += evalBatteries(board, PlayerColor.WHITE);
     score -= evalBatteries(board, PlayerColor.BLACK);
