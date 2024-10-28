@@ -229,6 +229,10 @@ public class Board {
     return null;
   }
 
+  public Position getPositionOfPiece(Piece p) {
+    return getPositionOfPiece(p.getId());
+  }
+
   public List<Piece> getPieces() {
     return new ArrayList<>(pieces.values());
   }
