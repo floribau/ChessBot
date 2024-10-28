@@ -26,7 +26,6 @@ public class AIHeuristics {
     float materialWeight = AIConfig.MATERIAL_WEIGHT;
     float positionWeight = AIConfig.POSITION_WEIGHT;
     float pawnStructureWeight = AIConfig.PAWN_STRUCTURE_WEIGHT;
-    float kingSafetyWeight = AIConfig.KING_SAFETY_WEIGHT;
     float batteriesWeight = AIConfig.BATTERIES_WEIGHT;
 
     if(GameEngine.getPhase() == GamePhase.OPENING) {
@@ -37,14 +36,12 @@ public class AIHeuristics {
       batteriesWeight = AIConfig.BATTERIES_WEIGHT;
     }
     else if (GameEngine.getPhase() == GamePhase.END_GAME) {
-      kingSafetyWeight = 0;
       batteriesWeight = 0;
     }
 
     return (materialWeight != 0 ? materialWeight * scoreMaterial(board) : 0)
         + (positionWeight != 0 ? positionWeight * scorePiecePositions(board) : 0)
         + (pawnStructureWeight != 0 ? pawnStructureWeight * scorePawnStructure(board) : 0)
-        + (kingSafetyWeight != 0 ? kingSafetyWeight * scoreKingSafety(board) : 0)
         + (batteriesWeight != 0 ? batteriesWeight * scoreBatteries(board) : 0);
   }
 
@@ -65,34 +62,6 @@ public class AIHeuristics {
     for (Piece p : board.getPieces()) {
       int neg = p.getColor().isWhite() ? 1 : -1;
       score += neg * PieceSquareTables.scorePiecePos(p, board.getPositionOfPiece(p));
-    }
-    return score;
-  }
-
-  private static int scoreKingSafety(Board board) {
-    int score = 0;
-    score += evaluateKingSafety(board, PlayerColor.WHITE);
-    score -= evaluateKingSafety(board, PlayerColor.BLACK);
-    return score;
-  }
-
-  private static int evaluateKingSafety(Board board, PlayerColor color) {
-    Position kingPos = board.getKingPosition(color);
-    int direction = color.isWhite() ? -1 : 1;
-    int score = 0;
-    for (int colOffset = -1; colOffset <= 1; colOffset++) {
-      for (int rowOffset = 1; rowOffset <= 2; rowOffset++) {
-        if (Position.isOnBoard(kingPos.row + direction * rowOffset, kingPos.col + colOffset) && board.isSquareOccupied(new Position(kingPos.row + direction * rowOffset, kingPos.col + colOffset))) {
-          Piece piece = board.getPieceById(board.getPieceAt(new Position(kingPos.row + direction * rowOffset, kingPos.col + colOffset)));
-          if (piece.isFriendlyPawn(color)) {
-            score++;
-            break;
-          }
-        }
-      }
-    }
-    if (board.hasCastled(color)) {
-      score += 5;
     }
     return score;
   }
