@@ -89,28 +89,30 @@ public class PieceSquareTables {
   };
 
   public static int scorePiecePos(Piece piece, Position pos) {
-    if (Position.isOnBoard(pos.row, pos.col)) {
+    int row = piece.getColor().isWhite() ? pos.row : 7 - pos.row;
+
+    if (Position.isOnBoard(row, pos.col)) {
       switch (piece.getType()) {
         case PAWN -> {
-          return PAWN_HEAT_MAP[pos.row][pos.col]; // TODO check index
+          return PAWN_HEAT_MAP[row][pos.col];
         }
         case BISHOP -> {
-          return BISHOP_HEAT_MAP[pos.row][pos.col];
+          return BISHOP_HEAT_MAP[row][pos.col];
         }
         case KNIGHT -> {
-          return KNIGHT_HEAT_MAP[pos.row][pos.col];
+          return KNIGHT_HEAT_MAP[row][pos.col];
         }
         case ROOK -> {
-          return ROOK_HEAT_MAP[pos.row][pos.col];
+          return ROOK_HEAT_MAP[row][pos.col];
         }
         case QUEEN -> {
-          return QUEEN_HEAT_MAP[pos.row][pos.col];
+          return QUEEN_HEAT_MAP[row][pos.col];
         }
         case KING -> {
           if (GameEngine.getPhase() != GamePhase.END_GAME) {
-            return KING_HEAT_MAP_MID[pos.row][pos.col];
+            return KING_HEAT_MAP_MID[row][pos.col];
           } else {
-            return KING_HEAT_MAP_END[pos.row][pos.col];
+            return KING_HEAT_MAP_END[row][pos.col];
           }
         }
       }
