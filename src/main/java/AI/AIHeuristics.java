@@ -135,12 +135,9 @@ public class AIHeuristics {
     }
 
     // eval isolated pawns
-    for (Piece piece : board.getPieces(color)) {
-      if (piece.isType(PieceType.PAWN)) {
-        int pieceCol = board.getPositionOfPiece(piece).col;
-        if (!(pawnCols.contains(pieceCol - 1) || pawnCols.contains(pieceCol + 1))) {
-          score -= 2;
-        }
+    for (int i : pawnCols) {
+      if (!pawnCols.contains(i - 1) && !pawnCols.contains(i + 1)) {
+        score -= 2;
       }
     }
 
