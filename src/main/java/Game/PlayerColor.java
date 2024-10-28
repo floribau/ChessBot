@@ -6,4 +6,8 @@ public enum PlayerColor {
   public PlayerColor getOppositeColor() {
     return this == WHITE ? BLACK : WHITE;
   }
+
+  public boolean isWhite() {
+    return this == WHITE;
+  }
 }
